@@ -1,0 +1,4 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,Macrophage markers WP4146,0.0025625974938504603,657.3125,3922.0087693217415,['CD74'],0.007687792481551381,0,0,1
+2,Amyotrophic lateral sclerosis (ALS) WP2447,0.023691845785102365,48.574074074074076,181.7945123958737,['NEFH'],0.03553776867765355,0,0,1
+3,Association Between Physico-Chemical Features and Toxicity Associated Pathways WP3680,0.03700489115295672,30.453488372093023,100.39617291868889,['NEFH'],0.03700489115295672,0,0,1

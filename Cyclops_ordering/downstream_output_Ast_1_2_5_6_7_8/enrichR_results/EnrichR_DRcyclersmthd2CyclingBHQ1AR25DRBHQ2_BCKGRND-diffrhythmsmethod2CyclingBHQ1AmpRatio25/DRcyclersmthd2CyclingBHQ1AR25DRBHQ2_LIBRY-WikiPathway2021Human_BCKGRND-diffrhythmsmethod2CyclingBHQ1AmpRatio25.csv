@@ -1,0 +1,6 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,Biomarkers for urea cycle disorders WP4583,0.0017360776664459244,inf,inf,['GLS2'],0.002893462777409874,0,0,1
+2,Urea cycle and associated pathways WP4595,0.0017360776664459244,inf,inf,['GLS2'],0.002893462777409874,0,0,1
+3,Urea cycle and related diseases WP4571,0.0017360776664459244,inf,inf,['GLS2'],0.002893462777409874,0,0,1
+4,Pyrimidine metabolism and related diseases WP4225,0.0034721691261988758,inf,inf,['GLS2'],0.0043402114077485945,0,0,1
+5,p53 transcriptional gene network WP4963,0.012152665068024737,inf,inf,['GLS2'],0.012152665068024737,0,0,1

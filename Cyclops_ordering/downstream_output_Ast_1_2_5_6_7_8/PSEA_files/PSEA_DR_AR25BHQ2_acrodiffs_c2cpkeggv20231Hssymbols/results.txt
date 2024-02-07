@@ -1,0 +1,1 @@
+Set ID	Set N	Kuiper p-value (vs. background)	Kuiper q-value (vs. background)	Kuiper p-value (vs. uniform)	Kuiper q-value (vs. uniform)	Vector-average magnitude	Vector-average value

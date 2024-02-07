@@ -1,0 +1,3 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,NFKB1 human,0.09562517198586312,11.22198275862069,26.341575459993244,['CD74'],0.0964061506871087,0,0,1
+2,RELA human,0.0964061506871087,11.125,26.02343619097026,['CD74'],0.0964061506871087,0,0,1

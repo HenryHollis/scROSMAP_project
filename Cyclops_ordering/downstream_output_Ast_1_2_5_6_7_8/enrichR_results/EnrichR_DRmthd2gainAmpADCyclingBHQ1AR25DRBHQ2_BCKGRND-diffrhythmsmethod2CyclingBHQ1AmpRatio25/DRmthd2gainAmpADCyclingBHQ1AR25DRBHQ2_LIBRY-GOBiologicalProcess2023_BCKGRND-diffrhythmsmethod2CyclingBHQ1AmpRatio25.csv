@@ -1,0 +1,9 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,Glutamate Metabolic Process (GO:0006536),0.0017360776664459244,inf,inf,['GLS2'],0.002777724266313479,0,0,1
+2,Glutamine Family Amino Acid Biosynthetic Process (GO:0009084),0.0017360776664459244,inf,inf,['GLS2'],0.002777724266313479,0,0,1
+3,Glutamine Family Amino Acid Catabolic Process (GO:0009065),0.0017360776664459244,inf,inf,['GLS2'],0.002777724266313479,0,0,1
+4,Glutamine Metabolic Process (GO:0006541),0.0017360776664459244,inf,inf,['GLS2'],0.002777724266313479,0,0,1
+5,Amide Biosynthetic Process (GO:0043604),0.0017360776664459244,inf,inf,['GLS2'],0.002777724266313479,0,0,1
+6,Dicarboxylic Acid Biosynthetic Process (GO:0043650),0.0034721691261988758,inf,inf,['GLS2'],0.004629558834931834,0,0,1
+7,Regulation Of Programmed Cell Death (GO:0043067),0.012152665068024737,inf,inf,['GLS2'],0.013888760077742555,0,0,1
+8,Regulation Of Apoptotic Process (GO:0042981),0.06249977089888304,inf,inf,['GLS2'],0.06249977089888304,0,0,1
