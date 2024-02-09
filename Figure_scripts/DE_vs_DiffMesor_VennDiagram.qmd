@@ -1,0 +1,110 @@
+---
+title: "DE_vs_DiffMesor_VennDiagram"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(ggvenn)
+library(reticulate) #use to find conda env for python
+if (!(dir.exists("DiffMesor_vs_DiffExpr"))){
+  dir.create("DiffMesor_vs_DiffExpr")
+  dir.create("DiffMesor_vs_DiffExpr/enrichR_files")
+  dir.create("DiffMesor_vs_DiffExpr/enrichR_results")
+}
+```
+
+```{r}
+conda_list()
+```
+
+Select your conda environment of choice, in my case, item 2 from list above:
+
+```{r}
+conda_list()[[2]][2] %>% 
+  use_condaenv(required = TRUE)
+print(paste("Using cond env:",conda_list()[[1]][2] ))
+```
+
+Define Functions
+
+```{r}
+make_venn = function(diff_mesor_file, path_to_DE, my_title, signif_cutoff = 0.1, save_plots = T){
+Diff_mesor = read_csv(diff_mesor_file, show_col_types = F) 
+all_genes = dplyr::select(Diff_mesor, Gene_Symbols)
+Diff_mesor = Diff_mesor %>%  filter(BHQ < signif_cutoff)
+
+## Differential Expression
+Exact_test = read_csv(path_to_DE, show_col_types = F) %>% 
+  filter(FDR < signif_cutoff)
+
+DM_not_DE = setdiff(Diff_mesor$Gene_Symbols, Exact_test$...1 )
+
+x <- list(
+  `Diff.  Mesor` = Diff_mesor$Gene_Symbols, 
+  `Diff. Expr.` = Exact_test$...1
+)
+
+p = ggvenn(
+  x, 
+  fill_color = c("#0073C2FF", "#EFC000FF"),auto_scale = T,
+  stroke_size = 0.02, set_name_size = 4
+)+ggtitle(my_title)
+print(p)
+plot_title = gsub("\\.\\s|\\s|,", "_", my_title)
+if(save_plots){
+  ggsave(paste0("DiffMesor_vs_DiffExpr/VennDiagram_", plot_title, ".png"))
+  
+write.table(c("Gene_Symbols", DM_not_DE), paste0("DiffMesor_vs_DiffExpr/enrichR_files/",plot_title ,"_DM_not_DE.csv"), sep = ',', row.names = F, col.names = F)
+write.table(all_genes, paste0("DiffMesor_vs_DiffExpr/enrichR_files/", plot_title, "_background.csv"), sep = ',', col.names = T, row.names = F)
+}
+
+return(DM_not_DE)
+}
+
+```
+
+Generate the VennDiagrams
+
+```{r}
+path_prefix = "../Cyclops_ordering/"
+EN_mesor_path = paste0(path_prefix, "downstream_output_Exc3_5/differential_mesor_all_genes.csv")
+EN_DE_path = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/simple_differential_expr/Exc3_5/Exc3_5_filtByExpr_combatSeq_edgeR_DE_exactTest.csv"
+IN_mesor_path = paste0(path_prefix, "downstream_output_Inh_2_8_11_12_13/differential_mesor_all_genes.csv")
+IN_DE_path = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/simple_differential_expr/Inhib_2_8_11_12_13/Inhib_2_8_11_12_13_filtByExpr_combatSeq_edgeR_DE_exactTest.csv"
+AS_mesor_path = paste0(path_prefix, "downstream_output_Ast_1_2_5_6_7_8/differential_mesor_all_genes.csv")
+AS_DE_path = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/simple_differential_expr/Ast_1_2_5_6_7_8/Ast_1_2_5_6_7_8_filtByExpr_combatSeq_edgeR_DE_exactTest.csv"
+MG_mesor_path = paste0(path_prefix, "downstream_output_Mglia_4_5_6_7_8_10_11_13_15_16/differential_mesor_all_genes.csv")
+MG_DE_path = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/simple_differential_expr/Mglia_4_5_6_7_8_10_11_13_15_16/Microglia_4_5_6_7_8_10_11_13_15_16_filtByExpr_combatSeq_edgeR_DE_exactTest.csv"
+
+EN_not_DE = make_venn(EN_mesor_path, EN_DE_path, "Exc. Neurons 3,5")
+IN_not_DE = make_venn(IN_mesor_path, IN_DE_path, "Inh. Neurons 2,8,11,12,13")
+AS_not_DE = make_venn(AS_mesor_path, AS_DE_path, "Astrocyte 1,2,5,6,7,8")
+MG_not_DE = make_venn(MG_mesor_path, MG_DE_path, "Microglia 4,5,6,7,8,10,11,13,15,16")
+
+
+
+```
+
+### EnrichR
+
+Call EnrichR API with python, supplying various lists from cycling and differential rhythm analysis.
+
+```{r}
+setwd("../Analysis_scripts/")
+path_no_space = gsub(" ", "\\ ", getwd(), fixed = TRUE)
+setwd("../Figure_scripts/DiffMesor_vs_DiffExpr/")
+
+#create list of filenames from the enrichR_files subfolder
+gene_lists = list.files("./enrichR_files/", pattern = "*_DM_not_DE.csv") %>% sort
+
+DR_backgrounds =  list.files("./enrichR_files/", pattern = "*background.csv") %>% sort
+
+#run system command to call python script that uses enrichR API
+mapply(function(x, y){
+  system(paste0("python3 ", path_no_space, "/Python_EnrichR_for_AnalysisPipeline.py -g \"enrichR_files/" ,x, "\" -b \"enrichR_files/",y , "\""))},
+  gene_lists,
+  DR_backgrounds)
+
+```

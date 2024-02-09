@@ -1,0 +1,97 @@
+---
+title: "fGSEA_plots"
+format: html
+editor: visual
+---
+
+This notebook takes the results of fGSEA from "perform_downstream_analysis" and generated nice fGSEA dot plots.
+
+```{r}
+#load the libs
+require(ggplot2)
+```
+
+Define the Functions:
+
+```{r}
+fgsea_dotplot = function(object, show = 15, 
+          font.size=12, my_title = "GSEA", enrichment = "all",
+          BHQ_cutoff = 0.2) {
+  object = as_tibble(object)
+  if (enrichment == "pos"){
+    print("Including only pos enriched pathways")
+    object = dplyr::filter(object, NES > 0)
+  }else if (enrichment == "neg"){
+    print("Including only neg enriched pathways")
+    object = dplyr::filter(object, NES < 0)
+  }else{
+    print("Using positive and negatively enriched pathways")
+  }
+  data = object %>% top_n(-1*show, wt = padj)%>% arrange(padj) %>%#-1 means "bottom" n pvalues
+    dplyr::filter(padj < BHQ_cutoff)
+  if (0 == nrow(data)){return()}
+  #fixed_labels <- str_replace_all(data$pathway, "_", " ")
+  data$fixed_labels = str_replace_all(data$pathway, "_", " ")
+  ggplot(data, aes(x=reorder(fixed_labels,padj, decreasing = T), y= abs(NES), color = padj, size = size)) +
+    geom_point(alpha = 0.9, ) +
+    coord_flip()+
+    scale_color_continuous(low="red", high="blue", name = "BHQ",
+                           guide=guide_colorbar(reverse=T)) +
+    #scale_size_continuous( name = "Size", range  =c(3,8)) +
+    scale_x_discrete(name = "Pathway", labels = function(x) str_wrap(x, width = 30)) +
+    ylab("abs(NES)") +
+    labs(title = str_wrap(my_title, 20)) #  # theme_dose(12)
+  
+}
+
+plot_all_results= function(path){
+    setwd(path)
+    cycling_ctl_pranked = read_csv("fGSEA/fGSEA_results/CTL_cyclers_minusLogPRanked.csv", show_col_types = F)
+    p = fgsea_dotplot(cycling_ctl_pranked, enrichment = "pos", my_title = "Pathways Enriched for Genes Cycling in CTL", show = 10)
+    print(p)
+    cycling_ad_pranked = read_csv("fGSEA/fGSEA_results/AD_cyclers_minusLogPRanked.csv", show_col_types = F)
+    p = fgsea_dotplot(cycling_ad_pranked, enrichment = "pos", my_title = "Pathways Enriched for Genes Cycling in AD", BHQ_cutoff = 0.2, show = 10)
+    print(p)
+    log_ad_ctl_1 = read_csv("fGSEA/fGSEA_results/DRgenesAmpRatio1_Log(AD-CTL)ranked.csv", show_col_types = F)
+    p = fgsea_dotplot(log_ad_ctl_1, enrichment = "neg", my_title = "Pathways Enriched for Genes Losing Rhyth in AD (cyclingBHQ1AR1)", BHQ_cutoff = 0.2)
+    print(p)
+    p = fgsea_dotplot(log_ad_ctl_1, enrichment = "pos", my_title = "Pathways Enriched for Genes Gain Rhyth in AD (cyclingBHQ1AR1)", BHQ_cutoff = 0.2)
+    print(p)
+    log_ad_ctl_25 = read_csv("fGSEA/fGSEA_results/DRgenesAmpRatio25_Log(AD-CTL)ranked.csv", show_col_types = F)
+    p = fgsea_dotplot(log_ad_ctl_25, enrichment = "neg", my_title = "Pathways Enriched for Genes Losing Rhyth in AD (cyclingBHQ1AR25)", BHQ_cutoff = 0.2)
+    print(p)
+    p = fgsea_dotplot(log_ad_ctl_25, enrichment = "pos", my_title = "Pathways Enriched for Genes Gain Rhyth in AD (cyclingBHQ1AR25)", BHQ_cutoff = 0.2)
+    print(p)
+    log_ad_ctl_25_mthd2 = read_csv("fGSEA/fGSEA_results/DRgenesAmpRatio25_Log(AD-CTL)ranked_method2.csv", show_col_types = F)
+    p =fgsea_dotplot(log_ad_ctl_25_mthd2, enrichment = "neg", my_title = "Pathways Enriched for Genes Losing Rhyth in AD method2 (cyclingBHQ1AR1)", BHQ_cutoff = 0.2)
+    print(p)
+    p = fgsea_dotplot(log_ad_ctl_25_mthd2, enrichment = "pos", my_title = "Pathways Enriched for Genes Gain Rhyth in AD method2 (cyclingBHQ1AR1)", BHQ_cutoff = 0.3)
+    print(p)
+}
+```
+
+Call on different "downstream_results" folders:
+
+### Excitatory Neurons:
+
+```{r}
+plot_all_results("../Cyclops_ordering/downstream_output_Exc3_5/")
+```
+
+### Inhibitory Neurons:
+
+```{r}
+plot_all_results("../Cyclops_ordering/downstream_output_Inh_2_8_11_12_13/")
+```
+
+### Astrocytes:
+
+```{r}
+plot_all_results("../Cyclops_ordering/downstream_output_Ast_1_2_5_6_7_8/")
+```
+
+### Mglia:
+
+```{r}
+plot_all_results("../Cyclops_ordering/downstream_output_Mglia_4_5_6_7_8_10_11_13_15_16/")
+```
