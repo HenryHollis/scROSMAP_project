@@ -12,20 +12,16 @@ This notebook is for performing downstream analysis of CYCLOPS. It includes runn
 ```{r Load Libraries, include=FALSE}
 library(reticulate) #use to find conda env for python
 library(tidyverse)
-library(JuliaCall)
-julia = julia_setup("/Applications/Julia-1.6.app/Contents/Resources/julia/bin/")
-source("./differential_rhyth_generalized.R")
-source("./create_rnk_files.R")
-source("./fgsea.R")
-source("./Mesor_Venn_Diagram.R")
-source("./Files_for_Pscan.R")
-source("./Make_KEGG_map_files.R")
-source("./Check_TF_for_cycling_or_DR.R")
-source("./fgsea_plot_for_downstream.R")
-source("./plot_clock_face_plots.R")
-source("./plot_gene_traces_generalized.R")
-source("./order_metabolon.R")
-source("./order_proteomics.R")
+source("./downstream_helpers/differential_rhyth_generalized.R")
+source("./downstream_helpers/create_rnk_files.R")
+source("./downstream_helpers/fgsea.R")
+source("./downstream_helpers/Files_for_Pscan.R")
+source("./downstream_helpers/Make_KEGG_map_files.R")
+source("./downstream_helpers/Check_TF_for_cycling_or_DR.R")
+source("./downstream_helpers/plot_clock_face_plots.R")
+source("./downstream_helpers/plot_gene_traces_generalized.R")
+source("./downstream_helpers/order_metabolon.R")
+source("./downstream_helpers/order_proteomics.R")
 ```
 
 This notebook makes use of python via anaconda. Please make sure you install anaconda to proceed:
@@ -48,13 +44,13 @@ Select the CYCLOPS ordering path and path to data file and path to DEseq2 differ
 
 ```{r}
 #path to cyclops ordering
-path_to_cyclops_ordering = "/Users/henryhollis/Box Sync/Henry_stuff/AD_project/human_data/Cyclops_folders/training_output/scROSMAP/cogdx_controls/wAD/ExcitatoryNeurons/TMMs_w_batch/Exc3and5_FiltByEdgeRDefault_fixedipBulkChenZhang_condAndBatchCovs_04ContrVar4EGdefault_noTransferFit_Feb5Redo/"
+path_to_cyclops_ordering = "../Cyclops_ordering/"
 
 #path to normalized counts
-path_to_tmm_file = "/Users/henryhollis/Box Sync/Henry_stuff/AD_project/human_data/Cyclops_folders/tmms/scROSMAP/cogdx_controls/EdgeR_filt_normed/Microglia_4_5_6_7_8_10_11_13_15_16_FiltByExprDefault_TMM.csv"
+path_to_tmm_file = "../normed_counts/ExcSubtypes3and5_FiltByExprDefault_TMM.csv"
 
 # optional path to file containing differential expression results
-deseq_de_filename = "/Users/henryhollis/Box Sync/Henry_stuff/AD_project/scROSMAP/simple_differential_expr/Mglia_4_5_6_7_8_10_11_13_15_16/ Microglia_4_5_6_7_8_10_11_13_15_16_filtByExpr_combatSeq_edgeR_DE_exactTest.csv"
+edgeR_de_filename = "../EdgeR_differential_expression/Exc3_5/Exc3_5_filtByExpr_combatSeq_edgeR_DE_exactTest.csv"
 
 path_to_rosmap_clin = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/Meta_data/cleaned_rosmap_meta_cogdxConds.csv"
 metabolon_filename = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/Metabolon/ROSMAP_Metabolon_HD4_Brain514_assay_data.csv"
@@ -84,6 +80,9 @@ run_cycling_and_dr_analysis(path_to_cyclops_ordering, path_to_tmm_file, isCyclin
 With custom regression, I have to remake clock face plots, genes plots, etc.
 
 ```{r}
+library(JuliaCall)
+julia = julia_setup("/Applications/Julia-1.6.app/Contents/Resources/julia/bin/")
+
 setwd(path_to_cyclops_ordering)
 if (!(dir.exists("downstream_output/plots"))){
   dir.create("downstream_output/plots")
@@ -102,7 +101,8 @@ plot_subject_histogram(path_to_cyclops_ordering, "cond_0")
 plot_subject_histogram(path_to_cyclops_ordering, "cond_1")
 
 #Gene Tracings
-plot_core_clock_genes(path_to_tmm_file, path_to_cyclops_ordering, useBatch = useBatch, percentile = percentile, split_cond_plots = T)
+genelist = c("ARNTL", "NPAS2", "CLOCK", "CRY1", "CRY2", "NR1D1", "NR1D2", "PER1", "PER2", "PER3", "DBP", "TEF")
+plot_genes(path_to_tmm_file, path_to_cyclops_ordering,genelist, useBatch = useBatch, percentile = percentile, split_cond_plots = T)
 ```
 
 Plot Other Genes
@@ -110,10 +110,7 @@ Plot Other Genes
 ```{r}
 plot_me = c("RPL18","RPS7","RPL22","RPS18","RPL8","RPL10A","RPS13","RPL14","RPS15A","RPS12","RPL36AL","RPL34","RPL30","RPL9","RPL21","RPS28","RPSA","RPL26","RPL27A","FAU","RPS3A","RPL7A","RPL17","RPS27A","RPS16","RPL15","RPLP1","RPL7","RPL10","RPL23A","RPL18A","RPL3","RPL12","RPL39","RPL37A","RPL37","RPS10","RPL13","RPL35A","RPS23","RPL13A","RPL38","RPS29","RPL24","RPL41","RPL35","RPS26","RPS2","RPS9","RPL32","RPL6","RPS21","RPS24","RPS25","RPL36","RPL19","RPS27","RPL29","RPS15","RPS3","RPS5","RPS8","RPL27","RSL24D1","RPS6","RPL11")
 
-tmm = read_csv(path_to_tmm_file, show_col_types = FALSE)
-  cyc_pred_file = list.files(path = paste0(path_to_cyclops_ordering, "/Fits/"), pattern = '*Fit_Output_*')
-cyc_pred = read_csv(paste(path_to_cyclops_ordering, "Fits", cyc_pred_file[1], sep = '/'), show_col_types = FALSE)
-plot_gene_trace(cyc_pred, tmm, plot_me , percentile = percentile, useBatch = useBatch)
+plot_genes(path_to_tmm_file, path_to_cyclops_ordering,plot_me, useBatch = useBatch, percentile = percentile, split_cond_plots = T)
 ```
 
 ### EnrichR
@@ -144,7 +141,7 @@ DR_gene_lists = c(DR_gene_lists_method1, DR_gene_lists_method2)
 DR_backgrounds = c(DR_backgrounds_method1, DR_backgrounds_method2)
 
 # repeat with differential gene lists
-setwd(paste0(path_to_cyclops_ordering, "downstream_output"))
+setwd("..")
 mapply(function(x, y){ 
   system(paste0("python3 ", path_no_space, "/Python_EnrichR_for_AnalysisPipeline.py -g \"enrichR_files/" ,x, "\" -b \"",y , "\""))},
   DR_gene_lists, 
@@ -161,8 +158,9 @@ path = getwd()
 setwd(path_to_cyclops_ordering)
 if (!(dir.exists("downstream_output/fGSEA"))){
   dir.create("downstream_output/fGSEA")
-  dir.create(paste("downstream_output", "fGSEA", "rnk_files", sep = "/"))
-  dir.create(paste("downstream_output" , "fGSEA", "fGSEA_results", sep = "/"))
+  dir.create("downstream_output/fGSEA/rnk_files")
+  dir.create("downstream_output/fGSEA/fGSEA_results")
+  dir.create("downstream_output/fGSEA/fGSEA_results/plots")
 }
 
 isCyclingBHQCutoff_str = str_extract(as.character(isCyclingBHQCutoff), "(?<=\\.)\\d+")
@@ -183,12 +181,6 @@ setwd(paste(path_to_cyclops_ordering,"downstream_output", "fGSEA", "rnk_files", 
 
 rnk_files = list.files(pattern = ".rnk")
 
-
-if(!(dir.exists(paste(path_to_cyclops_ordering, "downstream_output","fGSEA","fGSEA_results", sep = "/")))){
-  dir.create( paste(path_to_cyclops_ordering,"downstream_output", "fGSEA","fGSEA_results", sep = "/") )
-  dir.create( paste(path_to_cyclops_ordering,"downstream_output", "fGSEA","fGSEA_results", "plots",sep = "/"))
-}
-
 run_fgsea(rnk_files, gene_remapping_dict, pathways)
 ```
 
@@ -197,11 +189,11 @@ Run fgsea on sleep related pathways from https://doi.org/10.1152/physiolgenomics
 ```{r}
 sleep_wake_pathways = gmtPathways("./MsigDB_gmts_for_GSEA/sleep_wake_pathways_w_all_human_aliases_filtered_to_background_genes.gmt")
 
-if(!(dir.exists(paste(path_to_cyclops_ordering, "downstream_output","fGSEA","fGSEA_results_sleep_wake", sep = "/")))){
-    dir.create( paste(path_to_cyclops_ordering,"downstream_output", "fGSEA","fGSEA_results_sleep_wake", sep = "/") )
-    dir.create( paste(path_to_cyclops_ordering,"downstream_output", "fGSEA","fGSEA_results_sleep_wake", "plots", sep = "/") )
+if(!(dir.exists(paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/fGSEA_results_sleep_wake")))){
+    dir.create(paste0(path_to_cyclops_ordering,"downstream_output/fGSEA/fGSEA_results_sleep_wake"))
+    dir.create(paste0(path_to_cyclops_ordering,"downstream_output/fGSEA/fGSEA_results_sleep_wake/plots"))
 }
-setwd(paste(path_to_cyclops_ordering,"downstream_output", "fGSEA", "rnk_files", sep = "/"))
+setwd(paste0(path_to_cyclops_ordering,"downstream_output/fGSEA/rnk_files"))
 
 run_fgsea(rnk_files, gene_remapping_dict, sleep_wake_pathways, dir = "fGSEA_results_sleep_wake", max_size = 10000)
 ```
@@ -219,26 +211,19 @@ psea_pathways <- c(paste0(getwd(), "/MsigDB_gmts_for_GSEA/c2.cp.kegg.v2023.1.Hs.
 psea_pathways = gsub(" ", "\\ ", psea_pathways, fixed = TRUE) 
 
 # change dir into PSEA directory
-setwd(paste(path_to_cyclops_ordering,"downstream_output", "PSEA_files",sep = "/"))
+setwd("../Cyclops_ordering/downstream_output/PSEA_files/")
 
 #list PSEA input files (generated during cosinor regression/DR step)
 psea_files = list.files(pattern = "*.txt")
-
-#Save path to ordering as string for cleaning up call to system
-path_to_cyclops_ordering_no_space = gsub(" ", "\\ ", path_to_cyclops_ordering, fixed = TRUE)
 
 #dataframe where rows are arguments to system, I will apply system call across rows
 arg_df = expand.grid(psea_files, psea_pathways) %>% 
       mutate(out_dirs = paste(str_extract(string = as.character(Var1),     pattern= ".+(?=\\.txt)"), basename(as.character(Var2)) %>% str_extract(pattern= ".+(?=\\.gmt)")%>% 
       gsub(pattern = "\\.", replacement = ""), sep = "_") )
-
 #apply system call, calling PSEA jar file, using rows of arg_df as arguments
 apply(arg_df, 1, function(a){
     system(paste0("java -jar ", path_no_space, "/PSEA_cmd.jar ", 
-    paste0(path_to_cyclops_ordering_no_space, 
-    "/downstream_output/PSEA_files/", a[[1]]), " ", a[[2]]," ",
-    paste0(path_to_cyclops_ordering_no_space,
-    "/downstream_output/PSEA_files/", a[[3]]), " 5 10000 pdf"))
+    a[[1]], " ", a[[2]]," ", a[[3]], " 5 10000 pdf"))
         })
 ```
 
@@ -316,7 +301,7 @@ order_metabolon(metabolon_filename, metabolon_datakey, path_to_rosmap_clin, path
 Make sure you have downloaded [**syn32835854**]{.underline}, [**syn21266449**]{.underline}, and [**syn51389605**]{.underline}. You can download programmatically with python or R synapse client. Make sure you specify the path to those downloads with *proteiomics_file_path.*
 
 ```{r}
-proteiomics_file_path = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/Proteomics/SynapseDownloads/"
+tmt_filename = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/Proteomics/SynapseDownloads/"
 tmt_filename = "2b.unlogged_relative_abundance-ROSMAP610.R1+R2-2xTAMPORcorrected.csv" #syn51389605
 # tmt_filename = "3.Regressed(age.sex.PMI-noDxProtect)_cleanDat-7814x610-ROSMAP610_R1+R2(Uniprot2019multiconsensus).csv"
 
