@@ -222,7 +222,7 @@ arg_df = expand.grid(psea_files, psea_pathways) %>%
       gsub(pattern = "\\.", replacement = ""), sep = "_") )
 #apply system call, calling PSEA jar file, using rows of arg_df as arguments
 apply(arg_df, 1, function(a){
-    system(paste0("java -jar ", path_no_space, "/PSEA_cmd.jar ", 
+    system(paste0("java -jar ", path_no_space, "/downstream_helpers/PSEA_cmd.jar ", 
     a[[1]], " ", a[[2]]," ", a[[3]], " 5 10000 pdf"))
         })
 ```
