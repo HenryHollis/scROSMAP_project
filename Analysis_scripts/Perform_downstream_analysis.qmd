@@ -251,7 +251,7 @@ setwd("pscan/")
 pscan_files = list.files("./pscan_files/", pattern = ".csv$")
 
 sapply(pscan_files, function(x){
-  system(paste0("python3 ", path_no_space, "/pscan_requests.py --file pscan_files/" ,x))})
+  system(paste0("python3 ", path_no_space, "/downstream_helpers/pscan_requests.py --file pscan_files/" ,x))})
 
 isCyclingBHQCutoff_str = str_extract(as.character(isCyclingBHQCutoff), "(?<=\\.)\\d+")
 
@@ -274,7 +274,7 @@ if(exists("deseq_de_filename")){
 Write Files for Kegg Pathway Diagrams
 
 ```{r}
-entrez_dict = readxl::read_excel("scROSMAP_ENSEMBL_ENTREZ_dict.xlsx")
+entrez_dict = readxl::read_excel("downstream_helpers/scROSMAP_ENSEMBL_ENTREZ_dict.xlsx")
 
 setwd(path_to_cyclops_ordering)
 isCyclingBHQCutoff_str = str_extract(as.character(isCyclingBHQCutoff), "(?<=\\.)\\d+")
@@ -282,7 +282,7 @@ isCyclingBHQCutoff_str = str_extract(as.character(isCyclingBHQCutoff), "(?<=\\.)
 if (!(dir.exists("downstream_output/KEGG_map_diagrams"))){
   dir.create("downstream_output/KEGG_map_diagrams")
 }
-write_kegg_map_files(paste0("downstream_output/diff_rhythms_CyclingBHQ", isCyclingBHQCutoff_str, "AmpRatio25.csv"),"Log_AD_CTL_ampRatio", trans_dict = entrez_dict,BHQ_cutoff = 0.2)
+write_kegg_map_files(paste0("downstream_output/diff_rhythms_CyclingBHQ", isCyclingBHQCutoff_str, "AmpRatio20.csv"),"Log_AD_CTL_ampRatio", trans_dict = entrez_dict,BHQ_cutoff = 0.2)
 
 ```
 
@@ -301,7 +301,7 @@ order_metabolon(metabolon_filename, metabolon_datakey, path_to_rosmap_clin, path
 Make sure you have downloaded [**syn32835854**]{.underline}, [**syn21266449**]{.underline}, and [**syn51389605**]{.underline}. You can download programmatically with python or R synapse client. Make sure you specify the path to those downloads with *proteiomics_file_path.*
 
 ```{r}
-tmt_filename = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/Proteomics/SynapseDownloads/"
+proteiomics_file_path = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/Proteomics/SynapseDownloads/"
 tmt_filename = "2b.unlogged_relative_abundance-ROSMAP610.R1+R2-2xTAMPORcorrected.csv" #syn51389605
 # tmt_filename = "3.Regressed(age.sex.PMI-noDxProtect)_cleanDat-7814x610-ROSMAP610_R1+R2(Uniprot2019multiconsensus).csv"
 
