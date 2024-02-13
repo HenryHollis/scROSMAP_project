@@ -3,9 +3,10 @@ library(tidyverse)
 library(doParallel)
 library(progress)
 
-plot_prot = function(proteiomics_file_path, tmt_filename, path_to_rosmap_clin, path_to_cyclops_ordering,genelist, percentile = 0.025){
+plot_prot = function( tmt_filename, path_to_cyclops_ordering,genelist, percentile = 0.025){
   
-  setwd(proteiomics_file_path)
+  setwd("../synapse_downloads")
+  path_to_rosmap_clin = "../ROSMAP_metadata/cleaned_rosmap_meta_cogdxConds.csv"
   prot = read_csv(tmt_filename, show_col_types = F)
   
   colnames(prot)[1] = "Protein_Symbols"
@@ -44,8 +45,10 @@ plot_prot = function(proteiomics_file_path, tmt_filename, path_to_rosmap_clin, p
 }
 
 
-order_prot = function(proteiomics_file_path, tmt_filename, path_to_rosmap_clin, path_to_cyclops_ordering , isCyclingBHQCutoff = 0.1, percentile = 0.025, plot_prot = T){
-  setwd(proteiomics_file_path)
+order_prot = function( tmt_filename, path_to_cyclops_ordering , isCyclingBHQCutoff = 0.1, percentile = 0.025, plot_prot = T){
+  
+  setwd("../synapse_downloads")
+  path_to_rosmap_clin = "../ROSMAP_metadata/cleaned_rosmap_meta_cogdxConds.csv"
   prot = read_csv(tmt_filename, show_col_types = F)
   
   colnames(prot)[1] = "Protein_Symbols"

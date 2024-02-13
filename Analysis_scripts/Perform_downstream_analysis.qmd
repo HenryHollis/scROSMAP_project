@@ -301,7 +301,6 @@ order_metabolon(metabolon_filename, metabolon_datakey, path_to_rosmap_clin, path
 Make sure you have downloaded [**syn32835854**]{.underline}, [**syn21266449**]{.underline}, and [**syn51389605**]{.underline}. You can download programmatically with python or R synapse client. Make sure you specify the path to those downloads with *proteiomics_file_path.*
 
 ```{r}
-proteiomics_file_path = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/Proteomics/SynapseDownloads/"
 tmt_filename = "2b.unlogged_relative_abundance-ROSMAP610.R1+R2-2xTAMPORcorrected.csv" #syn51389605
 # tmt_filename = "3.Regressed(age.sex.PMI-noDxProtect)_cleanDat-7814x610-ROSMAP610_R1+R2(Uniprot2019multiconsensus).csv"
 
