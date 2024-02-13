@@ -150,7 +150,7 @@ plot_gene_trace = function(cyc_pred, tmm, seedlist,  useBatch = F,
 }
 
 
-plot_core_clock_genes = function(tmm_path, cyclops_path, seedlist = NULL, useBatch = useBatch,
+plot_genes = function(tmm_path, cyclops_path, genes_to_plot = NULL, useBatch = useBatch,
                                  percentile = percentile, split_cond_plots = T){
   tmm = read_csv(tmm_path, show_col_types = FALSE)
   cyc_pred_file = list.files(path = paste0(cyclops_path, "/Fits/"), pattern = '*Fit_Output_*')
@@ -161,10 +161,10 @@ plot_core_clock_genes = function(tmm_path, cyclops_path, seedlist = NULL, useBat
   }
   
   genelist = c("ARNTL", "NPAS2", "CLOCK", "CRY1", "CRY2", "NR1D1", "NR1D2", "PER1", "PER2", "PER3", "DBP", "TEF")
-  if(is.null(seedlist)){
-    seedlist = genelist
+  if(is.null(genes_to_plot)){
+    genes_to_plot = genelist
   }
-  plot_gene_trace(cyc_pred, tmm, seedlist, useBatch = useBatch,
+  plot_gene_trace(cyc_pred, tmm, genes_to_plot, useBatch = useBatch,
                   savePlots = T, percentile = percentile, split_cond_plots = T)
   
   

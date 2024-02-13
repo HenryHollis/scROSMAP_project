@@ -73,10 +73,8 @@ plot_clock_face = function(plotname, df_filename,mouse_data = mouse_data, BHQ_cu
   }
   # print(paste0("shifted phases to ", round(subtract_acro, 3), " and flipped = ", flipped))
   #plot(df$phase_MA, mouse_data$acrophase)
-  
-  setwd("~/Box Sync/Henry_stuff/AD_project/scROSMAP/Rscripts/automatic_downstream_analysis/")
   if(length(keep_genes )>1){
-    julia_source("plot_clock_face.jl")
+    julia_source("../Analysis_scripts/downstream_helpers/plot_clock_face.jl")
     julia_call(
       "plot_clock_face",
       plotname, df$Gene_Symbols, df$phase_MA, mouse_data$Gene_Symbols, mouse_data$acrophase, df$BHQ, df$amp_ratio,

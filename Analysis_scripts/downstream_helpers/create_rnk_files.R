@@ -31,28 +31,28 @@ write_rnks = function(path_to_cyclops_ordering, isCyclingBHQCutoff_str){
   write.table(df4, paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/rnk_files/DRgenesAmpRatio1_minusLogPRanked.rnk"), sep = '\t', col.names = F, row.names = F)
   
   #Cycling with AR > .25 & BHQ < cutoff Cycling -> DR testing, log(AD_amp/CTL_amp) ranked
-  ranked_DR_genes_AR25 = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/diff_rhythms_CyclingBHQ",isCyclingBHQCutoff_str,"AmpRatio25.csv"), show_col_types = FALSE)
+  ranked_DR_genes_AR25 = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/diff_rhythms_CyclingBHQ",isCyclingBHQCutoff_str,"AmpRatio20.csv"), show_col_types = FALSE)
   ranked_DR_genes_AR25 = arrange(ranked_DR_genes_AR25, Log_AD_CTL_ampRatio)
   df5 = data.frame(genes = ranked_DR_genes_AR25$Gene_Symbols, metric = ranked_DR_genes_AR25$Log_AD_CTL_ampRatio)
-  write.table(df5, paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/rnk_files/DRgenesAmpRatio25_Log(AD-CTL)ranked.rnk"), sep = '\t', col.names = F, row.names = F)
+  write.table(df5, paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/rnk_files/DRgenesAmpRatio20_Log(AD-CTL)ranked.rnk"), sep = '\t', col.names = F, row.names = F)
   
   #Cycling with AR > .25 & BHQ < cutoff Cycling -> DR testing, -log(p) ranked
-  ranked_DR_genes_AR25 = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/diff_rhythms_CyclingBHQ",isCyclingBHQCutoff_str,"AmpRatio25.csv"), show_col_types = FALSE)
+  ranked_DR_genes_AR25 = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/diff_rhythms_CyclingBHQ",isCyclingBHQCutoff_str,"AmpRatio20.csv"), show_col_types = FALSE)
   ranked_DR_genes_AR25 = arrange(ranked_DR_genes_AR25, p)
   df6 = data.frame(genes = ranked_DR_genes_AR25$Gene_Symbols, metric = -log(ranked_DR_genes_AR25$p))
-  write.table(df6, paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/rnk_files/DRgenesAmpRatio25_minusLogPRanked.rnk"), sep = '\t', col.names = F, row.names = F)
+  write.table(df6, paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/rnk_files/DRgenesAmpRatio20_minusLogPRanked.rnk"), sep = '\t', col.names = F, row.names = F)
   
   #Cycling via Method 2 (BHQ < cutoff & AR > 0.25) -> diff rhythms, -log(p value DR) RANKED
-  ranked_DR_genes_AR25_method2 = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/diff_rhythms_method2_CyclingBHQ",isCyclingBHQCutoff_str,"AmpRatio25.csv"), show_col_types = FALSE)
+  ranked_DR_genes_AR25_method2 = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/diff_rhythms_method2_CyclingBHQ",isCyclingBHQCutoff_str,"AmpRatio20.csv"), show_col_types = FALSE)
   ranked_DR_genes_AR25_method2 = arrange(ranked_DR_genes_AR25_method2, p)
   df7 = data.frame(genes = ranked_DR_genes_AR25_method2$Gene_Symbols, metric = -log(ranked_DR_genes_AR25_method2$p))
-  write.table(df7, paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/rnk_files/DRgenesAmpRatio25_minusLogPRanked_method2.rnk"), sep = '\t', col.names = F, row.names = F)
+  write.table(df7, paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/rnk_files/DRgenesAmpRatio20_minusLogPRanked_method2.rnk"), sep = '\t', col.names = F, row.names = F)
   
   #Cycling via Method 2 (BHQ < cutoff & AR > 0.25) -> diff rhythms, log(AD_amp/CTL_amp) ranked
-  ranked_DR_genes_AR25_method2 = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/diff_rhythms_method2_CyclingBHQ",isCyclingBHQCutoff_str,"AmpRatio25.csv"), show_col_types = FALSE)
+  ranked_DR_genes_AR25_method2 = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/diff_rhythms_method2_CyclingBHQ",isCyclingBHQCutoff_str,"AmpRatio20.csv"), show_col_types = FALSE)
   ranked_DR_genes_AR25_method2 = arrange(ranked_DR_genes_AR25_method2, Log_AD_CTL_ampRatio)
   df8 = data.table(genes = ranked_DR_genes_AR25_method2$Gene_Symbols, metric = ranked_DR_genes_AR25_method2$Log_AD_CTL_ampRatio)
-  write.table(df8, paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/rnk_files/DRgenesAmpRatio25_Log(AD-CTL)ranked_method2.rnk"), sep = '\t', col.names = F, row.names = F)
+  write.table(df8, paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/rnk_files/DRgenesAmpRatio20_Log(AD-CTL)ranked_method2.rnk"), sep = '\t', col.names = F, row.names = F)
   
   #### differential mesor p ranked
   ranked_DM_genes = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/differential_mesor_all_genes.csv"), show_col_types = FALSE)

@@ -8,16 +8,17 @@ Read in the cycling results from different cell types:
 
 ```{r}
 isCyclingSigCutoff = 0.1
+amplitudeRatioCutoff = 0.2
 isCyclingSigCutoff_str = str_extract(as.character(isCyclingSigCutoff), "(?<=\\.)\\d+")
 
 
-eneuron_CTL = read_csv("../Cyclops_ordering/downstream_output_Exc3_5/cosinor_results_CTL.csv", show_col_types = F) %>%  filter(as.numeric(amp_ratio) >=0.25 & as.numeric(BHQ) < isCyclingSigCutoff) %>% arrange(as.numeric(BHQ))
+eneuron_CTL = read_csv("../Cyclops_ordering/downstream_output_Exc3_5/cosinor_results_CTL.csv", show_col_types = F) %>%  filter(as.numeric(amp_ratio) >=amplitudeRatioCutoff & as.numeric(BHQ) < isCyclingSigCutoff) %>% arrange(as.numeric(BHQ))
 
-Ineuron_CTL = read_csv("../Cyclops_ordering/downstream_output_Inh_2_8_11_12_13/cosinor_results_CTL.csv", show_col_types = F)%>%  filter(as.numeric(amp_ratio) >=0.25 & as.numeric(BHQ) < isCyclingSigCutoff) %>% arrange(as.numeric(BHQ))
+Ineuron_CTL = read_csv("../Cyclops_ordering/downstream_output_Inh_2_8_11_12_13/cosinor_results_CTL.csv", show_col_types = F)%>%  filter(as.numeric(amp_ratio) >=amplitudeRatioCutoff & as.numeric(BHQ) < isCyclingSigCutoff) %>% arrange(as.numeric(BHQ))
 
-Ast_CTL = read_csv("../Cyclops_ordering/downstream_output_Ast_1_2_5_6_7_8/cosinor_results_CTL.csv", show_col_types = F)%>%  filter(as.numeric(amp_ratio) >=0.25 & as.numeric(BHQ) < isCyclingSigCutoff) %>% arrange(as.numeric(BHQ))
+Ast_CTL = read_csv("../Cyclops_ordering/downstream_output_Ast_1_2_5_6_7_8/cosinor_results_CTL.csv", show_col_types = F)%>%  filter(as.numeric(amp_ratio) >=amplitudeRatioCutoff & as.numeric(BHQ) < isCyclingSigCutoff) %>% arrange(as.numeric(BHQ))
 
-Mglia_CTL = read_csv("../Cyclops_ordering/downstream_output_Mglia_4_5_6_7_8_10_11_13_15_16/cosinor_results_CTL.csv", show_col_types = F)%>%  filter(as.numeric(amp_ratio) >=0.25 & as.numeric(BHQ) < isCyclingSigCutoff) %>% arrange(as.numeric(BHQ))
+Mglia_CTL = read_csv("../Cyclops_ordering/downstream_output_Mglia_4_5_6_7_8_10_11_13_15_16/cosinor_results_CTL.csv", show_col_types = F)%>%  filter(as.numeric(amp_ratio) >=amplitudeRatioCutoff & as.numeric(BHQ) < isCyclingSigCutoff) %>% arrange(as.numeric(BHQ))
 
 ```
 

@@ -68,7 +68,7 @@ Run cosinor regression and differential rhythmicity analysis with custom script 
 
 ```{r}
 # read in translation dict between gene symbols and other alias
-Ensembl_dict = readxl::read_xlsx("scROSMAP_ENSEMBL_dict.xlsx")
+Ensembl_dict = readxl::read_xlsx("downstream_helpers/scROSMAP_ENSEMBL_dict.xlsx")
 
 #run custom cycling and differential rhythmicity analysis
 print("***Running cosinor and differential rhythms analysis***")
@@ -126,7 +126,7 @@ gene_lists = list.files("./enrichR_files/", pattern = "^(CTL_|AD_|diff_mesor)")
 
 #run system command to call python script that uses enrichR API
 sapply(gene_lists, function(x){ 
-  system(paste0("python3 ", path_no_space, "/Python_EnrichR_for_AnalysisPipeline.py -g \"enrichR_files/" ,x, "\" -b \"enrichR_files/EnrichR_background.csv\""))})
+  system(paste0("python3 ", path_no_space, "/downstream_helpers/Python_EnrichR_for_AnalysisPipeline.py -g \"enrichR_files/" ,x, "\" -b \"enrichR_files/EnrichR_background.csv\""))})
 
 isCyclingBHQCutoff_str = str_extract(as.character(isCyclingBHQCutoff), "(?<=\\.)\\d+")
 
@@ -143,12 +143,12 @@ DR_backgrounds = c(DR_backgrounds_method1, DR_backgrounds_method2)
 # repeat with differential gene lists
 setwd("..")
 mapply(function(x, y){ 
-  system(paste0("python3 ", path_no_space, "/Python_EnrichR_for_AnalysisPipeline.py -g \"enrichR_files/" ,x, "\" -b \"",y , "\""))},
+  system(paste0("python3 ", path_no_space, "/downstream_helpers/Python_EnrichR_for_AnalysisPipeline.py -g \"enrichR_files/" ,x, "\" -b \"",y , "\""))},
   DR_gene_lists, 
   DR_backgrounds)
 
 #AD severity
-system(paste0("python3 ", path_no_space, "/Python_EnrichR_for_AnalysisPipeline.py -g \"enrichR_files/strong_cogdx_diffs_AR25.csv\" -b \"enrichR_files/AD_cyclers_AR25BHQ05.csv\""))
+system(paste0("python3 ", path_no_space, "/downstream_helpers/Python_EnrichR_for_AnalysisPipeline.py -g \"enrichR_files/strong_cogdx_diffs_AR25.csv\" -b \"enrichR_files/AD_cyclers_AR25BHQ05.csv\""))
 ```
 
 ### FGSEA

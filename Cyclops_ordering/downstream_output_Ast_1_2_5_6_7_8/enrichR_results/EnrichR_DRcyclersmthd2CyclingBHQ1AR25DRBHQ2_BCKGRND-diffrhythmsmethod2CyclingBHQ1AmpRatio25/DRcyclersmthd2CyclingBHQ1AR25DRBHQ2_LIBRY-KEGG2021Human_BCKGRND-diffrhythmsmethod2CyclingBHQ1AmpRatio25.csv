@@ -1,9 +1,0 @@
-Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
-1,D-Glutamine and D-glutamate metabolism,0.0017360776664459244,inf,inf,['GLS2'],0.004629540443855798,0,0,1
-2,"Alanine, aspartate and glutamate metabolism",0.0017360776664459244,inf,inf,['GLS2'],0.004629540443855798,0,0,1
-3,Proximal tubule bicarbonate reclamation,0.0017360776664459244,inf,inf,['GLS2'],0.004629540443855798,0,0,1
-4,Arginine biosynthesis,0.0034721691261988758,inf,inf,['GLS2'],0.0069443382523977516,0,0,1
-5,GABAergic synapse,0.005208264685908214,inf,inf,['GLS2'],0.006944352914544285,0,0,1
-6,Glutamatergic synapse,0.005208264685908214,inf,inf,['GLS2'],0.006944352914544285,0,0,1
-7,Central carbon metabolism in cancer,0.006944362656954261,inf,inf,['GLS2'],0.007936414465090583,0,0,1
-8,MicroRNAs in cancer,0.019097079551511444,inf,inf,['GLS2'],0.019097079551511444,0,0,1

@@ -102,19 +102,19 @@ enrichR_loseCycling_BHQ1AR1 = "enrichR_results/EnrichR_DRlostAmpADCyclingBHQ1AR1
 list.files("../Cyclops_ordering/", pattern = "downstream_output*")
 ```
 
-Excitatory Neurons
+### Excitatory Neurons
 
 ```{r}
 plot_cycling_and_dr_cycling("downstream_output_Exc3_5")
 ```
 
-Inhib Neurons
+### Inhib Neurons
 
 ```{r}
 plot_cycling_and_dr_cycling("downstream_output_Inh_2_8_11_12_13")
 ```
 
-Astrocytes
+### Astrocytes
 
 ```{r}
 plot_cycling_and_dr_cycling("downstream_output_Ast_1_2_5_6_7_8")
