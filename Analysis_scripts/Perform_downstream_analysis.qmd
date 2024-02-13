@@ -305,11 +305,11 @@ tmt_filename = "2b.unlogged_relative_abundance-ROSMAP610.R1+R2-2xTAMPORcorrected
 # tmt_filename = "3.Regressed(age.sex.PMI-noDxProtect)_cleanDat-7814x610-ROSMAP610_R1+R2(Uniprot2019multiconsensus).csv"
 
 #make sure you have downloaded syn32835854,  syn21266449, and syn51389605
-if (!(dir.exists(paste0(path_to_cyclops_ordering, "/downstream_output/proteomics")))){
-  dir.create(paste0(path_to_cyclops_ordering, "/downstream_output/proteomics"))
+if (!(dir.exists(paste0(path_to_cyclops_ordering, "/proteomics")))){
+  dir.create(paste0(path_to_cyclops_ordering, "/proteomics"))
 }
 
-order_prot(proteiomics_file_path, tmt_filename, path_to_rosmap_clin, path_to_cyclops_ordering)
+order_prot( tmt_filename, path_to_cyclops_ordering)
 ```
 
 Plot Other Proteins
@@ -317,11 +317,10 @@ Plot Other Proteins
 ```{r}
 plot_list = c("BPNT1|O95861", "PPM1B|O75688", "BLVRA|P53004", "HDHD2|Q9H0R4")
 
-proteiomics_file_path = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/Proteomics/SynapseDownloads/"
 tmt_filename = "2b.unlogged_relative_abundance-ROSMAP610.R1+R2-2xTAMPORcorrected.csv" #syn51389605
 # tmt_filename = "3.Regressed(age.sex.PMI-noDxProtect)_cleanDat-7814x610-ROSMAP610_R1+R2(Uniprot2019multiconsensus).csv"
 
-plot_prot(proteiomics_file_path, tmt_filename, path_to_rosmap_clin, path_to_cyclops_ordering, c("RPL10|P27635", "RPL32|P62910", "NDUFB1|O75438"), percentile = percentile)
+plot_prot( tmt_filename, path_to_cyclops_ordering, c("RPL10|P27635", "RPL32|P62910", "NDUFB1|O75438"), percentile = percentile)
 ```
 
 fGSEA on proteomics
@@ -329,10 +328,10 @@ fGSEA on proteomics
 ```{r}
 path = getwd()
 setwd(path_to_cyclops_ordering)
-if (!(dir.exists("downstream_output/proteomics/fGSEA"))){
-  dir.create("downstream_output/proteomics/fGSEA")
-  dir.create("downstream_output/proteomics/fGSEA/rnk_files")
-  dir.create("downstream_output/proteomics/fGSEA/fGSEA_results")
+if (!(dir.exists("proteomics/fGSEA"))){
+  dir.create("proteomics/fGSEA")
+  dir.create("proteomics/fGSEA/rnk_files")
+  dir.create("proteomics/fGSEA/fGSEA_results")
 }
 
 isCyclingBHQCutoff_str = str_extract(as.character(isCyclingBHQCutoff), "(?<=\\.)\\d+")
@@ -348,7 +347,7 @@ pathways <- c(gmtPathways("./MsigDB_gmts_for_GSEA/c2.cp.kegg.v2023.1.Hs.symbols.
 
 gene_remapping_dict = read.delim("./MsigDB_gmts_for_GSEA/Human_UniProt_IDs_MSigDB.v2023.2.Hs.chip", sep = '\t')
 
-setwd(paste0(path_to_cyclops_ordering,"/downstream_output/proteomics/fGSEA/rnk_files"))
+setwd(paste0(path_to_cyclops_ordering,"/proteomics/fGSEA/rnk_files"))
 
 rnk_files = list.files(pattern = ".rnk")
 

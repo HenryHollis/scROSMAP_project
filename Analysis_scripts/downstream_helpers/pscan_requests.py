@@ -1,5 +1,6 @@
 import pandas as pd
 from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -33,7 +34,7 @@ if (int(args.headless)):
 #driver = webdriver.Chrome( options=chrome_options)
 # driver = webdriver.Chrome(service=service, options=options)
 driver = webdriver.Chrome( options=options)
-
+driver.set_page_load_timeout(1000)
 # Set the URL where the form is located
 url = args.url
 
@@ -48,41 +49,44 @@ driver.execute_script(cmd)
 
 # Submit the form
 submit_button = driver.find_element(By.CSS_SELECTOR, 'input[type="submit"]')
-submit_button.click()
+try:
+    submit_button.click()
+    # Find the download link
+    download_link = driver.find_element(By.LINK_TEXT, 'View Text Results')
+    download_link.click()
 
-# Find the download link
-download_link = driver.find_element(By.LINK_TEXT, 'View Text Results')
-download_link.click()
+    # Switch to the new window
+    driver.switch_to.window(driver.window_handles[-1])
 
-# Switch to the new window
-driver.switch_to.window(driver.window_handles[-1])
+    # Get the plain text from the new window
+    plain_text = driver.find_element(By.TAG_NAME, 'pre').text
 
-# Get the plain text from the new window
-plain_text = driver.find_element(By.TAG_NAME, 'pre').text
+    if not os.path.exists("pscan_results"):
+        os.makedirs("pscan_results")
 
-if not os.path.exists("pscan_results"):
-    os.makedirs("pscan_results")
+    outfile = os.path.join("pscan_results", (os.path.basename(os.path.splitext(args.file)[0]) + "_results.csv"))
 
-outfile = os.path.join("pscan_results", (os.path.basename(os.path.splitext(args.file)[0]) + "_results.csv"))
+    # Save the plain text to a file
+    with open(outfile , 'w', encoding='utf-8') as file:
+        file.write(plain_text)
 
-# Save the plain text to a file
-with open(outfile , 'w', encoding='utf-8') as file:
-    file.write(plain_text)
+    # Close the new window
+    driver.close()
+    driver.quit()
 
-# Close the new window
-driver.close()
-driver.quit()
+    results = pd.read_csv(outfile, sep = " ")
+    results['TF_NAME'] = results['TF_NAME'].str.replace(r'\(var\.[0-9]+\)', '', regex=True)
+    results['Pscan_TERM'] = results['TF_NAME'].copy()
+    results.insert(1, 'Pscan_TERM', results.pop('Pscan_TERM'))
 
-results = pd.read_csv(outfile, sep = " ")
-results['TF_NAME'] = results['TF_NAME'].str.replace(r'\(var\.[0-9]+\)', '', regex=True)
-results['Pscan_TERM'] = results['TF_NAME'].copy()
-results.insert(1, 'Pscan_TERM', results.pop('Pscan_TERM'))
+    results = results.assign(TF_NAME=results.TF_NAME.str.split('::'))
+    results = results.explode("TF_NAME")
 
-results = results.assign(TF_NAME=results.TF_NAME.str.split('::'))
-results = results.explode("TF_NAME")
+    overlap = results['TF_NAME'].str.lower().isin(df['GENE_SYMBOLS'].str.lower())
+    results['In_original_list'] = overlap
+    results['FDR'] = multipletests(results['P_VALUE'], method='fdr_bh')[1]
 
-overlap = results['TF_NAME'].str.lower().isin(df['GENE_SYMBOLS'].str.lower())
-results['In_original_list'] = overlap
-results['FDR'] = multipletests(results['P_VALUE'], method='fdr_bh')[1]
+    results.to_csv(outfile, index=False)
 
-results.to_csv(outfile, index=False)
+except TimeoutException as ex:
+    print("Exception has been thrown. Page took too long to load (>1000s)")

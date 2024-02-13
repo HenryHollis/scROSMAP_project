@@ -111,7 +111,7 @@ order_prot = function( tmt_filename, path_to_cyclops_ordering , isCyclingBHQCuto
   diff_rhythms = diff_rhyth(cyc_pred, tmm, seedlist, percentile = percentile)
   diff_rhythms_mthd2 = diff_rhyth(cyc_pred, tmm, strong_cyclers_method2$Gene_Symbols, percentile = percentile)
   
-  setwd(paste0(path_to_cyclops_ordering, "/downstream_output/proteomics"))
+  setwd(paste0(path_to_cyclops_ordering, "../Cyclops_ordering/proteomics"))
   # plotting 
   if (plot_prot){
     seedlist = c(strong_cycling_in_CTL$Gene_Symbols[1:3], strong_cycling_in_AD$Gene_Symbols[1:3])
@@ -122,65 +122,65 @@ order_prot = function( tmt_filename, path_to_cyclops_ordering , isCyclingBHQCuto
   percentile_str = str_extract(as.character(percentile), "(?<=\\.)\\d+")
   # write out files 
   diff_rhythms_mthd2 = separate(diff_rhythms_mthd2, Gene_Symbols, sep = "\\|", into = c("Symbol","Uniprot"))
-  write.table(diff_rhythms_mthd2, paste0(path_to_cyclops_ordering, "downstream_output/proteomics/diff_rhythms_method2_CyclingBHQ",isCyclingSigCutoff_str,"_bluntingPercentile", percentile_str,".csv"), col.names = T, row.names = F, sep = ',')
+  write.table(diff_rhythms_mthd2, paste0( "diff_rhythms_method2_CyclingBHQ",isCyclingSigCutoff_str,"_bluntingPercentile", percentile_str,".csv"), col.names = T, row.names = F, sep = ',')
   
   diff_rhythms_mthd1 = separate(diff_rhythms, Gene_Symbols, sep = "\\|", into = c("Symbol","Uniprot"))
-  write.table(diff_rhythms_mthd1, paste0(path_to_cyclops_ordering, "downstream_output/proteomics/diff_rhythms_CyclingBHQ",isCyclingSigCutoff_str,"_bluntingPercentile", percentile_str,".csv"), col.names = T, row.names = F, sep = ',')
+  write.table(diff_rhythms_mthd1, paste0("diff_rhythms_CyclingBHQ",isCyclingSigCutoff_str,"_bluntingPercentile", percentile_str,".csv"), col.names = T, row.names = F, sep = ',')
   
   cycling_in_CTL = separate(cycling_in_CTL, Gene_Symbols, sep = "\\|", into = c("Symbol","Uniprot"))
-  write.table(cycling_in_CTL, paste0(path_to_cyclops_ordering, "downstream_output/proteomics/cycling_in_CTL_CyclingBHQ",isCyclingSigCutoff_str,"_bluntingPercentile", percentile_str,".csv"), col.names = T, row.names = F, sep = ',')
+  write.table(cycling_in_CTL, paste0("cycling_in_CTL_CyclingBHQ",isCyclingSigCutoff_str,"_bluntingPercentile", percentile_str,".csv"), col.names = T, row.names = F, sep = ',')
   
   cycling_in_AD = separate(cycling_in_AD, Gene_Symbols, sep = "\\|", into = c("Symbol","Uniprot"))
-  write.table(cycling_in_AD, paste0(path_to_cyclops_ordering, "downstream_output/proteomics/cycling_in_AD_CyclingBHQ",isCyclingSigCutoff_str,"_bluntingPercentile", percentile_str,".csv"), col.names = T, row.names = F, sep = ',')
+  write.table(cycling_in_AD, paste0("cycling_in_AD_CyclingBHQ",isCyclingSigCutoff_str,"_bluntingPercentile", percentile_str,".csv"), col.names = T, row.names = F, sep = ',')
 
   diff_mesor = separate(diff_mesor, Gene_Symbols, sep = "\\|", into = c("Symbol","Uniprot"))
-  write.table(diff_mesor, paste0(path_to_cyclops_ordering, "downstream_output/proteomics/diff_mesor_CyclingBHQ",isCyclingSigCutoff_str,"_bluntingPercentile", percentile_str,".csv"), col.names = T, row.names = F, sep = ',')
+  write.table(diff_mesor, paste0("diff_mesor_CyclingBHQ",isCyclingSigCutoff_str,"_bluntingPercentile", percentile_str,".csv"), col.names = T, row.names = F, sep = ',')
   
 }
 
 write_prot_rnks = function(path_to_cyclops_ordering){
   print("Creating rnk files for fGSEA.")
   ## is cycling in CTL ranked by -log(p)
-  CTL_cyclers_file = list.files(path = paste0(path_to_cyclops_ordering, "downstream_output/proteomics"), pattern = "cycling_in_CTL_CyclingBHQ\\d+_blunting.*csv")
+  CTL_cyclers_file = list.files(path = paste0(path_to_cyclops_ordering, "/proteomics"), pattern = "cycling_in_CTL_CyclingBHQ\\d+_blunting.*csv")
   if (!purrr::is_empty(CTL_cyclers_file)){
-    CTL_cyclers = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/proteomics/", CTL_cyclers_file), show_col_types = FALSE)
+    CTL_cyclers = read_csv(paste0(path_to_cyclops_ordering, "/proteomics/", CTL_cyclers_file), show_col_types = FALSE)
     ranked_CTL_cyclers = arrange(CTL_cyclers, p_statistic)
     df1 = data.frame(genes = ranked_CTL_cyclers$Uniprot, metric = -log(ranked_CTL_cyclers$p_statistic))
-    write.table(df1, paste0(path_to_cyclops_ordering, "downstream_output/proteomics/fGSEA/rnk_files/CTL_cyclers_minusLogPRanked.rnk"), sep = '\t', col.names = F, row.names = F)
+    write.table(df1, paste0(path_to_cyclops_ordering, "/proteomics/fGSEA/rnk_files/CTL_cyclers_minusLogPRanked.rnk"), sep = '\t', col.names = F, row.names = F)
   } 
   ## is cycling in AD ranked by -log(p)
-  AD_cyclers_file = list.files(path = paste0(path_to_cyclops_ordering, "downstream_output/proteomics"), pattern = "cycling_in_AD_CyclingBHQ\\d+_blunting.*csv")
+  AD_cyclers_file = list.files(path = paste0(path_to_cyclops_ordering, "/proteomics"), pattern = "cycling_in_AD_CyclingBHQ\\d+_blunting.*csv")
   if (!purrr::is_empty(AD_cyclers_file)){
-    AD_cyclers = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/proteomics/", AD_cyclers_file), show_col_types = F)
+    AD_cyclers = read_csv(paste0(path_to_cyclops_ordering, "/proteomics/", AD_cyclers_file), show_col_types = F)
     ranked_AD_cyclers = arrange(AD_cyclers, p_statistic)
     df2 = data.frame(genes = ranked_AD_cyclers$Uniprot, metric = -log(ranked_AD_cyclers$p_statistic))
-    write.table(df2, paste0(path_to_cyclops_ordering, "downstream_output/proteomics/fGSEA/rnk_files/AD_cyclers_minusLogPRanked.rnk"), sep = '\t', col.names = F, row.names = F)
+    write.table(df2, paste0(path_to_cyclops_ordering, "/proteomics/fGSEA/rnk_files/AD_cyclers_minusLogPRanked.rnk"), sep = '\t', col.names = F, row.names = F)
   }
   ## DR cyclers ranked by -log(p)
-  DR_cyclers_file = list.files(path = paste0(path_to_cyclops_ordering, "downstream_output/proteomics"), pattern = "diff_rhythms_Cycling.*.csv")
+  DR_cyclers_file = list.files(path = paste0(path_to_cyclops_ordering, "/proteomics"), pattern = "diff_rhythms_Cycling.*.csv")
   if (!purrr::is_empty(DR_cyclers_file)){
-    DR_cyclers = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/proteomics/", DR_cyclers_file), show_col_types = F)
+    DR_cyclers = read_csv(paste0(path_to_cyclops_ordering, "/proteomics/", DR_cyclers_file), show_col_types = F)
     ranked_DR_cyclers = arrange(DR_cyclers, p)
     df3 = data.frame(genes = ranked_DR_cyclers$Uniprot, metric = -log(ranked_DR_cyclers$p))
-    write.table(df3, paste0(path_to_cyclops_ordering, "downstream_output/proteomics/fGSEA/rnk_files/DR_cyclers_minusLogPRanked.rnk"), sep = '\t', col.names = F, row.names = F)
+    write.table(df3, paste0(path_to_cyclops_ordering, "/proteomics/fGSEA/rnk_files/DR_cyclers_minusLogPRanked.rnk"), sep = '\t', col.names = F, row.names = F)
   }
   
   ## DR cyclers ranked by log(ADamp/CTLamp)
-  DR_cyclers_file = list.files(path = paste0(path_to_cyclops_ordering, "downstream_output/proteomics"), pattern = "diff_rhythms_Cycling.*\\.csv")
+  DR_cyclers_file = list.files(path = paste0(path_to_cyclops_ordering, "/proteomics"), pattern = "diff_rhythms_Cycling.*\\.csv")
   if (!purrr::is_empty(DR_cyclers_file)){
-    DR_cyclers = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/proteomics/", DR_cyclers_file), show_col_types = F)
+    DR_cyclers = read_csv(paste0(path_to_cyclops_ordering, "/proteomics/", DR_cyclers_file), show_col_types = F)
     ranked_DR_cyclers = arrange(DR_cyclers, Log_AD_CTL_ampRatio)
     df4 = data.frame(genes = ranked_DR_cyclers$Uniprot, metric = ranked_DR_cyclers$Log_AD_CTL_ampRatio)
-    write.table(df4, paste0(path_to_cyclops_ordering, "downstream_output/proteomics/fGSEA/rnk_files/DR_cyclers_Log(AD-CTL)ranked.rnk"), sep = '\t', col.names = F, row.names = F)
+    write.table(df4, paste0(path_to_cyclops_ordering, "/proteomics/fGSEA/rnk_files/DR_cyclers_Log(AD-CTL)ranked.rnk"), sep = '\t', col.names = F, row.names = F)
   }
   
   ## Diff Mesor ranked by log(ADmesor/CTLmesor)
-  diff_mesor_file = list.files(path = paste0(path_to_cyclops_ordering, "downstream_output/proteomics"), pattern = "diff_mesor.*\\.csv")
+  diff_mesor_file = list.files(path = paste0(path_to_cyclops_ordering, "/proteomics"), pattern = "diff_mesor.*\\.csv")
   if (!purrr::is_empty(diff_mesor_file)){
-    diff_mesor = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/proteomics/", diff_mesor_file), show_col_types = F)
+    diff_mesor = read_csv(paste0(path_to_cyclops_ordering, "/proteomics/", diff_mesor_file), show_col_types = F)
     diff_mesor$AD_minus_CTL_mes = as.numeric(diff_mesor$mesor_AD) - as.numeric(diff_mesor$mesor_CTL)
     ranked_diff_mesor = arrange(diff_mesor, AD_minus_CTL_mes)
     df5 = data.frame(genes = ranked_diff_mesor$Uniprot, metric = ranked_diff_mesor$AD_minus_CTL_mes)
-    write.table(df5, paste0(path_to_cyclops_ordering, "downstream_output/proteomics/fGSEA/rnk_files/diff_mesor_(AD-CTL)ranked.rnk"), sep = '\t', col.names = F, row.names = F)
+    write.table(df5, paste0(path_to_cyclops_ordering, "/proteomics/fGSEA/rnk_files/diff_mesor_(AD-CTL)ranked.rnk"), sep = '\t', col.names = F, row.names = F)
   }
 }
