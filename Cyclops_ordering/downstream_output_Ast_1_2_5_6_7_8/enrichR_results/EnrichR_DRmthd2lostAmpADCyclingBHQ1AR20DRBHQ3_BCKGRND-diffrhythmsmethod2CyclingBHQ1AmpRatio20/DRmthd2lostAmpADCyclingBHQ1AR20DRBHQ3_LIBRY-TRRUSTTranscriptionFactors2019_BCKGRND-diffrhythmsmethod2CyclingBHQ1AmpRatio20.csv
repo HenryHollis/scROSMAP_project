@@ -1,0 +1,2 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,SP1 human,0.776649902933997,0.6756425948592412,0.17077920961050852,['RPS3A'],0.776649902933997,0,0,1

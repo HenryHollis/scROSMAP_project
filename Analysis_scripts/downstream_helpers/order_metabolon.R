@@ -68,26 +68,26 @@ order_metabolon = function(metabolon_filename, metabolon_datakey, path_to_rosmap
   # write out files 
   out_cycling_CTL = merge(dplyr::select(metabolon_data_key, CHEM_ID, SUPER_PATHWAY, SUB_PATHWAY, CHEMICAL_NAME, SHORT_NAME, CHEMSPIDER, HMDB, PUBCHEM, KEGG),
                           cycling_in_CTL, by.x = "CHEM_ID", by.y = "Gene_Symbols", all.y = T)
-  write.table(out_cycling_CTL, paste0(path_to_cyclops_ordering, "downstream_output/metabolon/cycling_in_CTL.csv"), col.names = T, row.names = F, sep = ',')
+  write.table(out_cycling_CTL, paste0(path_to_cyclops_ordering, "/metabolon/cycling_in_CTL.csv"), col.names = T, row.names = F, sep = ',')
   
   out_cycling_AD = merge(dplyr::select(metabolon_data_key, CHEM_ID, SUPER_PATHWAY, SUB_PATHWAY, CHEMICAL_NAME, SHORT_NAME, CHEMSPIDER, HMDB, PUBCHEM, KEGG),
                          cycling_in_AD, by.x = "CHEM_ID", by.y = "Gene_Symbols", all.y = T)
-  write.table(out_cycling_AD, paste0(path_to_cyclops_ordering, "downstream_output/metabolon/cycling_in_AD.csv"), col.names = T, row.names = F, sep = ',')
+  write.table(out_cycling_AD, paste0(path_to_cyclops_ordering, "/metabolon/cycling_in_AD.csv"), col.names = T, row.names = F, sep = ',')
   
   isCyclingSigCutoff_str = str_extract(as.character(BHQ_cutoff), "(?<=\\.)\\d+")
   
   diff_rhythms = merge(dplyr::select(metabolon_data_key, CHEM_ID, SUPER_PATHWAY, SUB_PATHWAY, CHEMICAL_NAME, SHORT_NAME, CHEMSPIDER, HMDB, PUBCHEM, KEGG),
                        diff_rhythms, by.x = "CHEM_ID", by.y = "Gene_Symbols", all.y = T)
-  write.table(diff_rhythms, paste0(path_to_cyclops_ordering, "downstream_output/metabolon/diff_rhythms_CyclingBHQ",isCyclingSigCutoff_str,".csv"), col.names = T, row.names = F, sep = ',')
+  write.table(diff_rhythms, paste0(path_to_cyclops_ordering, "metabolon/diff_rhythms_CyclingBHQ",isCyclingSigCutoff_str,".csv"), col.names = T, row.names = F, sep = ',')
   
   diff_rhythms_mthd2 = merge(dplyr::select(metabolon_data_key, CHEM_ID, SUPER_PATHWAY, SUB_PATHWAY, CHEMICAL_NAME, SHORT_NAME, CHEMSPIDER, HMDB, PUBCHEM, KEGG),
                            diff_rhythms_mthd2, by.x = "CHEM_ID", by.y = "Gene_Symbols", all.y = T)
-  write.table(diff_rhythms_mthd2, paste0(path_to_cyclops_ordering, "downstream_output/metabolon/diff_rhythms_method2_CyclingBHQ",isCyclingSigCutoff_str,".csv"), col.names = T, row.names = F, sep = ',')
+  write.table(diff_rhythms_mthd2, paste0(path_to_cyclops_ordering, "metabolon/diff_rhythms_method2_CyclingBHQ",isCyclingSigCutoff_str,".csv"), col.names = T, row.names = F, sep = ',')
   if (plot_mets){
     ############
     # plotting #
     ############
-    setwd(paste0(path_to_cyclops_ordering, "/downstream_output/metabolon"))
+    setwd(paste0(path_to_cyclops_ordering, "/metabolon"))
     seedlist = c(strong_cycling_in_CTL$Gene_Symbols[1:3], strong_cycling_in_AD$Gene_Symbols[1:3])
     rownames(emat) = NULL
     print(plot_gene_trace(cyc_pred, emat, seedlist, savePlots = T))

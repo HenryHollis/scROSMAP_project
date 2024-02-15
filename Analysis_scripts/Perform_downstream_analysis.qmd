@@ -47,14 +47,14 @@ Select the CYCLOPS ordering path and path to data file and path to DEseq2 differ
 path_to_cyclops_ordering = "../Cyclops_ordering/"
 
 #path to normalized counts
-path_to_tmm_file = "../normed_counts/ExcSubtypes3and5_FiltByExprDefault_TMM.csv"
+path_to_tmm_file = "../normed_counts/InhNeurons_2_8_11_12_13_FiltByExprDefault_TMM.csv"
 
 # optional path to file containing differential expression results
-edgeR_de_filename = "../EdgeR_differential_expression/Exc3_5/Exc3_5_filtByExpr_combatSeq_edgeR_DE_exactTest.csv"
+edgeR_de_filename = "../edgeR_diff_expression/Inhib_2_8_11_12_13/Inhib_2_8_11_12_13_filtByExpr_combatSeq_edgeR_DE_exactTest.csv"
 
-path_to_rosmap_clin = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/Meta_data/cleaned_rosmap_meta_cogdxConds.csv"
-metabolon_filename = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/Metabolon/ROSMAP_Metabolon_HD4_Brain514_assay_data.csv"
-metabolon_datakey = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/Metabolon/ROSMAP_Metabolon_HD4_Data_Dictionary.csv"
+path_to_rosmap_clin = "../ROSMAP_metadata/cleaned_rosmap_meta_cogdxConds.csv"
+metabolon_filename = "../metabolic_data/ROSMAP_Metabolon_HD4_Brain514_assay_data.csv"
+metabolon_datakey = "../metabolic_data/ROSMAP_Metabolon_HD4_Data_Dictionary.csv"
 
 #BHQ corrected p cutoff to be considered cycling in analysis:
 isCyclingBHQCutoff = 0.1
@@ -233,6 +233,9 @@ Now I search for transcription factors associated with my various gene lists, i.
 
 ```{r}
 path = getwd()
+setwd(path_to_cyclops_ordering)
+abs_path_cyclops_ordering = getwd()
+setwd(path)
 
 #create pscan dir if does not exist:
 if(!(dir.exists(paste0(path_to_cyclops_ordering, "downstream_output/pscan")))){
@@ -250,21 +253,21 @@ path_no_space = gsub(" ", "\\ ", path, fixed = TRUE)
 setwd("pscan/")
 pscan_files = list.files("./pscan_files/", pattern = ".csv$")
 
-sapply(pscan_files, function(x){
-  system(paste0("python3 ", path_no_space, "/downstream_helpers/pscan_requests.py --file pscan_files/" ,x))})
+# sapply(pscan_files, function(x){
+#   system(paste0("python3 ", path_no_space, "/downstream_helpers/pscan_requests.py --file pscan_files/" ,x))})
 
 isCyclingBHQCutoff_str = str_extract(as.character(isCyclingBHQCutoff), "(?<=\\.)\\d+")
 
-if(exists("deseq_de_filename")){
+if(exists("edgeR_de_filename")){
   setwd("pscan_results")
   pscan_result_files = list.files(pattern = ".csv$")
   print("Searching cycling and DR results for pscan TF")
-  sapply(pscan_result_files, augment_tf_file, deseq_de_filename, isCyclingBHQCutoff_str)
+  sapply(pscan_result_files, augment_tf_file, edgeR_de_filename, isCyclingBHQCutoff_str, abs_path_cyclops_ordering)
   setwd(paste0(path_to_cyclops_ordering, "downstream_output/enrichR_results"))
   directories = list.files()
   enrichR_TF_paths <- lapply(directories, function(dir) list.files(dir, full.names = TRUE, recursive = TRUE, pattern = ".*TRANSFACandJASPARPWMs_BCKGRND.*\\.csv|.*TranscriptionFactorPPIs_BCKGRND.*\\.csv"))
   enrichR_TF_paths = flatten(enrichR_TF_paths) %>% paste0("./", .)  
-  sapply(enrichR_TF_paths, augment_tf_file, deseq_de_filename,     isCyclingBHQCutoff_str)
+  sapply(enrichR_TF_paths, augment_tf_file, edgeR_de_filename, isCyclingBHQCutoff_str, abs_path_cyclops_ordering)
   
 }
 ```
@@ -289,8 +292,8 @@ write_kegg_map_files(paste0("downstream_output/diff_rhythms_CyclingBHQ", isCycli
 ### Metabolon
 
 ```{r}
-if (!(dir.exists(paste0(path_to_cyclops_ordering, "/downstream_output/metabolon")))){
-  dir.create(paste0(path_to_cyclops_ordering, "/downstream_output/metabolon"))
+if (!(dir.exists(paste0(path_to_cyclops_ordering, "/metabolon")))){
+  dir.create(paste0(path_to_cyclops_ordering, "/metabolon"))
 }
 
 order_metabolon(metabolon_filename, metabolon_datakey, path_to_rosmap_clin, path_to_cyclops_ordering)

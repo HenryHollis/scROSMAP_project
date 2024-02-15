@@ -4,7 +4,7 @@
 # and checking if they are found in DE, DE, DM, cycling files. 
 library(ggrepel)
 library(tidyverse)
-augment_tf_file = function(TF_filename, deseq_filename, isCyclingBHQCutoff_str){
+augment_tf_file = function(TF_filename, Diff_expr_filename, isCyclingBHQCutoff_str, abs_path_to_cyclops_ordering){
   current_dir = getwd()
   TF_file = read.csv(TF_filename)
   if (colnames(TF_file)[1]== "Rank"){ #if file comes from enrichR, make it look like pscan
@@ -15,14 +15,13 @@ augment_tf_file = function(TF_filename, deseq_filename, isCyclingBHQCutoff_str){
     TF_file$TF_NAME = str_replace(TF_file$TF_NAME , " \\(mouse\\)", "")
     
   }
-  DEseq_toptags = read.csv(deseq_filename)
-
-  DR_AR1_mthd2 = read.csv(paste0(path_to_cyclops_ordering, "/downstream_output/diff_rhythms_method2_CyclingBHQ",isCyclingBHQCutoff_str,"AmpRatio1.csv"))
-  DR_AR1 = read.csv(paste0(path_to_cyclops_ordering, "/downstream_output/diff_rhythms_CyclingBHQ",isCyclingBHQCutoff_str,"AmpRatio1.csv"))
-  cycling_CTL = read.csv(paste0(path_to_cyclops_ordering, "/downstream_output/cosinor_results_CTL.csv"))
-  cycling_AD = read.csv(paste0(path_to_cyclops_ordering, "/downstream_output/cosinor_results_AD.csv"))
-  mesor_file = list.files(path = paste0(path_to_cyclops_ordering, "/downstream_output") ,pattern = "\\.*mesor.*.csv$")
-  Diff_mesor = read.csv(paste0(path_to_cyclops_ordering, "/downstream_output/", mesor_file))
+  edgeR_toptags = read.csv(paste(abs_path_to_cyclops_ordering, Diff_expr_filename, sep = '/'))
+  DR_AR1_mthd2 = read.csv(paste0(abs_path_to_cyclops_ordering, "/downstream_output/diff_rhythms_method2_CyclingBHQ",isCyclingBHQCutoff_str,"AmpRatio1.csv"))
+  DR_AR1 = read.csv(paste0(abs_path_to_cyclops_ordering, "/downstream_output/diff_rhythms_CyclingBHQ",isCyclingBHQCutoff_str,"AmpRatio1.csv"))
+  cycling_CTL = read.csv(paste0(abs_path_to_cyclops_ordering, "/downstream_output/cosinor_results_CTL.csv"))
+  cycling_AD = read.csv(paste0(abs_path_to_cyclops_ordering, "/downstream_output/cosinor_results_AD.csv"))
+  mesor_file = list.files(path = paste0(abs_path_to_cyclops_ordering, "/downstream_output") ,pattern = "\\.*mesor.*.csv$")
+  Diff_mesor = read.csv(paste0(abs_path_to_cyclops_ordering, "/downstream_output/", mesor_file))
     
   #Look for the TF name in the files above
   TF_file$cycling_in_CTL_BHQ = cycling_CTL$BHQ[match(toupper(TF_file$TF_NAME), cycling_CTL$Gene_Symbols)]
@@ -31,13 +30,13 @@ augment_tf_file = function(TF_filename, deseq_filename, isCyclingBHQCutoff_str){
   TF_file$DR_AR1_mthd2_BHQ = DR_AR1_mthd2$BHQ[match(toupper(TF_file$TF_NAME), DR_AR1_mthd2$Gene_Symbols)]
   TF_file$DR_logAmpRatio = DR_AR1$Log_AD_CTL_ampRatio[match(toupper(TF_file$TF_NAME), DR_AR1$Gene_Symbols)] 
   TF_file$diff_mesor = Diff_mesor$BHQ[match(toupper(TF_file$TF_NAME), Diff_mesor$Gene_Symbols)]
-  TF_file$DEseq_DE_BHQ = DEseq_toptags$FDR[match(toupper(TF_file$TF_NAME), DEseq_toptags$X)] 
+  TF_file$edgeR_DE_BHQ = edgeR_toptags$FDR[match(toupper(TF_file$TF_NAME), edgeR_toptags$X)] 
   
   write.table(TF_file, TF_filename, row.names = F, col.names = T, sep = ',')
   DR_tfs = dplyr::filter(TF_file, FDR < 0.1 & DR_AR1_BHQ < 0.2) 
   cycling_CTL_tfs = dplyr::filter(TF_file, FDR < 0.1 & cycling_in_CTL_BHQ < 0.1) 
   cycling_AD_tfs = dplyr::filter(TF_file, FDR < 0.1 & cycling_in_AD_BHQ < 0.1)
-  DE_tfs = dplyr::filter(TF_file, FDR < 0.1 & DEseq_DE_BHQ < 0.1) 
+  DE_tfs = dplyr::filter(TF_file, FDR < 0.1 & edgeR_DE_BHQ < 0.1) 
   DM_tfs = dplyr::filter(TF_file, FDR < 0.1 & diff_mesor < 0.1) 
   
   if(!(dir.exists(paste0(tools::file_path_sans_ext(TF_filename), "_plots")))){
@@ -79,13 +78,13 @@ augment_tf_file = function(TF_filename, deseq_filename, isCyclingBHQCutoff_str){
   }
   if(nrow(DE_tfs)>0){
     p4 =  ggplot(TF_file)+
-        geom_point(mapping = aes(x = -log(FDR), y = -log(DEseq_DE_BHQ)))+
+        geom_point(mapping = aes(x = -log(FDR), y = -log(edgeR_DE_BHQ)))+
         geom_label_repel(data = DE_tfs,
-                         aes(x = -log(FDR), y = -log(DEseq_DE_BHQ),label = TF_NAME),
-                         nudge_x = 0.5, nudge_y = 0.5,color = "blue",
+                         aes(x = -log(FDR), y = -log(edgeR_DE_BHQ),label = TF_NAME),
+                         nudge_x = 0.5, nudge_y = 0.5,color = "blue", 
                          box.padding = 0.35, point.padding = 0.5)+
         xlab("-log(Pscan/enrichR FDR)")+
-        ggtitle("DEseq diff expr TF enriched in gene list")
+        ggtitle("EdgeR diff expr TF enriched in gene list")
     ggsave("DE_TF_enriched_in_list.png", p4, width = 6, height = 5, units = "in")
   }
   if(nrow(DM_tfs)>0){
