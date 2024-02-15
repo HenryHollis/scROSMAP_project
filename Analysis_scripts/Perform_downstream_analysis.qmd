@@ -263,7 +263,7 @@ if(exists("edgeR_de_filename")){
   pscan_result_files = list.files(pattern = ".csv$")
   print("Searching cycling and DR results for pscan TF")
   sapply(pscan_result_files, augment_tf_file, edgeR_de_filename, isCyclingBHQCutoff_str, abs_path_cyclops_ordering)
-  setwd(paste0(path_to_cyclops_ordering, "downstream_output/enrichR_results"))
+  setwd(paste0(abs_path_cyclops_ordering, "/downstream_output/enrichR_results"))
   directories = list.files()
   enrichR_TF_paths <- lapply(directories, function(dir) list.files(dir, full.names = TRUE, recursive = TRUE, pattern = ".*TRANSFACandJASPARPWMs_BCKGRND.*\\.csv|.*TranscriptionFactorPPIs_BCKGRND.*\\.csv"))
   enrichR_TF_paths = flatten(enrichR_TF_paths) %>% paste0("./", .)  

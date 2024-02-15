@@ -29,72 +29,82 @@ augment_tf_file = function(TF_filename, Diff_expr_filename, isCyclingBHQCutoff_s
   TF_file$DR_AR1_BHQ = DR_AR1$BHQ[match(toupper(TF_file$TF_NAME), DR_AR1$Gene_Symbols)]
   TF_file$DR_AR1_mthd2_BHQ = DR_AR1_mthd2$BHQ[match(toupper(TF_file$TF_NAME), DR_AR1_mthd2$Gene_Symbols)]
   TF_file$DR_logAmpRatio = DR_AR1$Log_AD_CTL_ampRatio[match(toupper(TF_file$TF_NAME), DR_AR1$Gene_Symbols)] 
-  TF_file$diff_mesor = Diff_mesor$BHQ[match(toupper(TF_file$TF_NAME), Diff_mesor$Gene_Symbols)]
+  TF_file$diff_mesor_BHQ = Diff_mesor$BHQ[match(toupper(TF_file$TF_NAME), Diff_mesor$Gene_Symbols)]
   TF_file$edgeR_DE_BHQ = edgeR_toptags$FDR[match(toupper(TF_file$TF_NAME), edgeR_toptags$X)] 
   
   write.table(TF_file, TF_filename, row.names = F, col.names = T, sep = ',')
-  DR_tfs = dplyr::filter(TF_file, FDR < 0.1 & DR_AR1_BHQ < 0.2) 
+  DR_tfs = dplyr::filter(TF_file, FDR < 0.1 & DR_AR1_BHQ < 0.3) 
   cycling_CTL_tfs = dplyr::filter(TF_file, FDR < 0.1 & cycling_in_CTL_BHQ < 0.1) 
   cycling_AD_tfs = dplyr::filter(TF_file, FDR < 0.1 & cycling_in_AD_BHQ < 0.1)
   DE_tfs = dplyr::filter(TF_file, FDR < 0.1 & edgeR_DE_BHQ < 0.1) 
-  DM_tfs = dplyr::filter(TF_file, FDR < 0.1 & diff_mesor < 0.1) 
+  DM_tfs = dplyr::filter(TF_file, FDR < 0.1 & diff_mesor_BHQ < 0.1) 
   
   if(!(dir.exists(paste0(tools::file_path_sans_ext(TF_filename), "_plots")))){
     dir.create(paste0(tools::file_path_sans_ext(TF_filename), "_plots"))
   }
   setwd(paste0(tools::file_path_sans_ext(TF_filename), "_plots"))
+  #Check diff rhythms for TFs:
   if (nrow(DR_tfs) > 0){
       p1 = ggplot(TF_file)+
-        geom_point(mapping = aes(x = -log(FDR), y = -log(DR_AR1_BHQ)))+
+        geom_point(mapping = aes(x = -log10(FDR), y = -log10(DR_AR1_BHQ)))+
         geom_label_repel(data = DR_tfs,
-                         aes(x = -log(FDR), y = -log(DR_AR1_BHQ),label = TF_NAME),
+                         aes(x = -log10(FDR), y = -log10(DR_AR1_BHQ),label = TF_NAME),
                          nudge_x = 0.5, nudge_y = 0.5,color = "blue",
                          box.padding = 0.35, point.padding = 0.5)+
-        xlab("-log(Pscan/enrichR FDR)")+
+        xlab("-Log(Pscan/enrichR FDR)")+
+        ylab("-Log(DR BH.q value) (cycling AR>0.1, BH.q<0.1)")+
         ggtitle("Differentially Rhythmic TF enriched in gene list")
       ggsave("DR_TF_enriched_in_list.png", p1, width = 6, height = 5, units = "in")
   }
+  #Check genes cycling in CTL for TF:
   if (nrow(cycling_CTL_tfs)>0){
       p2 = ggplot(TF_file)+
-        geom_point(mapping = aes(x = -log(FDR), y = -log(cycling_in_CTL_BHQ)))+
+        geom_point(mapping = aes(x = -log10(FDR), y = -log10(cycling_in_CTL_BHQ)))+
         geom_label_repel(data = cycling_CTL_tfs,
-                         aes(x = -log(FDR), y = -log(cycling_in_CTL_BHQ),label = TF_NAME),
+                         aes(x = -log10(FDR), y = -log10(cycling_in_CTL_BHQ),label = TF_NAME),
                          nudge_x = 0.5, nudge_y = 0.5,color = "blue",
                          box.padding = 0.35, point.padding = 0.5)+
-        xlab("-log(Pscan/enrichR FDR)")+
+        xlab("-Log(Pscan/enrichR FDR)")+
+        ylab("-Log(Cycling in CTL BH.q value)")+
         ggtitle("Cycling in CTL TF enriched in gene list")
       ggsave("cycling_CTL_TF_enriched_in_list.png", p2, width = 6, height = 5, units = "in")
   }
+  #Check genes cycling in AD for TF:
   if (nrow(cycling_AD_tfs)>0){
       p3 =  ggplot(TF_file)+
-          geom_point(mapping = aes(x = -log(FDR), y = -log(cycling_in_AD_BHQ)))+
+          geom_point(mapping = aes(x = -log10(FDR), y = -log10(cycling_in_AD_BHQ)))+
           geom_label_repel(data = cycling_AD_tfs,
-                           aes(x = -log(FDR), y = -log(cycling_in_AD_BHQ),label = TF_NAME),
+                           aes(x = -log10(FDR), y = -log10(cycling_in_AD_BHQ),label = TF_NAME),
                            nudge_x = 0.5, nudge_y = 0.5,color = "blue",
                            box.padding = 0.35, point.padding = 0.5)+
-          xlab("-log(Pscan/enrichR FDR)")+
+          xlab("-Log(Pscan/enrichR FDR)")+
+          ylab("-Log(Cycling in AD BH.q value)")+
           ggtitle("Cycling in AD TF enriched in gene list")
       ggsave("cycling_AD_TF_enriched_in_list.png", p3, width = 6, height = 5, units = "in")
   }
+  #Check Diff Expressed genes for TF:
   if(nrow(DE_tfs)>0){
     p4 =  ggplot(TF_file)+
-        geom_point(mapping = aes(x = -log(FDR), y = -log(edgeR_DE_BHQ)))+
+        geom_point(mapping = aes(x = -log10(FDR), y = -log10(edgeR_DE_BHQ)))+
         geom_label_repel(data = DE_tfs,
-                         aes(x = -log(FDR), y = -log(edgeR_DE_BHQ),label = TF_NAME),
+                         aes(x = -log10(FDR), y = -log10(edgeR_DE_BHQ),label = TF_NAME),
                          nudge_x = 0.5, nudge_y = 0.5,color = "blue", 
                          box.padding = 0.35, point.padding = 0.5)+
-        xlab("-log(Pscan/enrichR FDR)")+
+        xlab("-Log(Pscan/enrichR FDR)")+
+        ylab("-Log(edgeR Diff. Expr. BH.q value)")+
         ggtitle("EdgeR diff expr TF enriched in gene list")
     ggsave("DE_TF_enriched_in_list.png", p4, width = 6, height = 5, units = "in")
   }
+  #Check genes with different mesor for TF:
   if(nrow(DM_tfs)>0){
     p5 =  ggplot(TF_file)+
-      geom_point(mapping = aes(x = -log(FDR), y = -log(diff_mesor)))+
+      geom_point(mapping = aes(x = -log10(FDR), y = -log10(diff_mesor_BHQ)))+
       geom_label_repel(data = DM_tfs,
-                       aes(x = -log(FDR), y = -log(diff_mesor),label = TF_NAME),
+                       aes(x = -log10(FDR), y = -log10(diff_mesor_BHQ),label = TF_NAME),
                        nudge_x = 0.5, nudge_y = 0.5,color = "blue",
                        box.padding = 0.35, point.padding = 0.5)+
-      xlab("-log(Pscan/enrichR FDR)")+
+      xlab("-Log(Pscan/enrichR FDR)")+
+      ylab("-Log(Diff Mesor BH.q value)")+
       ggtitle("Diff Mesor TF enriched in gene list")
     ggsave("DM_TF_enriched_in_list.png", p5, width = 6, height = 5, units = "in")
   }
