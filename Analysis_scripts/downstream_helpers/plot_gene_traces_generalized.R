@@ -116,7 +116,7 @@ plot_gene_trace = function(cyc_pred, tmm, seedlist,  useBatch = F,
           labs(title = paste0(seedlist[i], " in CTL"), x = "Circadian Phase", y = "Expression")+
           #annotate("text", x=min(plot_df2$Phase)+.5,y=lims[1], label = paste("DR FDR", DR_FDR))+
           #scale_shape_manual(values=c(2, 16))+
-          scale_colour_manual(values = c("blue"))
+          scale_colour_manual(values = c("#0091ff"))
         
        
         p2 = ggplot(df_AD , aes(x = Phase , y = df_AD[,seedlist[i]])) +
@@ -135,7 +135,7 @@ plot_gene_trace = function(cyc_pred, tmm, seedlist,  useBatch = F,
           geom_point(data = df_CTL, mapping = aes(x = Phase , y = df_CTL[,seedlist[i]], color = "CTL")) +
           geom_line(data=df_CTL, mapping=aes(x=Phase, y=fitted_values, color = "CTL"), linetype = "solid", linewidth = 2) +
           labs(title = paste0(seedlist[i]), x = "Predicted Phase", y = "Expression")+
-          scale_colour_manual(values = c("red", "blue"))
+          scale_colour_manual(values = c("red", "#0091ff"))
         
       }
       
@@ -177,13 +177,19 @@ plot_subject_histogram = function(cyclops_path, cond_subset){
   setwd(cyclops_path)
   
   fits = filter(fits, Covariate_D == cond_subset)
-  bin = 2*pi/8
-  title = if(cond_subset == "cond_0") "CTL subjects" else "AD subjects"
-  jpeg(file=paste0("downstream_output/plots/", cond_subset, "_phase_histogram.jpg"))
-  hist(fits$Phase, breaks = seq(0, 2*pi, by = pi/6), xaxt = "n", main = title)
-  axis(side=1, at=c(0,pi, 2*pi),
-       labels=c("0",expression(pi),expression(2*pi)))
-  dev.off()
+  if (nrow(fits) > 0){
+    bin = 2*pi/8
+    title = ifelse(cond_subset == "cond_0", "CTL Subjects Phase Distribution", "AD Subjects Phase Distribution") 
+    fill_color = ifelse(cond_subset == "cond_0", "#0091ff", "red") 
+    jpeg(file=paste0("downstream_output/plots/", cond_subset, "_phase_histogram.jpg"))
+    hist(fits$Phase, breaks = seq(0, 2*pi, by = pi/6), xaxt = "n", main = title, xlab = "Phase Prediction", col = fill_color)
+    axis(side=1, at=c(0,pi, 2*pi),
+         labels=c("0",expression(pi),expression(2*pi)))
+    dev.off()
+  }else{
+    print(paste("No subjects matching cond_subset:", cond_subset))
+  }
+  
 }
 
 

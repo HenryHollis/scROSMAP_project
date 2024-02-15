@@ -1,0 +1,56 @@
+---
+title: "scROSMAP Summary Stats"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+You can add options to executable code like this
+
+```{r}
+cyclops_fit_file= "../Cyclops_ordering/Fits/Fit_Output_2024-02-05T14_13_00.csv"
+cyclops_fit = read_csv(cyclops_fit_file, show_col_types = F)
+#read in subject metadata
+rosmap_subject_metadata = read.csv("../ROSMAP_metadata/cleaned_rosmap_meta_cogdxConds.csv")
+
+#read in another file with sequencing info for all scRNAseq done for ROSMAP
+rosmap_scassay_meta = read_csv("../ROSMAP_metadata/ROSMAP_assay_scrnaSeq_metadata.csv")
+
+rosmap_meta = filter(rosmap_subject_metadata, cogdx != 6)
+rosmap_meta = rosmap_meta[match(cyclops_fit$ID, rosmap_meta$projid),]
+
+all(rosmap_meta$projid == cyclops_fit$ID)
+##### AUGMENT ROSMAP_META #####
+rosmap_meta = rosmap_meta %>%
+  mutate(braaksc_bin = cut(braaksc, c(0, 3, 5, 7), right = F))
+rosmap_meta = rosmap_meta %>%
+  mutate(ceradsc_bin = cut(ceradsc, c(1, 3, 5), right = F))
+rosmap_meta$apoe_ordinal  = 1
+rosmap_meta$apoe_ordinal[rosmap_meta$apoe_genotype == 34 | rosmap_meta$apoe_genotype == 24] = 2
+rosmap_meta$apoe_ordinal[rosmap_meta$apoe_genotype == 44 ] = 3
+rosmap_meta$apoe_ordinal[is.na(rosmap_meta$apoe_genotype) ] = NA
+rosmap_meta$age_death_numeric = rosmap_meta$age_death %>% str_replace("\\+", "") %>% as.numeric
+
+```
+
+```{r}
+subs_by_cond = rosmap_meta %>%
+  group_by(cond_cogdx)%>%
+  summarise(n = n(),median_age_at_death = median(age_death_numeric), mad_age_death = mad(age_death_numeric), mean_age_death_numeric = mean(age_death_numeric, na.rm = T), std_age_death_numeric = sd(age_death_numeric, na.rm = T),median_pmi = median(pmi, na.rm = T), mad_pmi = mad(pmi, na.rm = T), mean_pmi = mean(pmi, na.rm = T), sd_pmi = sd(pmi, na.rm = T), prop_male = sum(msex) / n, prop_ROS = sum(Study == "ROS")/ n, median_braaksc = median(braaksc))
+
+```
+
+```{r}
+all_subs = rosmap_meta %>%
+  summarise(n = n(),median_age_at_death = median(age_death_numeric), mad_age_death = mad(age_death_numeric), mean_age_death_numeric = mean(age_death_numeric, na.rm = T), std_age_death_numeric = sd(age_death_numeric, na.rm = T),median_pmi = median(pmi, na.rm = T), mad_pmi = mad(pmi, na.rm = T), mean_pmi = mean(pmi, na.rm = T), sd_pmi = sd(pmi, na.rm = T), prop_male = sum(msex) / n, prop_ROS = sum(Study == "ROS")/ n, median_braaksc = median(braaksc))
+all_subs$cond_cogdx = NaN
+```
+
+```{r}
+summary = bind_rows(subs_by_cond, all_subs)
+summary$cond_cogdx[3] = "All"
+summary
+```

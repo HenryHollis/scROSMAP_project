@@ -40,17 +40,17 @@ print(paste("Using cond env:",conda_list()[[1]][2] ))
 
 ### Setup
 
-Select the CYCLOPS ordering path and path to data file and path to DEseq2 differential expression results:
+Select the CYCLOPS ordering path and path to data file and path to EdgeR differential expression results:
 
 ```{r}
 #path to cyclops ordering
 path_to_cyclops_ordering = "../Cyclops_ordering/"
 
 #path to normalized counts
-path_to_tmm_file = "../normed_counts/InhNeurons_2_8_11_12_13_FiltByExprDefault_TMM.csv"
+path_to_tmm_file = "../normed_counts/ExcSubtypes3and5_FiltByExprDefault_TMM.csv"
 
 # optional path to file containing differential expression results
-edgeR_de_filename = "../edgeR_diff_expression/Inhib_2_8_11_12_13/Inhib_2_8_11_12_13_filtByExpr_combatSeq_edgeR_DE_exactTest.csv"
+edgeR_de_filename = "../edgeR_diff_expression/Exc3_5/Exc3_5_filtByExpr_combatSeq_edgeR_DE_exactTest.csv"
 
 path_to_rosmap_clin = "../ROSMAP_metadata/cleaned_rosmap_meta_cogdxConds.csv"
 metabolon_filename = "../metabolic_data/ROSMAP_Metabolon_HD4_Brain514_assay_data.csv"
@@ -148,7 +148,7 @@ mapply(function(x, y){
   DR_backgrounds)
 
 #AD severity
-system(paste0("python3 ", path_no_space, "/downstream_helpers/Python_EnrichR_for_AnalysisPipeline.py -g \"enrichR_files/strong_cogdx_diffs_AR25.csv\" -b \"enrichR_files/AD_cyclers_AR25BHQ05.csv\""))
+system(paste0("python3 ", path_no_space, "/downstream_helpers/Python_EnrichR_for_AnalysisPipeline.py -g \"enrichR_files/strong_cogdx_diffs_AR20.csv\" -b \"enrichR_files/AD_cyclers_AR20BHQ1.csv\""))
 ```
 
 ### FGSEA
@@ -253,8 +253,8 @@ path_no_space = gsub(" ", "\\ ", path, fixed = TRUE)
 setwd("pscan/")
 pscan_files = list.files("./pscan_files/", pattern = ".csv$")
 
-# sapply(pscan_files, function(x){
-#   system(paste0("python3 ", path_no_space, "/downstream_helpers/pscan_requests.py --file pscan_files/" ,x))})
+sapply(pscan_files, function(x){
+  system(paste0("python3 ", path_no_space, "/downstream_helpers/pscan_requests.py --file pscan_files/" ,x))})
 
 isCyclingBHQCutoff_str = str_extract(as.character(isCyclingBHQCutoff), "(?<=\\.)\\d+")
 
