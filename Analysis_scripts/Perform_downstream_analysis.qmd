@@ -47,7 +47,7 @@ Select the CYCLOPS ordering path and path to data file and path to EdgeR differe
 path_to_cyclops_ordering = "../Cyclops_ordering/"
 
 #path to normalized counts
-path_to_tmm_file = "../normed_counts/ExcSubtypes3and5_FiltByExprDefault_TMM.csv"
+path_to_tmm_file = "../normed_counts/PseudobulkAllCell_FiltByExprDefault_TMM.csv"
 
 # optional path to file containing differential expression results
 edgeR_de_filename = "../edgeR_diff_expression/Exc3_5/Exc3_5_filtByExpr_combatSeq_edgeR_DE_exactTest.csv"
