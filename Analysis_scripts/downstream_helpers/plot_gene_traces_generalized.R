@@ -116,7 +116,10 @@ plot_gene_trace = function(cyc_pred, tmm, seedlist,  useBatch = F,
           labs(title = paste0(seedlist[i], " in CTL"), x = "Circadian Phase", y = "Expression")+
           #annotate("text", x=min(plot_df2$Phase)+.5,y=lims[1], label = paste("DR FDR", DR_FDR))+
           #scale_shape_manual(values=c(2, 16))+
-          scale_colour_manual(values = c("#0091ff"))
+          scale_colour_manual(values = c("#0091ff"))+
+          scale_x_continuous(breaks = seq(0, 2 * pi, by = pi/2),
+                             labels = c("0", expression(pi/2), expression(pi),
+                             expression(3*pi/2), expression(2*pi)))
         
        
         p2 = ggplot(df_AD , aes(x = Phase , y = df_AD[,seedlist[i]])) +
@@ -126,7 +129,10 @@ plot_gene_trace = function(cyc_pred, tmm, seedlist,  useBatch = F,
           labs(title = paste0(seedlist[i], " in AD"), x = "Circadian Phase", y = "Expression")+
           #annotate("text", x=min(plot_df2$Phase)+.5,y=lims[1], label = paste("DR FDR", DR_FDR))+
           #scale_shape_manual(values=c(2, 16))+
-          scale_colour_manual(values = c("red"))
+          scale_colour_manual(values = c("red"))+
+          scale_x_continuous(breaks = seq(0, 2 * pi, by = pi/2),
+                             labels = c("0", expression(pi/2), expression(pi),
+                                        expression(3*pi/2), expression(2*pi)))
         p = grid.arrange(p1, p2, nrow = 1)
       }else{
         p = ggplot(df_AD, aes(x = Phase , y = df_AD[,seedlist[i]], color = "AD")) +
@@ -135,7 +141,10 @@ plot_gene_trace = function(cyc_pred, tmm, seedlist,  useBatch = F,
           geom_point(data = df_CTL, mapping = aes(x = Phase , y = df_CTL[,seedlist[i]], color = "CTL")) +
           geom_line(data=df_CTL, mapping=aes(x=Phase, y=fitted_values, color = "CTL"), linetype = "solid", linewidth = 2) +
           labs(title = paste0(seedlist[i]), x = "Predicted Phase", y = "Expression")+
-          scale_colour_manual(values = c("red", "#0091ff"))
+          scale_colour_manual(values = c("red", "#0091ff"))+
+          scale_x_continuous(breaks = seq(0, 2 * pi, by = pi/2),
+                             labels = c("0", expression(pi/2), expression(pi),
+                                        expression(3*pi/2), expression(2*pi)))
         
       }
       
