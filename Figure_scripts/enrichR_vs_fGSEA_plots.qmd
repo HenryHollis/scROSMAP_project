@@ -14,7 +14,7 @@ library(tidyverse)
 library(stringr) 
 ```
 
-Define the function:
+### Define the functions:
 
 ```{r}
 plot_fgsea_vs_enrichr = function(enrichR_path, fgsea_path, title,  marker_color = "#000000", libname = "KEGG", fgsea_enrichment = NULL){
@@ -69,33 +69,66 @@ error = function(e){message("File did not exist.")}
 )  
 }
 
+
+check_file = function(file_path){
+# Check if the file exists
+  if (!file.exists(file_path)) {
+    print(paste("File", file_path, "does not exist."))
+  }
+}
+
 plot_cycling_and_dr_cycling= function(downstream_str){
   setwd(paste0("../Cyclops_ordering/",downstream_str ))
     #CONTRL is cycling
-    enrichR_cyclingBHQ1AR25_CTL = "enrichR_results/EnrichR_CTLcyclersAR25BHQ1_BCKGRND-EnrichRbackground/CTLcyclersAR25BHQ1_LIBRY-KEGG2021Human_BCKGRND-EnrichRbackground.csv"
+    enrichR_cyclingBHQ1AR20_CTL = "enrichR_results/EnrichR_CTLcyclersAR20BHQ1_BCKGRND-EnrichRbackground/CTLcyclersAR20BHQ1_LIBRY-KEGG2021Human_BCKGRND-EnrichRbackground.csv"
+    check_file(enrichR_cyclingBHQ1AR20_CTL)
+    
   fgsea_CTL_cyclers_pranked = "fGSEA/fGSEA_results/CTL_cyclers_minusLogPRanked.csv"
-  plot_fgsea_vs_enrichr(enrichR_cyclingBHQ1AR25_CTL, fgsea_CTL_cyclers_pranked, "Pathways Cycling in CTL (Cycling BHQ1 AR25)", fgsea_enrichment = "all", marker_color = "#0091ff")
+  check_file(fgsea_CTL_cyclers_pranked)
+  
+  plot_fgsea_vs_enrichr(enrichR_cyclingBHQ1AR20_CTL, fgsea_CTL_cyclers_pranked, "Pathways Cycling in CTL (Cycling BHQ1 AR20)", fgsea_enrichment = "all", marker_color = "#0091ff")
   
   #AD is cycling
-  enrichR_cyclingBHQ1AR25_AD = "enrichR_results/EnrichR_ADcyclersAR25BHQ1_BCKGRND-EnrichRbackground/ADcyclersAR25BHQ1_LIBRY-KEGG2021Human_BCKGRND-EnrichRbackground.csv"
+  enrichR_cyclingBHQ1AR20_AD = "enrichR_results/EnrichR_ADcyclersAR20BHQ1_BCKGRND-EnrichRbackground/ADcyclersAR20BHQ1_LIBRY-KEGG2021Human_BCKGRND-EnrichRbackground.csv"
+  check_file(enrichR_cyclingBHQ1AR20_AD)
+  
   fgsea_AD_cyclers_pranked = "fGSEA/fGSEA_results/AD_cyclers_minusLogPRanked.csv"
-  plot_fgsea_vs_enrichr(enrichR_cyclingBHQ1AR25_AD, fgsea_AD_cyclers_pranked, "Pathways Cycing in AD (Cycling BHQ1 AR25)", fgsea_enrichment = "all", marker_color = "red")
+  check_file(fgsea_AD_cyclers_pranked)
+  
+  plot_fgsea_vs_enrichr(enrichR_cyclingBHQ1AR20_AD, fgsea_AD_cyclers_pranked, "Pathways Cycing in AD (Cycling BHQ1 AR20)", fgsea_enrichment = "all", marker_color = "red")
   
   #AD gain cycling
-  enrichR_gainCycling_BHQ1AR25 = "enrichR_results/EnrichR_DRgainAmpADCyclingBHQ1AR25DRBHQ2_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio25/DRgainAmpADCyclingBHQ1AR25DRBHQ2_LIBRY-KEGG2021Human_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio25.csv"
-  fgsea_AD_gain_cyclers25 = "fGSEA/fGSEA_results/DRgenesAmpRatio25_Log(AD-CTL)ranked.csv"
-  plot_fgsea_vs_enrichr(enrichR_gainCycling_BHQ1AR25, fgsea_AD_gain_cyclers25, "Pathways Gain Rhythmicity in AD (Cycling BHQ1 AR25)", fgsea_enrichment = "pos", marker_color = "#D81B60")
-   enrichR_gainCycling_BHQ1AR1 = "enrichR_results/EnrichR_DRgainAmpADCyclingBHQ1AR1DRBHQ2_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio1/DRgainAmpADCyclingBHQ1AR1DRBHQ2_LIBRY-KEGG2021Human_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio1.csv"
+  enrichR_gainCycling_BHQ1AR20 = "enrichR_results/EnrichR_DRgainAmpADCyclingBHQ1AR20DRBHQ3_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio20/DRgainAmpADCyclingBHQ1AR20DRBHQ3_LIBRY-KEGG2021Human_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio20.csv"
+  check_file(enrichR_gainCycling_BHQ1AR20)
+  
+  fgsea_AD_gain_cyclers25 = "fGSEA/fGSEA_results/DRgenesAmpRatio20_Log(AD-CTL)ranked.csv"
+  check_file(fgsea_AD_gain_cyclers25)
+  
+  plot_fgsea_vs_enrichr(enrichR_gainCycling_BHQ1AR20, fgsea_AD_gain_cyclers25, "Pathways Gain Rhythmicity in AD (Cycling BHQ1 AR20)", fgsea_enrichment = "pos", marker_color = "#D81B60")
+  
+   enrichR_gainCycling_BHQ1AR1 = "enrichR_results/EnrichR_DRgainAmpADCyclingBHQ1AR1DRBHQ3_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio1/DRgainAmpADCyclingBHQ1AR1DRBHQ3_LIBRY-KEGG2021Human_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio1.csv"
+   check_file(enrichR_gainCycling_BHQ1AR1)
+   
   fgsea_AD_gain_cyclers1 = "fGSEA/fGSEA_results/DRgenesAmpRatio1_Log(AD-CTL)ranked.csv"
+  check_file(fgsea_AD_gain_cyclers1)
+  
   plot_fgsea_vs_enrichr(enrichR_gainCycling_BHQ1AR1, fgsea_AD_gain_cyclers1, "Pathways Gain Rhythmicity in AD (Cycling BHQ1 AR1)", fgsea_enrichment = "pos",  marker_color = "#D81B60")
 
   #AD lose cycling
-  enrichR_loseCycling_BHQ1AR25 = "enrichR_results/EnrichR_DRlostAmpADCyclingBHQ1AR25DRBHQ2_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio25/DRlostAmpADCyclingBHQ1AR25DRBHQ2_LIBRY-KEGG2021Human_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio25.csv"
-  fgsea_AD_lose_cyclers25 = "fGSEA/fGSEA_results/DRgenesAmpRatio25_Log(AD-CTL)ranked.csv"
-  plot_fgsea_vs_enrichr(enrichR_loseCycling_BHQ1AR25, fgsea_AD_lose_cyclers25, "Pathways Lose Rhythmicity in AD (Cycling BHQ1 AR25)", fgsea_enrichment = "neg", marker_color = "#FE6100")
+  enrichR_loseCycling_BHQ1AR20 = "enrichR_results/EnrichR_DRlostAmpADCyclingBHQ1AR20DRBHQ3_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio20/DRlostAmpADCyclingBHQ1AR20DRBHQ3_LIBRY-KEGG2021Human_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio20.csv"
+  check_file(enrichR_loseCycling_BHQ1AR20)
+  
+  fgsea_AD_lose_cyclers25 = "fGSEA/fGSEA_results/DRgenesAmpRatio20_Log(AD-CTL)ranked.csv"
+  check_file(fgsea_AD_lose_cyclers25)
+  
+  plot_fgsea_vs_enrichr(enrichR_loseCycling_BHQ1AR20, fgsea_AD_lose_cyclers25, "Pathways Lose Rhythmicity in AD (Cycling BHQ1 AR20)", fgsea_enrichment = "neg", marker_color = "#FE6100")
 
-enrichR_loseCycling_BHQ1AR1 = "enrichR_results/EnrichR_DRlostAmpADCyclingBHQ1AR1DRBHQ2_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio1/DRlostAmpADCyclingBHQ1AR1DRBHQ2_LIBRY-KEGG2021Human_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio1.csv"
+  enrichR_loseCycling_BHQ1AR1 = "enrichR_results/EnrichR_DRlostAmpADCyclingBHQ1AR1DRBHQ3_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio1/DRlostAmpADCyclingBHQ1AR1DRBHQ3_LIBRY-KEGG2021Human_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio1.csv"
+  check_file(enrichR_loseCycling_BHQ1AR1)
+  
  fgsea_AD_lose_cyclers1 = "fGSEA/fGSEA_results/DRgenesAmpRatio1_Log(AD-CTL)ranked.csv"
+ check_file(fgsea_AD_lose_cyclers1)
+ 
   plot_fgsea_vs_enrichr(enrichR_loseCycling_BHQ1AR1, fgsea_AD_lose_cyclers1, "Pathways Lose Rhythmicity in AD (Cycling BHQ1 AR1)", fgsea_enrichment = "neg", marker_color = "#FE6100")
 }
 
@@ -105,7 +138,7 @@ list.files("../Cyclops_ordering/", pattern = "downstream_output*")
 ### Excitatory Neurons
 
 ```{r}
-plot_cycling_and_dr_cycling("downstream_output_Exc3_5")
+plot_cycling_and_dr_cycling("downstream_output_Exc_3_5")
 ```
 
 ### Inhib Neurons
