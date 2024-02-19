@@ -57,10 +57,10 @@ plot_fgsea_vs_enrichr = function(enrichR_path, fgsea_path, title,  marker_color 
 
       p = ggplot(plot_df, aes(NES, -log10(`Adjusted p-value`), color = -log10(padj), label = str_to_title(pathway.x)))+
         geom_point(shape = 16, size = 5, alpha = .7)+
-        ggrepel::geom_text_repel(max.overlaps = 10, color = "black")+
+        ggrepel::geom_text_repel(max.overlaps = 5, color = "black")+
         xlab("fGSEA NES")+
         ylab("-Log(enrichR BH.q)")+
-        ggtitle(title)+
+        ggtitle(str_wrap(title, 20))+
         theme_minimal()+
         scale_color_gradientn(colors = color_palette, name = "-Log(fGSEA BH.q)")+
         geom_vline(xintercept = 0, linetype = "dashed", color = "grey")
@@ -78,10 +78,10 @@ plot_fgsea_vs_enrichr = function(enrichR_path, fgsea_path, title,  marker_color 
       
       p = ggplot(plot_df, aes(-log10(padj), -log10(`Adjusted p-value`), label = str_to_title(pathway.x)))+
         geom_point(shape = 16, size = 5, alpha = .4, color = marker_color)+
-        ggrepel::geom_text_repel(max.overlaps = 10)+
+        ggrepel::geom_text_repel(max.overlaps = 5)+
         xlab("-Log(fGSEA BH.q)")+
         ylab("-Log(enrichR BH.q)")+
-        ggtitle(title)+
+        ggtitle(str_wrap(title, 20))+
         theme_minimal()
       print(p)
       return(plot_df)
@@ -188,6 +188,8 @@ plot_cycling_and_dr_cycling("downstream_output_Inhib_2_8_11_12_13")
 ```{r}
 plot_cycling_and_dr_cycling("downstream_output_Ast_1_2_5_6_7_8")
 ```
+
+### Microglia
 
 ```{r}
 plot_cycling_and_dr_cycling("downstream_output_Mglia_4_5_6_7_8_10_11_13_15_16")
