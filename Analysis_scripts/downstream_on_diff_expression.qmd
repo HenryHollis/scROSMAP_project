@@ -18,10 +18,10 @@ print(paste("Using cond env:",conda_list()[[1]][2] ))
 ```
 
 ```{r}
-dir = "../edgeR_diff_expression/Ast_1_2_5_6_7_8/"
+# dir = "../edgeR_diff_expression/Ast_1_2_5_6_7_8/"
 # dir = "../edgeR_diff_expression/Exc3_5/"
 # dir = "../edgeR_diff_expression/Inhib_2_8_11_12_13/"
-# dir = "../edgeR_diff_expression/Mglia_4_5_6_7_8_10_11_13_15_16/"
+dir = "../edgeR_diff_expression/Mglia_4_5_6_7_8_10_11_13_15_16/"
 ```
 
 ### Prepare Files
