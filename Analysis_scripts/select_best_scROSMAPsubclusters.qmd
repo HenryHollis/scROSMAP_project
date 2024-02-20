@@ -1,0 +1,340 @@
+---
+title: "select_best_scROSMAPsubclusters"
+format: html
+editor: visual
+---
+
+```{r}
+library(Seurat)
+library(edgeR)
+library(NMOF)
+library(parallel)
+library(tidyverse)
+library(deltaccd)
+setwd("~/Box Sync/Henry_stuff/AD_project/PseudoBulkVillas/Jan12/")
+load("rosmap424_pseudobulk_by_cluster.rda")
+```
+
+Read in ROSMAP metadata
+
+```{r}
+#clean up column (subcluster names)
+colnames(counts) = str_replace(colnames(counts), "_donor", "")
+colnames(counts) = str_replace(colnames(counts), ".rds", "")
+rownames(pseudobulk_meta) = colnames(counts)
+
+#read in subject metadata
+rosmap_subject_metadata = read.csv("~/Box Sync/Henry_stuff/AD_project/scROSMAP/Meta_data/cleaned_rosmap_meta_cogdxConds.csv")
+
+#read in another file with sequencing info for all scRNAseq done for ROSMAP
+rosmap_scassay_meta = read_csv("~/Box Sync/Henry_stuff/AD_project/human_data/ROSMAP/ExpandedROSMAP/MetaData/ROSMAP_assay_scrnaSeq_metadata.csv")
+
+#Seurat now complains when groub.by argument in AggregrateCounts is numeric so I'll change them in rosmap_metadata and pseudobulk_meta:
+pseudobulk_meta$project_id = paste0("X", pseudobulk_meta$project_id)
+rosmap_subject_metadata$projid = paste0("X", rosmap_subject_metadata$projid)
+
+#remove the cogdx 6 subjects from the metadata file
+rosmap_meta = filter(rosmap_subject_metadata, cogdx != 6)
+
+#merge large meta_data file with sequencing info
+rosmap_scassay_meta = rosmap_scassay_meta %>% separate_wider_delim(cols = 2, delim = "_", names = c("col1", "individualID"), too_many = "drop", too_few = "align_start")
+# full_meta = merge(rosmap_meta, rosmap_scassay_meta, by = "individualID", all.x = T)
+rosmap_meta$batch = rosmap_scassay_meta$rnaBatch[match(rosmap_meta$individualID, rosmap_scassay_meta$individualID)]
+rosmap_meta$batch = str_extract(rosmap_meta$batch, "(?<=-B)[0-9]*") %>% as.numeric
+rosmap_meta = rosmap_meta %>%
+  mutate(batch_bin = cut(batch, c(4, 10, 64), right = F))
+
+##### AUGMENT ROSMAP_META #####
+rosmap_meta = rosmap_meta %>%
+  mutate(braaksc_bin = cut(braaksc, c(0, 3, 5, 7), right = F))
+rosmap_meta = rosmap_meta %>%
+  mutate(ceradsc_bin = cut(ceradsc, c(1, 3, 5), right = F))
+rosmap_meta$apoe_ordinal  = 1
+rosmap_meta$apoe_ordinal[rosmap_meta$apoe_genotype == 34 | rosmap_meta$apoe_genotype == 24] = 2
+rosmap_meta$apoe_ordinal[rosmap_meta$apoe_genotype == 44 ] = 3
+rosmap_meta$apoe_ordinal[is.na(rosmap_meta$apoe_genotype) ] = NA
+rosmap_meta$age_death_numeric = rosmap_meta$age_death %>% str_replace("\\+", "") %>% as.numeric
+
+#adds cogdx score for each subcluster
+pseudobulk_meta$cogdx = rosmap_subject_metadata$cogdx[match(pseudobulk_meta$project_id, rosmap_subject_metadata$projid)]
+```
+
+Create Seurat object
+
+```{r}
+#creates a seurat object
+seurat_obj = CreateSeuratObject(
+  counts,
+  project = "scRNA ROSMAP",
+  assay = "RNA",
+  names.field = 3,
+  names.delim = "_",
+  meta.data = pseudobulk_meta)
+
+refCor = getRefCor(species = "human", tissue = "pan", useEntrezGeneId = F)
+```
+
+Loss function for grid search:
+
+```{r}
+
+loss = function(str){
+  expr = FetchData(seurat_obj, vars = "cluster")
+  tmp = seurat_obj[,grep(str, expr$cluster)]
+  
+  cts <- AggregateExpression(tmp,
+                             group.by = c("project_id"),
+                             assays = 'RNA',
+                             slot = "counts",
+                             return.seurat = FALSE)
+  cts = cts$RNA[,na.exclude(match(rosmap_meta$projid, colnames(cts$RNA)))]
+  my_rosmap_meta = rosmap_meta[match(colnames(cts), rosmap_meta$projid), ]
+  
+
+  #create DGElist
+  y <- DGEList(counts = cts, group = my_rosmap_meta$cond_cogdx)
+  #default params for filterByExpression
+  keep.genes = filterByExpr(y)
+  if (all(keep.genes[rownames(refCor)])){
+  #filter out the genes
+  y = y[keep.genes, , keep=FALSE]
+  # print(paste("keeping", dim(y)[1], "genes"))
+  
+  my_tmm_DGE_obj <- calcNormFactors(y, method = "TMM")
+  my_tmm = cpm(my_tmm_DGE_obj) #calculate tmms: https://www.biostars.org/p/317701/
+  my_tmm = as.data.frame(my_tmm)
+  
+
+  # all(colnames(my_tmm) == (rosmap_meta$projid))
+  try({
+  ans = calcCCD(refCor, emat = as.data.frame(my_tmm[rownames(refCor),]), groupVec = my_rosmap_meta$cond_cogdx)
+  return(ans$CCD[1])},
+  silent = T
+  
+  )
+  return(Inf)
+  } 
+  return(Inf)
+  }
+
+```
+
+```{r}
+n = 3
+l <- rep(list(0:1), n)
+df=expand.grid(l)
+colnames(df) = paste0("Mic\\.", 1:3,"$")
+#colnames(df) = paste0("Ast\\.", 1:10,"$")
+
+strs = c()
+for (i in 2:nrow(df)){
+  out = paste(colnames(df)[which(df[i,] == 1)], collapse = "|")
+  #out = str_replace_all(out, "\\.", "\\\\.")
+  strs = c(strs, out)
+}
+
+```
+
+```{r}
+tic = Sys.time()
+grid_results = gridSearch(loss, levels = list(str = strs), method = 'multicore', mc.control = list(mc.cores = 10))
+toc = Sys.time()
+print(toc-tic)
+# Exc.3|Exc.5
+# or Exc.3|Exc.5|Exc.10
+#or "Ast\\.1$|Ast\\.2$|Ast\\.5$|Ast\\.6$|Ast\\.7$|Ast\\.8$"
+```
+
+take the best subtypes and make a tmm
+
+```{r}
+get_subluster_data = function(str){
+  expr = FetchData(seurat_obj, vars = "cluster")
+  tmp = seurat_obj[,grep(str, expr$cluster)]
+  
+  cts <- AggregateExpression(tmp,
+                             group.by = c("project_id"),
+                             assays = 'RNA',
+                             slot = "counts",
+                             return.seurat = FALSE)
+  cts = cts$RNA[,na.exclude(match(rosmap_meta$projid, colnames(cts$RNA)))]
+}
+cts = get_subluster_data("Inh\\.2$|Inh\\.8$|Inh\\.11$|Inh\\.12$|Inh\\.13$")
+#"Inh\\.2$|Inh\\.8$|Inh\\.11$|Inh\\.12$|Inh\\.13$"
+#"Exc\\.5$|Exc\\.3$"
+# "Ast\\.1$|Ast\\.2$|Ast\\.5$|Ast\\.6$|Ast\\.7$|Ast\\.8$"
+# "Mic\\.4$|Mic\\.5$|Mic\\.6$|Mic\\.7$|Mic\\.8$|Mic\\.10$|Mic\\.11$|Mic\\.13$|Mic\\.15$|Mic\\.16$"
+my_rosmap_meta = rosmap_meta[match(colnames(cts), rosmap_meta$projid), ]
+
+
+#create DGElist
+y <- DGEList(counts = cts, group = my_rosmap_meta$cond_cogdx)
+#default params for filterByExpression
+keep.genes = filterByExpr(y)
+
+keep.genes[rownames(refCor)] = T ##TODO Watch out for this line
+
+#filter out the genes
+y = y[keep.genes, , keep=FALSE]
+
+my_tmm_DGE_obj <- calcNormFactors(y, method = "TMM")
+my_tmm = cpm(my_tmm_DGE_obj) #calculate tmms: https://www.biostars.org/p/317701/
+my_tmm = as.data.frame(my_tmm)
+plotHeatmap(rownames(refCor), emat = as.data.frame(my_tmm), groupVec = my_rosmap_meta$cond_cogdx)
+
+# rm_vars1 = rowSums(my_tmm[,my_rosmap_meta$cond_cogdx])
+# rm_vars2 = rowSums(my_tmm[,!my_rosmap_meta$cond_cogdx])
+# rm_rows = which(rm_vars1 == 0 | rm_vars2 == 0)
+# keep_refCor = which(rownames(refCor) %in% rownames(my_tmm[-rm_rows,]))
+
+# calcCCD(refCor[keep_refCor, keep_refCor], emat = as.data.frame(my_tmm[-rm_rows,]), groupVec = my_rosmap_meta$cond_cogdx)
+
+# calcDeltaCCD(refCor[keep_refCor, keep_refCor], as.data.frame(my_tmm[-rm_rows,]), groupVec = my_rosmap_meta$cond_cogdx, groupNormal = 0)
+
+calcCCD(refCor, emat = as.data.frame(my_tmm), groupVec = my_rosmap_meta$cond_cogdx)
+
+calcDeltaCCD(refCor, as.data.frame(my_tmm), groupVec = my_rosmap_meta$cond_cogdx, groupNormal = 0)
+
+
+
+
+
+
+```
+
+The correlagrams of the Exc.3 and Exc.5 by themselves is bad. When you add them, the correlagram is great. Therefore the clusters could be in part based on the expression of a rhythmic gene. Below I will see that:
+
+```{r}
+cts3 = get_subluster_data("Exc\\.3$")
+cts5 = get_subluster_data("Exc\\.5$")
+
+sapply(rownames(refCor), function(x){
+  max1 = max(c(cts3[x,], cts5[x,]))
+  min1 = min(c(cts3[x,], cts5[x,]))
+  breaks = seq(max1, min1, length.out = 20)
+  c1 <- rgb(173,216,230,max = 255, alpha = 90, names = "lt.blue")
+  c2 <- rgb(255,192,203, max = 255, alpha = 90, names = "lt.pink")
+  h1 = hist(cts3[x,], plot = F, breaks = breaks, freq = F)
+  h2 = hist(cts5[x,], plot = F, breaks = breaks, freq = F)
+  max_y = max(c(h1$density, h2$density))
+  plot(h1, col = c1, main = x)
+  plot(h2, col = c2, add = T)
+  # boxplot(cts3[x,], cts5[x,], main = x)
+})
+```
+
+Write out tmm
+
+```{r}
+setwd("~/Box Sync/Henry_stuff/AD_project/human_data/Cyclops_folders/tmms/scROSMAP/cogdx_controls/EdgeR_filt_normed/")
+out = rownames_to_column(my_tmm, var = "Gene_Symbols")
+covs = c("Cond_D", paste0("cond_", my_rosmap_meta$cond))
+covs1 = c("Batch_D", paste0("cond_", my_rosmap_meta$batch_bin))
+covs1 = str_replace(covs1, "\\[10,64\\)", "0")
+covs1 = str_replace(covs1, "\\[4,10\\)", "1")
+covs2 = c("ceradsc_D", paste0("cond_",  my_rosmap_meta$ceradsc_bin))
+covs3 = c("braaksc_D", paste0("cond_",  my_rosmap_meta$braaksc_bin))
+
+out = rbind(covs, covs1, covs2, covs3, out)
+colnames(out) = str_replace(colnames(out), "X", "")
+write.table(out, "InhNeurons_2_8_11_12_13_FiltByExprDefault_TMM.csv", sep = ',', row.names = F)
+
+#write.table(my_rosmap_meta, "~/Box Sync/Henry_stuff/AD_project/scROSMAP/Meta_data/rosmap_meta_Exc3and5.csv", sep = ",", row.names = F)
+```
+
+PCA the tmm
+
+```{r}
+pc_res = prcomp(t(my_tmm), scale. = T)
+colorvec = my_rosmap_meta$batch_bin
+ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC2, color = colorvec))+geom_point()
+ggplot(as.data.frame(pc_res$x), aes(x = PC2, y = PC3, color = colorvec))+geom_point()
+ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC3, color = colorvec))+geom_point()
+```
+
+COMBAT the TMM
+
+```{r}
+library(sva)
+#double check metadata is in order
+all(my_rosmap_meta$projid== colnames(cts)) 
+
+adjusted_counts <- ComBat_seq(as.matrix(cts), batch=my_rosmap_meta$batch_bin, group=my_rosmap_meta$cond_cogdx, covar_mod=NULL, full_mod=TRUE,shrink=FALSE, shrink.disp=FALSE, gene.subset.n=NULL)
+```
+
+```{r}
+all(colnames(cts) == (my_rosmap_meta$projid))
+
+#create DGElist
+y_combat <- DGEList(counts = adjusted_counts, group = my_rosmap_meta$cond_cogdx)
+#default params for filterByExpression
+keep.genes = filterByExpr(y_combat)
+#filter out the genes
+y_combat = y_combat[keep.genes, , keep=FALSE]
+print(paste("keeping", dim(y_combat)[1], "genes"))
+
+my_tmm_DGE_obj <- calcNormFactors(y_combat, method = "TMM")
+my_tmm_combat = cpm(my_tmm_DGE_obj) #calculate tmms: https://www.biostars.org/p/317701/
+my_tmm_combat = as.data.frame(my_tmm_combat)
+
+all(colnames(my_tmm_combat) == (my_rosmap_meta$projid))
+```
+
+Write out combated tmm
+
+```{r}
+setwd("~/Box Sync/Henry_stuff/AD_project/human_data/Cyclops_folders/tmms/scROSMAP/cogdx_controls/EdgeR_filt_normed/")
+out = rownames_to_column(my_tmm_combat, var = "Gene_Symbols")
+covs = c("Cond_D", paste0("cond_", my_rosmap_meta$cond))
+covs1 = c("Batch_D", paste0("cond_", my_rosmap_meta$batch_bin))
+covs1 = str_replace(covs1, "\\[10,64\\)", "0")
+covs1 = str_replace(covs1, "\\[4,10\\)", "1")
+covs2 = c("ceradsc_D", paste0("cond_",  my_rosmap_meta$ceradsc_bin))
+covs3 = c("braaksc_D", paste0("cond_",  my_rosmap_meta$braaksc_bin))
+
+out = rbind(covs, covs1, covs2, covs3, out)
+colnames(out) = str_replace(colnames(out), "X", "")
+write.table(out, "InhNeurons_2_8_11_12_13_FiltByExprDefault_TMM_CombatAdjusted.csv", sep = ',', row.names = F)
+```
+
+```{r}
+pc_res = prcomp(t(my_tmm_combat), scale. = T)
+colorvec = my_rosmap_meta$batch_bin
+ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC2, color = colorvec))+geom_point()
+ggplot(as.data.frame(pc_res$x), aes(x = PC2, y = PC3, color = colorvec))+geom_point()
+ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC3, color = colorvec))+geom_point()
+```
+
+### edgeR Differential Expression
+
+```{r}
+y_combat = estimateDisp(y_combat)
+```
+
+```{r}
+et <- exactTest(y_combat, pair = c(1,2))
+topTags(et)
+```
+
+```{r}
+design <- model.matrix(~y$samples$group)
+fit <- glmQLFit(y_combat, design)
+qlf.2vs1 <- glmQLFTest(fit, coef=2)
+topTags(qlf.2vs1)
+```
+
+### Write out DE results
+
+```{r}
+setwd("~/Box Sync/Henry_stuff/AD_project/scROSMAP/simple_differential_expr/")
+
+#write out results from the exact test
+et$table$FDR = p.adjust(et$table$PValue, method = "BH")
+write.table(et$table, "Mglia_4_5_6_7_8_10_11_13_15_16/ Microglia_4_5_6_7_8_10_11_13_15_16_filtByExpr_combatSeq_edgeR_DE_exactTest.csv", sep =',', row.names = T, col.names = NA )
+
+#write out qlf test
+qlf.2vs1$table$FDR = p.adjust(qlf.2vs1$table$PValue, method = "BH")
+
+write.table(qlf.2vs1$table, "Mglia_4_5_6_7_8_10_11_13_15_16/ Microglia_4_5_6_7_8_10_11_13_15_16_filtByExpr_combatSeq_edgeR_DE_QLFTest.csv", sep =',', row.names = T, col.names = NA )
+
+```
