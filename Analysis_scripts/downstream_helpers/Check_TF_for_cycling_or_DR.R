@@ -52,7 +52,7 @@ augment_tf_file = function(TF_filename, Diff_expr_filename, isCyclingBHQCutoff_s
                          nudge_x = 0.5, nudge_y = 0.5,color = "blue",
                          box.padding = 0.35, point.padding = 0.5)+
         xlab("-Log(Pscan/enrichR FDR)")+
-        ylab("-Log(DR BH.q value) (cycling AR>0.1, BH.q<0.1)")+
+        ylab("-Log(DR BH.q value) (cycling AR>0.1, BH.q<0.3)")+
         ggtitle("Differentially Rhythmic TF enriched in gene list")
       ggsave("DR_TF_enriched_in_list.png", p1, width = 6, height = 5, units = "in")
   }

@@ -18,7 +18,7 @@ library(RColorBrewer)
 ### Define the functions:
 
 ```{r}
-plot_fgsea_vs_enrichr = function(enrichR_path, fgsea_path, title,  marker_color = "#000000", libname = "KEGG", fgsea_enrichment = "all"){
+plot_fgsea_vs_enrichr = function(enrichR_path, fgsea_path, title,  marker_color = "#000000", libname = "KEGG", fgsea_enrichment = "all", max.overlaps = 10){
   tryCatch({
     fgsea_res = read_csv(fgsea_path, show_col_types = F)
     enrichR_res = read_csv(enrichR_path, show_col_types = F)
@@ -57,7 +57,7 @@ plot_fgsea_vs_enrichr = function(enrichR_path, fgsea_path, title,  marker_color 
 
       p = ggplot(plot_df, aes(NES, -log10(`Adjusted p-value`), color = -log10(padj), label = str_to_title(pathway.x)))+
         geom_point(shape = 16, size = 5, alpha = .7)+
-        ggrepel::geom_text_repel(max.overlaps = 5, color = "black")+
+        ggrepel::geom_text_repel(max.overlaps = max.overlaps, color = "black")+
         xlab("fGSEA NES")+
         ylab("-Log(enrichR BH.q)")+
         ggtitle(str_wrap(title, 20))+
@@ -78,7 +78,7 @@ plot_fgsea_vs_enrichr = function(enrichR_path, fgsea_path, title,  marker_color 
       
       p = ggplot(plot_df, aes(-log10(padj), -log10(`Adjusted p-value`), label = str_to_title(pathway.x)))+
         geom_point(shape = 16, size = 5, alpha = .4, color = marker_color)+
-        ggrepel::geom_text_repel(max.overlaps = 5)+
+        ggrepel::geom_text_repel(max.overlaps = max.overlaps)+
         xlab("-Log(fGSEA BH.q)")+
         ylab("-Log(enrichR BH.q)")+
         ggtitle(str_wrap(title, 20))+
@@ -187,6 +187,7 @@ plot_cycling_and_dr_cycling("downstream_output_Inhib_2_8_11_12_13")
 
 ```{r}
 plot_cycling_and_dr_cycling("downstream_output_Ast_1_2_5_6_7_8")
+#I set max overlaps to 50 to get the pathways cycling in CTL to show other pathways beside ribo
 ```
 
 ### Microglia
