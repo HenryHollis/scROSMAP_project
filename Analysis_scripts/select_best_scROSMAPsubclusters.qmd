@@ -11,11 +11,10 @@ library(NMOF)
 library(parallel)
 library(tidyverse)
 library(deltaccd)
-setwd("~/Box Sync/Henry_stuff/AD_project/PseudoBulkVillas/Jan12/")
-load("rosmap424_pseudobulk_by_cluster.rda")
+load("../rosmap424_pseudobulk_by_cluster.rda")
 ```
 
-Read in ROSMAP metadata
+### Read in ROSMAP metadata
 
 ```{r}
 #clean up column (subcluster names)
@@ -24,10 +23,10 @@ colnames(counts) = str_replace(colnames(counts), ".rds", "")
 rownames(pseudobulk_meta) = colnames(counts)
 
 #read in subject metadata
-rosmap_subject_metadata = read.csv("~/Box Sync/Henry_stuff/AD_project/scROSMAP/Meta_data/cleaned_rosmap_meta_cogdxConds.csv")
+rosmap_subject_metadata = read.csv("../ROSMAP_metadata/cleaned_rosmap_meta_cogdxConds.csv")
 
 #read in another file with sequencing info for all scRNAseq done for ROSMAP
-rosmap_scassay_meta = read_csv("~/Box Sync/Henry_stuff/AD_project/human_data/ROSMAP/ExpandedROSMAP/MetaData/ROSMAP_assay_scrnaSeq_metadata.csv")
+rosmap_scassay_meta = read_csv("../ROSMAP_metadata/ROSMAP_assay_scrnaSeq_metadata.csv", show_col_types = F)
 
 #Seurat now complains when groub.by argument in AggregrateCounts is numeric so I'll change them in rosmap_metadata and pseudobulk_meta:
 pseudobulk_meta$project_id = paste0("X", pseudobulk_meta$project_id)
@@ -59,7 +58,7 @@ rosmap_meta$age_death_numeric = rosmap_meta$age_death %>% str_replace("\\+", "")
 pseudobulk_meta$cogdx = rosmap_subject_metadata$cogdx[match(pseudobulk_meta$project_id, rosmap_subject_metadata$projid)]
 ```
 
-Create Seurat object
+### Create Seurat object
 
 ```{r}
 #creates a seurat object
@@ -74,7 +73,7 @@ seurat_obj = CreateSeuratObject(
 refCor = getRefCor(species = "human", tissue = "pan", useEntrezGeneId = F)
 ```
 
-Loss function for grid search:
+### Loss function for grid search:
 
 ```{r}
 
@@ -119,21 +118,23 @@ loss = function(str){
 
 ```
 
+### Generate combinations for testing ccd
+
 ```{r}
-n = 3
+n = 10 #number of subclusters to consider
 l <- rep(list(0:1), n)
 df=expand.grid(l)
-colnames(df) = paste0("Mic\\.", 1:3,"$")
-#colnames(df) = paste0("Ast\\.", 1:10,"$")
+colnames(df) = paste0("Ast\\.", 1:n,"$") #replace `Ast` for other subclusters, ie. Exc, Inh, Mic, etc.
 
 strs = c()
 for (i in 2:nrow(df)){
   out = paste(colnames(df)[which(df[i,] == 1)], collapse = "|")
-  #out = str_replace_all(out, "\\.", "\\\\.")
   strs = c(strs, out)
 }
 
 ```
+
+### Run Grid Search
 
 ```{r}
 tic = Sys.time()
@@ -141,11 +142,10 @@ grid_results = gridSearch(loss, levels = list(str = strs), method = 'multicore',
 toc = Sys.time()
 print(toc-tic)
 # Exc.3|Exc.5
-# or Exc.3|Exc.5|Exc.10
-#or "Ast\\.1$|Ast\\.2$|Ast\\.5$|Ast\\.6$|Ast\\.7$|Ast\\.8$"
+#"Ast\\.1$|Ast\\.2$|Ast\\.5$|Ast\\.6$|Ast\\.7$|Ast\\.8$"
 ```
 
-take the best subtypes and make a tmm
+### Take the best subtypes and make a tmm
 
 ```{r}
 get_subluster_data = function(str){
@@ -196,10 +196,6 @@ calcCCD(refCor, emat = as.data.frame(my_tmm), groupVec = my_rosmap_meta$cond_cog
 calcDeltaCCD(refCor, as.data.frame(my_tmm), groupVec = my_rosmap_meta$cond_cogdx, groupNormal = 0)
 
 
-
-
-
-
 ```
 
 The correlagrams of the Exc.3 and Exc.5 by themselves is bad. When you add them, the correlagram is great. Therefore the clusters could be in part based on the expression of a rhythmic gene. Below I will see that:
@@ -214,8 +210,8 @@ sapply(rownames(refCor), function(x){
   breaks = seq(max1, min1, length.out = 20)
   c1 <- rgb(173,216,230,max = 255, alpha = 90, names = "lt.blue")
   c2 <- rgb(255,192,203, max = 255, alpha = 90, names = "lt.pink")
-  h1 = hist(cts3[x,], plot = F, breaks = breaks, freq = F)
-  h2 = hist(cts5[x,], plot = F, breaks = breaks, freq = F)
+  h1 = hist(cts3[x,], plot = F, breaks = breaks)
+  h2 = hist(cts5[x,], plot = F, breaks = breaks)
   max_y = max(c(h1$density, h2$density))
   plot(h1, col = c1, main = x)
   plot(h2, col = c2, add = T)
@@ -223,10 +219,10 @@ sapply(rownames(refCor), function(x){
 })
 ```
 
-Write out tmm
+### Write out tmm
 
 ```{r}
-setwd("~/Box Sync/Henry_stuff/AD_project/human_data/Cyclops_folders/tmms/scROSMAP/cogdx_controls/EdgeR_filt_normed/")
+setwd("../normed_counts/")
 out = rownames_to_column(my_tmm, var = "Gene_Symbols")
 covs = c("Cond_D", paste0("cond_", my_rosmap_meta$cond))
 covs1 = c("Batch_D", paste0("cond_", my_rosmap_meta$batch_bin))
@@ -237,12 +233,12 @@ covs3 = c("braaksc_D", paste0("cond_",  my_rosmap_meta$braaksc_bin))
 
 out = rbind(covs, covs1, covs2, covs3, out)
 colnames(out) = str_replace(colnames(out), "X", "")
+#Change filename depending on what cell type is selected
 write.table(out, "InhNeurons_2_8_11_12_13_FiltByExprDefault_TMM.csv", sep = ',', row.names = F)
 
-#write.table(my_rosmap_meta, "~/Box Sync/Henry_stuff/AD_project/scROSMAP/Meta_data/rosmap_meta_Exc3and5.csv", sep = ",", row.names = F)
 ```
 
-PCA the tmm
+### PCA the tmm
 
 ```{r}
 pc_res = prcomp(t(my_tmm), scale. = T)
@@ -252,7 +248,7 @@ ggplot(as.data.frame(pc_res$x), aes(x = PC2, y = PC3, color = colorvec))+geom_po
 ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC3, color = colorvec))+geom_point()
 ```
 
-COMBAT the TMM
+### COMBAT the TMM
 
 ```{r}
 library(sva)
@@ -280,10 +276,10 @@ my_tmm_combat = as.data.frame(my_tmm_combat)
 all(colnames(my_tmm_combat) == (my_rosmap_meta$projid))
 ```
 
-Write out combated tmm
+### Write out combated tmm
 
 ```{r}
-setwd("~/Box Sync/Henry_stuff/AD_project/human_data/Cyclops_folders/tmms/scROSMAP/cogdx_controls/EdgeR_filt_normed/")
+setwd("../normed_counts/")
 out = rownames_to_column(my_tmm_combat, var = "Gene_Symbols")
 covs = c("Cond_D", paste0("cond_", my_rosmap_meta$cond))
 covs1 = c("Batch_D", paste0("cond_", my_rosmap_meta$batch_bin))
@@ -296,6 +292,8 @@ out = rbind(covs, covs1, covs2, covs3, out)
 colnames(out) = str_replace(colnames(out), "X", "")
 write.table(out, "InhNeurons_2_8_11_12_13_FiltByExprDefault_TMM_CombatAdjusted.csv", sep = ',', row.names = F)
 ```
+
+### PCA on the combated TMM
 
 ```{r}
 pc_res = prcomp(t(my_tmm_combat), scale. = T)
@@ -326,15 +324,15 @@ topTags(qlf.2vs1)
 ### Write out DE results
 
 ```{r}
-setwd("~/Box Sync/Henry_stuff/AD_project/scROSMAP/simple_differential_expr/")
+setwd("../edgeR_diff_expression/")
 
 #write out results from the exact test
 et$table$FDR = p.adjust(et$table$PValue, method = "BH")
-write.table(et$table, "Mglia_4_5_6_7_8_10_11_13_15_16/ Microglia_4_5_6_7_8_10_11_13_15_16_filtByExpr_combatSeq_edgeR_DE_exactTest.csv", sep =',', row.names = T, col.names = NA )
+write.table(et$table, "Inhib_2_8_11_12_13/ Inhib_2_8_11_12_13_filtByExpr_combatSeq_edgeR_DE_exactTest.csv", sep =',', row.names = T, col.names = NA )
 
 #write out qlf test
 qlf.2vs1$table$FDR = p.adjust(qlf.2vs1$table$PValue, method = "BH")
 
-write.table(qlf.2vs1$table, "Mglia_4_5_6_7_8_10_11_13_15_16/ Microglia_4_5_6_7_8_10_11_13_15_16_filtByExpr_combatSeq_edgeR_DE_QLFTest.csv", sep =',', row.names = T, col.names = NA )
+write.table(qlf.2vs1$table, "Inhib_2_8_11_12_13/ Inhib_2_8_11_12_13_filtByExpr_combatSeq_edgeR_DE_QLFTest.csv", sep =',', row.names = T, col.names = NA )
 
 ```
