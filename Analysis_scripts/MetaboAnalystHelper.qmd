@@ -31,11 +31,12 @@ diff_cycling = read_csv("../Cyclops_ordering/metabolon/diff_rhythms_CyclingBHQ1.
 ### Merge with trans_dict
 
 ```{r}
-cycling_CTL = merge(cycling_in_CTL_BHQ1,trans_dict, by.x = "SHORT_NAME", by.y = "SHORT_NAME_Metabolon", suffixes = "_metaboAnalyst")
+cycling_CTL = merge(cycling_in_CTL_BHQ1, trans_dict, by.x = "SHORT_NAME", by.y = "SHORT_NAME_Metabolon", suffixes = "_metaboAnalyst")
 
-cycling_AD = merge(cycling_in_CTL_BHQ1, trans_dict, by.x = "SHORT_NAME", by.y = "SHORT_NAME_Metabolon", suffixes = "_metaboAnalyst")
+cycling_AD = merge(cycling_in_AD_BHQ1, trans_dict, by.x = "SHORT_NAME", by.y = "SHORT_NAME_Metabolon", suffixes = "_metaboAnalyst")
 
-write.table(cycling_CTL, "~/Desktop/ctl_cycling_metabolites.csv", sep = ',', row.names = F)
+write.table(cycling_CTL, "../Cyclops_ordering/metabolon/MetaboAnalyst/Cycling_in_CTL_BHQ1.csv", sep = ',', row.names = F)
+write.table(cycling_AD, "../Cyclops_ordering/metabolon/MetaboAnalyst/Cycling_in_AD_BHQ1.csv", sep = ',', row.names = F)
 ```
 
 ```         

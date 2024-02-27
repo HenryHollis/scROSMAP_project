@@ -1,0 +1,83 @@
+"",matched_features
+Glycolysis or Gluconeogenesis,cpd:C00022; cpd:C00186; cpd:C00074; hsa:219; hsa:220; hsa:128; hsa:5162; hsa:3939; hsa:3945; hsa:5315; hsa:2023; hsa:2026; hsa:387712; hsa:5223; hsa:669; hsa:2597; hsa:7167; hsa:226; hsa:229; hsa:230; hsa:5211; hsa:5213; hsa:2645; hsa:92579; hsa:5230; hsa:55902
+Purine metabolism,cpd:C00064; cpd:C00059; cpd:C00366; cpd:C00086; hsa:50484; hsa:6241; hsa:5631; hsa:10606; hsa:10846; hsa:5139; hsa:5140; hsa:27115; hsa:5144; hsa:114; hsa:115; hsa:55811; hsa:953; hsa:221264; hsa:4830; hsa:4831; hsa:4832; hsa:158067; hsa:271; hsa:115024; hsa:30833; hsa:4907; hsa:132; hsa:1633; hsa:353; hsa:124583; hsa:955; hsa:957; hsa:131870; hsa:2766; hsa:51292; hsa:3615; hsa:2987; hsa:9615; hsa:374659; hsa:2982; hsa:2983; hsa:5146; hsa:5147; hsa:5158; hsa:8654; hsa:9060; hsa:5198; hsa:5167; hsa:2272; hsa:22875; hsa:5315
+Phosphatidylinositol signaling system,hsa:23236; hsa:5330; hsa:5332; hsa:84812; hsa:10423; hsa:5290; hsa:5296; hsa:8503; hsa:8395; hsa:55300; hsa:55361; hsa:5288; hsa:1607; hsa:1608; hsa:8527; hsa:8821; hsa:3633; hsa:79837; hsa:8396; hsa:3612; hsa:3613; hsa:54928; hsa:51763; hsa:3706; hsa:3635; hsa:90809; hsa:22876
+Nitrogen metabolism,cpd:C00064; hsa:377677; hsa:759; hsa:761; hsa:762; hsa:767; hsa:1373
+Glycerolipid metabolism,hsa:1056; hsa:57104; hsa:80339; hsa:84649; hsa:116255; hsa:10554; hsa:150763; hsa:84803; hsa:26007; hsa:219; hsa:4023; hsa:2717; hsa:1607; hsa:1608; hsa:8527
+Inositol phosphate metabolism,hsa:79837; hsa:8396; hsa:3633; hsa:51763; hsa:3706; hsa:8821; hsa:3612; hsa:3613; hsa:54928; hsa:55300; hsa:55361; hsa:8395; hsa:23236; hsa:5330; hsa:5332; hsa:84812; hsa:9651; hsa:5290; hsa:4329; hsa:7167; hsa:10423; hsa:5288; hsa:3635; hsa:22876
+Fructose and mannose metabolism,cpd:C00794; cpd:C00095; hsa:3795; hsa:4351; hsa:5372; hsa:5373; hsa:7264; hsa:2762; hsa:29925; hsa:5211; hsa:5213; hsa:7167; hsa:226; hsa:229; hsa:230; hsa:26007
+Lysine degradation,cpd:C00956; cpd:C00487; hsa:10157; hsa:8424; hsa:219; hsa:79823; hsa:2146; hsa:64754; hsa:6839; hsa:79813; hsa:80854; hsa:93166; hsa:23127; hsa:5352; hsa:1892; hsa:55526; hsa:51268
+Pyrimidine metabolism,cpd:C00064; cpd:C02642; cpd:C00475; cpd:C00881; cpd:C00526; hsa:50484; hsa:6241; hsa:221264; hsa:4830; hsa:4831; hsa:4832; hsa:129607; hsa:51727; hsa:56474; hsa:953; hsa:124583; hsa:955; hsa:957; hsa:83549; hsa:115024; hsa:30833; hsa:4907; hsa:151531; hsa:1806; hsa:1807; hsa:79077; hsa:1633; hsa:1890; hsa:5167
+Starch and sucrose metabolism,cpd:C00095; cpd:C00089; cpd:C00029; cpd:C00031; hsa:2595; hsa:8972; hsa:5167; hsa:283209; hsa:2992; hsa:2997; hsa:2998; hsa:8908; hsa:92579; hsa:2645; hsa:2632
+Glycosaminoglycan biosynthesis - chondroitin sulfate / dermatan sulfate,hsa:337876; hsa:79586; hsa:54480; hsa:26229; hsa:64131; hsa:11285; hsa:126792; hsa:29940
+Pyruvate metabolism,cpd:C00074; cpd:C00022; cpd:C00186; hsa:5162; hsa:5315; hsa:4190; hsa:4191; hsa:3939; hsa:3945; hsa:55902; hsa:219; hsa:31; hsa:32; hsa:9380; hsa:98
+Arginine and proline metabolism,cpd:C00062; cpd:C00334; cpd:C00884; cpd:C00022; hsa:383; hsa:4842; hsa:2628; hsa:1152; hsa:219; hsa:6723; hsa:262; hsa:112483; hsa:55748; hsa:1610; hsa:2805; hsa:2806; hsa:29920; hsa:65263; hsa:283208; hsa:5033; hsa:8974; hsa:4942; hsa:4953
+Cysteine and methionine metabolism,cpd:C00170; cpd:C00073; cpd:C00021; cpd:C00022; cpd:C21016; hsa:6723; hsa:262; hsa:883; hsa:27430; hsa:191; hsa:1788; hsa:58478; hsa:113675; hsa:2805; hsa:2806; hsa:4357; hsa:3939; hsa:3945; hsa:4190; hsa:4191; hsa:2937
+Ether lipid metabolism,cpd:C01233; cpd:C00670; hsa:5049; hsa:5050; hsa:85465; hsa:284161; hsa:8398; hsa:23646; hsa:5337; hsa:5338; hsa:54947; hsa:133121; hsa:9514
+Glutathione metabolism,hsa:2878; hsa:2879; hsa:2539; hsa:2937; hsa:79017; hsa:2947; hsa:2948; hsa:2950; hsa:4257; hsa:4258; hsa:9446; hsa:4953; hsa:6723; hsa:50484; hsa:6241; hsa:494143; hsa:79094
+Phenylalanine metabolism,cpd:C00079; cpd:C00082; hsa:220; hsa:314; hsa:2805; hsa:2806; hsa:4282; hsa:10249
+Mucin type O-glycan biosynthesis,hsa:11226; hsa:168391; hsa:2591; hsa:55568; hsa:64409; hsa:79623; hsa:79695; hsa:29071
+N-Glycan biosynthesis,hsa:54344; hsa:8818; hsa:144245; hsa:4249; hsa:57171; hsa:2530; hsa:25834; hsa:8703; hsa:8704; hsa:6480; hsa:84620; hsa:4247; hsa:4122; hsa:4124; hsa:11253; hsa:23193; hsa:6184; hsa:85365; hsa:56052; hsa:1798; hsa:22845
+Arginine biosynthesis,cpd:C00062; cpd:C00064; cpd:C00086; hsa:4842; hsa:383; hsa:1373; hsa:2805; hsa:2806; hsa:2875
+"Valine, leucine and isoleucine biosynthesis",cpd:C00188; cpd:C00123; cpd:C00407; cpd:C00183; hsa:113675
+Riboflavin metabolism,hsa:55312; hsa:5167; hsa:52; hsa:53
+Glycerophospholipid metabolism,cpd:C00350; cpd:C00307; cpd:C00670; cpd:C01233; hsa:54947; hsa:5833; hsa:55224; hsa:8398; hsa:1607; hsa:1608; hsa:8527; hsa:23646; hsa:5337; hsa:5338; hsa:10554; hsa:10423; hsa:150763; hsa:84803; hsa:85465; hsa:11313; hsa:23659; hsa:79143
+Pantothenate and CoA biosynthesis,cpd:C02642; cpd:C00183; cpd:C00054; hsa:5167; hsa:55229; hsa:60490; hsa:1807; hsa:1806; hsa:60496; hsa:79717
+Drug metabolism - other enzymes,hsa:151531; hsa:1890; hsa:1806; hsa:1807; hsa:83549; hsa:3615; hsa:50484; hsa:6241; hsa:4830; hsa:4831; hsa:4832; hsa:51727; hsa:2947; hsa:2948; hsa:2950; hsa:4257; hsa:4258; hsa:9446
+Propanoate metabolism,hsa:4329; hsa:5095; hsa:55902; hsa:8801; hsa:26275; hsa:31; hsa:32; hsa:3939; hsa:3945; hsa:1892; hsa:593; hsa:594; hsa:8310
+Glycosylphosphatidylinositol (GPI)-anchor biosynthesis,cpd:C00350; hsa:8818; hsa:5283; hsa:5279; hsa:54965; hsa:84720; hsa:9487; hsa:284098; hsa:55650
+beta-Alanine metabolism,cpd:C02642; cpd:C00135; hsa:1892; hsa:26275; hsa:4329; hsa:314; hsa:219; hsa:220; hsa:1807; hsa:1806; hsa:55748; hsa:8310
+"Phenylalanine, tyrosine and tryptophan biosynthesis",cpd:C00079; cpd:C00082; hsa:2805; hsa:2806
+"Neomycin, kanamycin and gentamicin biosynthesis",cpd:C00031; hsa:2645
+Nicotinate and nicotinamide metabolism,cpd:C03150; cpd:C05842; hsa:83594; hsa:5167; hsa:23475; hsa:349565; hsa:64802; hsa:55191; hsa:115024; hsa:30833; hsa:4907
+Galactose metabolism,cpd:C00089; cpd:C00029; cpd:C00031; cpd:C00095; cpd:C00794; hsa:2717; hsa:5211; hsa:5213; hsa:2595; hsa:8972; hsa:2645; hsa:8704; hsa:92579
+Sulfur metabolism,cpd:C00059; hsa:6821; hsa:9060; hsa:54928; hsa:4357
+Aminoacyl-tRNA biosynthesis,cpd:C00152; cpd:C00135; cpd:C00079; cpd:C00062; cpd:C00064; cpd:C00073; cpd:C00183; cpd:C00407; cpd:C00123; cpd:C00188; cpd:C00078; cpd:C00082; hsa:79731; hsa:2193; hsa:92935; hsa:57505; hsa:23395
+Citrate cycle (TCA cycle),cpd:C00022; cpd:C00074; hsa:8801; hsa:3419; hsa:3420; hsa:3421; hsa:47; hsa:4190; hsa:4191; hsa:5162
+Synthesis and degradation of ketone bodies,hsa:3157; hsa:54511; hsa:622
+Butanoate metabolism,cpd:C00334; hsa:622; hsa:54511; hsa:3157; hsa:1892; hsa:142827; hsa:6296
+"Glycine, serine and threonine metabolism",cpd:C00719; cpd:C00188; cpd:C00022; hsa:55349; hsa:29958; hsa:2628; hsa:51268; hsa:6472; hsa:113675; hsa:1610; hsa:23464; hsa:314; hsa:9380; hsa:5223; hsa:669
+Histidine metabolism,cpd:C00135; cpd:C01152; cpd:C05828; hsa:10841; hsa:55748; hsa:219; hsa:220
+Retinol metabolism,hsa:128; hsa:216; hsa:8854; hsa:53630; hsa:54884; hsa:145226; hsa:56603; hsa:1551; hsa:1577; hsa:1562
+Sphingolipid metabolism,cpd:C00319; hsa:427; hsa:10715; hsa:79603; hsa:8560; hsa:6609; hsa:6610; hsa:9514; hsa:2717; hsa:4758; hsa:57704; hsa:340485
+Thiamine metabolism,hsa:9054; hsa:158067; hsa:52
+Mannose type O-glycan biosynthesis,hsa:55624; hsa:84892; hsa:84197; hsa:9215; hsa:11041; hsa:729920
+Terpenoid backbone biosynthesis,hsa:3157; hsa:3156; hsa:3422; hsa:10654; hsa:57107; hsa:23463; hsa:51449
+Various types of N-glycan biosynthesis,hsa:2530; hsa:8703; hsa:8704; hsa:4122; hsa:4124; hsa:4247; hsa:11253
+Amino sugar and nucleotide sugar metabolism,cpd:C00029; hsa:6675; hsa:55907; hsa:10007; hsa:4351; hsa:5372; hsa:5373; hsa:2762; hsa:2645; hsa:29925; hsa:7264; hsa:80896; hsa:1727; hsa:51706; hsa:1118
+D-Glutamine and D-glutamate metabolism,cpd:C00064; hsa:80017
+Phosphonate and phosphinate metabolism,hsa:5833; hsa:85465
+Ubiquinone and other terpenoid-quinone biosynthesis,cpd:C00082; hsa:79001; hsa:2677
+"Valine, leucine and isoleucine degradation",cpd:C00183; cpd:C06001; cpd:C00407; cpd:C00123; hsa:593; hsa:594; hsa:3157; hsa:54511; hsa:549; hsa:1892; hsa:11112; hsa:27034; hsa:5095; hsa:219; hsa:4329; hsa:26275
+D-Arginine and D-ornithine metabolism,hsa:1610
+Pentose phosphate pathway,hsa:5631; hsa:7086; hsa:226; hsa:229; hsa:230; hsa:5211; hsa:5213; hsa:2539
+Ascorbate and aldarate metabolism,cpd:C00029; hsa:219
+Glycosaminoglycan biosynthesis - heparan sulfate / heparin,hsa:2131
+Glycosaminoglycan degradation,hsa:60495; hsa:3423; hsa:411; hsa:6448; hsa:3373; hsa:8372; hsa:8692
+Glyoxylate and dicarboxylate metabolism,cpd:C00022; cpd:C00064; hsa:9380; hsa:4190; hsa:4191; hsa:5095; hsa:6472; hsa:2653; hsa:55902
+Glycosphingolipid biosynthesis - ganglio series,hsa:6489; hsa:29906; hsa:8705; hsa:2583; hsa:30815; hsa:256435; hsa:81849
+Tryptophan metabolism,cpd:C00078; cpd:C00328; cpd:C05653; hsa:6999; hsa:1545; hsa:1892; hsa:55526; hsa:64577; hsa:130013; hsa:23498; hsa:8564; hsa:883; hsa:219
+"Alanine, aspartate and glutamate metabolism",cpd:C00152; cpd:C00334; cpd:C00064; cpd:C00022; hsa:339983; hsa:2805; hsa:2806; hsa:2875; hsa:1373
+Glycosphingolipid biosynthesis - globo and isoglobo series,hsa:2523; hsa:2524; hsa:2717; hsa:8706
+Selenocompound metabolism,hsa:22928; hsa:92935; hsa:883; hsa:9060
+Vitamin B6 metabolism,hsa:55163; hsa:57026
+Biotin metabolism,hsa:3141; hsa:686
+Arachidonic acid metabolism,cpd:C00219; hsa:2878; hsa:239; hsa:5743; hsa:8398; hsa:10728; hsa:80142; hsa:9536; hsa:873; hsa:874; hsa:127281
+alpha-Linolenic acid metabolism,hsa:8310; hsa:8398
+One carbon pool by folate,hsa:10841; hsa:10840; hsa:6472
+Pentose and glucuronate interconversions,cpd:C00029; hsa:729920; hsa:51181
+Biosynthesis of unsaturated fatty acids,cpd:C00219; cpd:C06429; cpd:C06428; hsa:10965; hsa:122970
+Taurine and hypotaurine metabolism,hsa:84890
+Linoleic acid metabolism,hsa:8398
+Tyrosine metabolism,cpd:C00082; cpd:C00022; hsa:220; hsa:128; hsa:314; hsa:7173; hsa:2805; hsa:2806; hsa:4282; hsa:7299
+Fatty acid elongation,hsa:5538; hsa:1892; hsa:401494; hsa:10965; hsa:122970; hsa:54898; hsa:79071; hsa:79993
+Steroid biosynthesis,hsa:6309; hsa:1717; hsa:1718; hsa:1595; hsa:4047; hsa:6307; hsa:1056; hsa:6713
+Folate biosynthesis,hsa:5860; hsa:6697; hsa:4338; hsa:5092; hsa:873
+Drug metabolism - cytochrome P450,hsa:2330; hsa:2947; hsa:2948; hsa:2950; hsa:4257; hsa:4258; hsa:9446; hsa:128; hsa:220
+Glycosphingolipid biosynthesis - lacto and neolacto series,hsa:8703; hsa:8704; hsa:28; hsa:10402; hsa:2523; hsa:2524; hsa:10678; hsa:6489; hsa:79369; hsa:84002; hsa:8708; hsa:8706
+Porphyrin and chlorophyll metabolism,hsa:1352; hsa:7389; hsa:3052
+Fatty acid degradation,cpd:C02990; hsa:8310; hsa:1892; hsa:128; hsa:219; hsa:2181; hsa:51703; hsa:1375; hsa:1376
+Metabolism of xenobiotics by cytochrome P450,hsa:1545; hsa:2947; hsa:2948; hsa:4257; hsa:4258; hsa:9446; hsa:220; hsa:128; hsa:2950; hsa:3290; hsa:873; hsa:874; hsa:1577
+Steroid hormone biosynthesis,cpd:C00735; hsa:1551; hsa:1577; hsa:3290; hsa:3291; hsa:3292; hsa:79154; hsa:1545
+Primary bile acid biosynthesis,hsa:10858; hsa:1593; hsa:51302
+Fatty acid biosynthesis,hsa:2194; hsa:27349; hsa:31; hsa:32; hsa:2181; hsa:51703
