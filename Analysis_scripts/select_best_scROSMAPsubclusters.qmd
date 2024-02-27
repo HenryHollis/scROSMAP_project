@@ -70,6 +70,7 @@ seurat_obj = CreateSeuratObject(
   names.delim = "_",
   meta.data = pseudobulk_meta)
 
+#creates a reference correlation matrix
 refCor = getRefCor(species = "human", tissue = "pan", useEntrezGeneId = F)
 ```
 
@@ -172,7 +173,7 @@ y <- DGEList(counts = cts, group = my_rosmap_meta$cond_cogdx)
 #default params for filterByExpression
 keep.genes = filterByExpr(y)
 
-keep.genes[rownames(refCor)] = T ##TODO Watch out for this line
+keep.genes[rownames(refCor)] = T #make sure genes needed for cormat are kept
 
 #filter out the genes
 y = y[keep.genes, , keep=FALSE]

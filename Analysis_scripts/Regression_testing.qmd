@@ -1,0 +1,642 @@
+---
+title: "Regression_testing"
+format: html
+editor: visual
+---
+
+This workbook is to test the regression step of my downstream analysis (CYCLOPS -\> regression -\> pathway analysis). I generate data rhythmic, and non-rhythmic genes, with and without batch. I want to test, **1)** If my custom regression works correctly (if my is_cycling code finds the same amplitudes and phases as the noiseless signal of the data) **2)** if my new is_cycling (method 2), which considers all subjects (both conditions together) produces the same output as compareRhythms, which uses the same is_cycling models. **3)** If this is still true when technical batches are introduced.
+
+## Creating Synthetic Cycling and Non-Rhythmic Data
+
+```{r}
+source("downstream_helpers/differential_rhyth_generalized.R")
+
+#Set Params for dataset
+library(Rfast)
+library(doParallel)
+library(tidyverse)
+set.seed(42)
+addBatch = F
+sample_size = 400
+num_genes_rhyth = 300
+num_genes_nonRhyth = 1000
+num_affine = 1
+
+times = rvonmises(sample_size, 0, 0)      #when the samples are collected
+cond = sample(c(TRUE, FALSE), sample_size, replace = T) #sample condition assignment
+#batch = sample(c(TRUE, FALSE), sample_size, replace = T) #Sample batch assignment
+batch = c(rep(T, 20), rep(F, sample_size-20))
+batch_effect = 10
+```
+
+Generate rhythmic genes (y = Acos(x-phi) + B)
+
+```{r}
+
+rhythmic = function(sample_size, times, cond, addBatch = F, batch_effect = 10){  
+  #generate single sinusoidal gene, with rand noise
+  #generate wave of form Amp * cos(x - acrophase) + mesor + Condition_offset + noise
+  acrophase = rep(rvonmises(1, 0, 0), sample_size)   #controls when the genes peak
+  mesor = runif(n = 1, min = 1, max = 10)   # controls the mesor of gene j
+  amp = rep(runif(n = 1, min = 0, max = mesor), sample_size)   # controls the amplitude of gene j
+  cond_effect = runif(n = 1, min = 0, max = amp) #controls offset between conditions
+  # batch_effect = runif(n = 1, min = amp/2, max = amp) #controls offset between conditions
+  #modify the cycling parameters with cond effect:
+  acrophase[cond] =  acrophase[1]*cond_effect
+  amp[cond] = amp[1]*(cond_effect/2) #added 1/2 factor bc cond effect will likely be >1 meaning   most of the cond_1 genes with gain amplitude
+  noiseless =  amp * cos(times - acrophase) + mesor + (cond_effect * cond)
+  if (addBatch){
+    noiseless =  noiseless + (batch_effect * batch)
+  }
+  noise = rnorm(n = sample_size) * (amp) # adds noise to offset of gene j (NORMAL DISTRIB), scaled so that SD(mesor noise) =  amplitude
+  noisey = noiseless + noise
+  
+  gene_name = paste0("rhyth_Amp1_", round(unique(amp)[1], 2),"_Amp2_", round(unique(amp)[2], 2)
+                     ,"_Acr1_",round(unique(acrophase)[1] %% (2*pi), 2),"_Acr2_",round(unique(acrophase)[2] %% (2*pi), 2),
+                     "_mes",round(mesor, 2), "_condOffset", round(cond_effect, 2),"_SDNoise", round(sd(noise), 2))
+  # plot(times, noisey, main = gene_name)
+  # points(times, noiseless, col = "green")
+  
+  out = cbind(noisey, noiseless)
+  colnames(out) = c(gene_name, paste0("noiseless_", gene_name))
+  return(out)
+}
+
+```
+
+Generate Non-Rhythmic genes (y = b)
+
+```{r}
+arhythmic = function(sample_size, times, cond, addBatch = F, batch_effect = 10){  
+  #generate single sinusoidal gene, with rand noise
+  #generate lines of form y = x + offset + cond_offset
+  mean = runif(n = 1, min = 1, max = 10)   # controls the mesor of gene j
+  cond_effect = runif(n = 1, min = 0, max = mean) #controls offset between conditions
+  # batch_effect = runif(n = 1, min = 0, max = mean) #controls offset between batches
+  noise = rnorm(n = sample_size) * mean/6 # adds noise to gene j (NORMAL DISTRIB)
+  signal = mean  + (cond_effect * cond)
+  if (addBatch){
+    signal = signal + (batch * batch_effect)
+  }
+  noisey = signal + noise
+  gene_name = paste0("NonRhyth_Amp1_NA_Amp2_NA",
+                     "_Acr1_NA_Acr2_NA",
+                     "_mean",round(mean, 2), "_condOffset", round(cond_effect, 2), "_SDNoise",                      round(sd(noise), 2))
+  # plot(times, noisey, main = gene_name)
+  # points(times, signal, col = "green")
+  out = cbind(noisey, signal)
+  colnames(out) = c(gene_name, paste0("noiseless_", gene_name))
+  return(out)
+}
+```
+
+Generate Affine Genes (y = mx + b)
+
+```{r}
+affine = function(sample_size, times, cond, addBatch = F, batch_effect = 10){  
+  #generate single sinusoidal gene, with rand noise
+  #generate lines with mean and
+  y_int = runif(n = 1, min = 1, max = 10)   # controls the mesor of gene j
+  cond_effect = runif(n = 1, min = 0, max = y_int) #controls offset between conditions
+  # batch_effect = runif(n = 1, min = 0, max = y_int) #controls offset between batches
+  
+  slope = rep(rnorm(1, sd = 1.5), sample_size) + (cond_effect*cond)
+  #rand_amp_cond1 = runif(n = num_genes) #number bw [0, 1]
+  noiseless = slope*times + y_int + (cond_effect * cond)
+  if(addBatch){
+    noiseless = noiseless + (batch_effect * batch)
+  }
+  noise = rnorm(n = sample_size)* mean(noiseless)/6 # adds noise to gene j (NORMAL DISTRIB)
+  noisey = noiseless + noise 
+  gene_name = paste0("Affine_Amp1_NA_Amp2_NA",
+                     "_Acr1_NA_Acr2_NA_condOffset", round(cond_effect, 2),"_SDNoise", round(sd(noise), 2))
+  # plot(times, noisey, main = gene_name)
+  # points(times, noiseless, col = "green")
+  out = cbind(noisey, noiseless)
+  colnames(out) = c(gene_name, paste0("noiseless_", gene_name))
+  return(out)
+}
+
+```
+
+Assemble Synthetic data
+
+```{r}
+generate_tmm= function(times, cond, batch = NULL, sample_size = 400, num_genes_rhyth = 300, num_genes_nonRhyth = 1000, num_affine = 300, addBatch = F , batch_effect = batch_effect){
+  #generate rhythmic genes
+  rhythmic_df = foreach(i = 1:num_genes_rhyth, .combine = cbind) %do% {
+    gene_i = rhythmic(sample_size, times, cond, addBatch = addBatch)
+  }
+  
+  #generate non-rhythmic genes
+  arhythmic_df = foreach(i = 1:num_genes_nonRhyth, .combine = cbind) %do% {
+    gene_i = arhythmic(sample_size, times, cond, addBatch = addBatch)
+  }
+  
+  affine_df = foreach(i = 1:num_affine, .combine = cbind) %do% {
+    gene_i = affine(sample_size, times, cond, addBatch = addBatch)
+  }
+  
+  #ensure colnames are unique...
+  colnames(arhythmic_df) = make.names(colnames(arhythmic_df), unique = T)
+  colnames(affine_df) = make.names(colnames(affine_df), unique = T)
+  
+  #every even column is the noiseless "signal" of the gene"
+  noiseless_rhythmic = dplyr::select(as.data.frame(rhythmic_df), contains("noiseless") )
+  noiseless_arhythmic = dplyr::select(as.data.frame(arhythmic_df), contains("noiseless") )
+  noiseless_affine = dplyr::select(as.data.frame(affine_df), contains("noiseless") )
+  
+  data_rhythmic = dplyr::select(as.data.frame(rhythmic_df), !contains("noiseless") )
+  data_arhythmic = dplyr::select(as.data.frame(arhythmic_df), !contains("noiseless") )
+  data_affine = dplyr::select(as.data.frame(affine_df), !contains("noiseless") )
+  
+  cond_D = cond
+  batch_D = batch
+  synthetic_data = t(cbind(data_rhythmic, data_arhythmic, data_affine))
+  noiseless_data = t(cbind(noiseless_rhythmic, noiseless_arhythmic, noiseless_affine))
+  if (addBatch){
+    synthetic_data = rbind(cond_D, batch_D, synthetic_data)
+  } else{
+      synthetic_data = rbind(cond_D, synthetic_data)
+  }
+  tmm = as.data.frame(synthetic_data)
+  cyc_pred = as.data.frame(cbind(colnames(tmm), times))
+  colnames(cyc_pred) = c("ID", "Phase")
+  
+  tmm = rownames_to_column(as.data.frame(tmm), var = "Gene_Symbols")
+  tmm[1, -1] = paste0("cond_", tmm[1, -1])
+  if (addBatch){tmm[2, -1] = paste0("cond_", tmm[2, -1])}
+  #now tmm is of the form I use
+  return(list(tmm, cyc_pred, synthetic_data,  noiseless_data))
+}
+
+```
+
+## 1) Data without technical batches
+
+```{r}
+data_no_batch = generate_tmm(addBatch = F, sample_size = sample_size, num_genes_rhyth = num_genes_rhyth, num_genes_nonRhyth = num_genes_nonRhyth, num_affine = num_affine, times = times, cond = cond, batch= batch)
+
+tmm = data_no_batch[[1]]
+cyc_pred = data_no_batch[[2]]
+synthetic_data = data_no_batch[[3]]
+noiseless_data = data_no_batch[[4]]
+head(tmm)
+```
+
+Example genes:
+
+```{r}
+i = 30
+#rhythmic example WO batch
+plot(times, synthetic_data[i, ], main = rownames(synthetic_data)[i])
+points(times, noiseless_data[paste0("noiseless_", rownames(synthetic_data)[i]),], col= "green")
+
+i = 400
+#rhythmic example WO batch
+plot(times, synthetic_data[i, ], main = rownames(synthetic_data)[i])
+points(times, noiseless_data[paste0("noiseless_", rownames(synthetic_data)[i]),], col= "green")
+
+i = 1302
+#rhythmic example WO batch
+plot(times, synthetic_data[i, ], main = rownames(synthetic_data)[i])
+points(times, noiseless_data[paste0("noiseless_", rownames(synthetic_data)[i]),], col= "green")
+
+```
+
+### My custom Regression (method 1)
+
+```{r}
+### custom regression ##
+cond_0_cyclers = is_cycling(cyc_pred, tmm, "cond_0", useBatch = F, percentile = 0)
+cond_1_cyclers = is_cycling(cyc_pred, tmm, "cond_1", useBatch = F, percentile = 0)
+strong_cond_0_cyclers = filter(cond_0_cyclers, as.numeric(Bonf) < 0.05)
+strong_cond_1_cyclers = filter(cond_1_cyclers, as.numeric(Bonf) < 0.05)
+DR_genelist = union(strong_cond_0_cyclers$Gene_Symbols, strong_cond_1_cyclers$Gene_Symbols)
+diff_rhyth_mthd1_cyclers = diff_rhyth(cyc_pred, tmm, DR_genelist, useBatch = F, percentile =0)
+
+print(paste("Identified", dim(strong_cond_0_cyclers)[1], "cond_0 cyclers"))
+print(paste("Identified", dim(strong_cond_1_cyclers)[1], "cond_1 cyclers"))
+print(paste("Found", length(grep("NonRhyth|Affine", strong_cond_0_cyclers$Gene_Symbols)), "false positive cond_0 cyclers"))
+print(paste("Found", length(grep("NonRhyth|Affine", strong_cond_1_cyclers$Gene_Symbols)), "false positive cond_1 cyclers"))
+
+```
+
+#### Accuracy of custom regression (method 1) without batch
+
+```{r}
+
+#extract the true wave parameters from the "gene names", Any Affine or Non-rhythmic genes should have NA for amp, acrophase parameters and therfore be excluded from plots automatically
+true_amp1 = str_extract(diff_rhyth_mthd1_cyclers$Gene_Symbols, "(?<=Amp1_)[0-9]+\\.*[0-9]*") %>%     as.numeric
+true_amp2 = str_extract(diff_rhyth_mthd1_cyclers$Gene_Symbols, "(?<=Amp2_)[0-9]+\\.*[0-9]*") %>%     as.numeric
+true_phase1 = str_extract(diff_rhyth_mthd1_cyclers$Gene_Symbols, "(?<=Acr1_)[0-9]+\\.*[0-9]*") %>%  as.numeric
+true_phase2 = str_extract(diff_rhyth_mthd1_cyclers$Gene_Symbols, "(?<=Acr2_)[0-9]+\\.*[0-9]*") %>%     as.numeric
+noise_added  = str_extract(diff_rhyth_mthd1_cyclers$Gene_Symbols, "(?<=SDNoise)[0-9]+\\.*[0-9]*") %>%     as.numeric
+
+plot(true_amp1, as.numeric(diff_rhyth_mthd1_cyclers$amplitude_CTL), main = "cond_0 amp predicted vs signal", xlab = "true cond0 amp", ylab = "pred cond0 amp")
+plot(true_amp2, as.numeric(diff_rhyth_mthd1_cyclers$amplitude_AD), main = "cond_1 amp predicted vs signal", xlab = "true cond1 amp", ylab = "pred cond1 amp")
+plot(true_phase1, as.numeric(diff_rhyth_mthd1_cyclers$acrophase_CTL), main = "cond_0 phase predicted vs signal", xlab = "true cond0 phase", ylab = "pred cond0 phase")
+plot(true_phase2, as.numeric(diff_rhyth_mthd1_cyclers$acrophase_AD), main = "cond_1 phase predicted vs signal", xlab = "true cond1 phase", ylab = "pred cond1 phase")
+# true_rhythmic = grep("rhyth", diff_rhyth_mthd1_cyclers$Gene_Symbols)
+
+true_mesor0 = str_extract(cond_0_cyclers$Gene_Symbols, "(?<=mes)[0-9]+\\.*[0-9]*") %>% 
+    as.numeric
+true_amp0 = str_extract(cond_0_cyclers$Gene_Symbols, "(?<=Amp1_)[0-9]+\\.*[0-9]*") %>%     
+    as.numeric
+plot((true_amp0/true_mesor0), as.numeric(cond_0_cyclers$amp_ratio), main = "cond_0 amp ratio predicted vs signal", xlab = "true amp ratio", ylab = "pred amp ratio")
+
+true_mesor1 = str_extract(cond_1_cyclers$Gene_Symbols, "(?<=mes)[0-9]+\\.*[0-9]*") %>% 
+    as.numeric
+true_amp1 = str_extract(cond_1_cyclers$Gene_Symbols, "(?<=Amp2_)[0-9]+\\.*[0-9]*") %>%     
+    as.numeric
+cond_effect = str_extract(cond_1_cyclers$Gene_Symbols, "(?<=condOffset)[0-9]+\\.*[0-9]*") %>%     as.numeric
+
+plot((true_amp1/(true_mesor1+cond_effect)), as.numeric(cond_1_cyclers$amp_ratio), main = "cond_1 amp ratio predicted vs signal", xlab = "true amp ratio", ylab = "pred amp ratio")
+```
+
+### Custom Regression Method 2
+
+This is going different from above in that all subjects are tested together for "is_cycling," just like in compareRhythms.
+
+```{r}
+## custom method2 is_cycling ##
+cyclers_method_2 = is_cycling_method2(cyc_pred, tmm, useBatch = F, percentile = 0)
+DR_genelist_mthd2 = filter(cyclers_method_2, Bonf < 0.05) %>% select(Gene_Symbols) %>% unname %>% unlist
+
+DR_custom_method_2 = diff_rhyth(cyc_pred, tmm, DR_genelist_mthd2, useBatch = F, percentile = 0)
+```
+
+#### Accuracy of custom regression (method 2) without batch
+
+```{r}
+#extract the true wave parameters from the "gene names", Any Affine or Non-rhythmic genes should have NA for amp, acrophase parameters and therfore be excluded from plots automatically
+true_mesor = str_extract(cyclers_method_2$Gene_Symbols, "(?<=mes)[0-9]+\\.*[0-9]*") %>% 
+  as.numeric
+true_amp1 = str_extract(cyclers_method_2$Gene_Symbols, "(?<=Amp1_)[0-9]+\\.*[0-9]*") %>% 
+  as.numeric
+true_amp2 = str_extract(cyclers_method_2$Gene_Symbols, "(?<=Amp2_)[0-9]+\\.*[0-9]*") %>% 
+  as.numeric
+true_phase1 = str_extract(cyclers_method_2$Gene_Symbols, "(?<=Acr1_)[0-9]+\\.*[0-9]*") %>% 
+  as.numeric
+true_phase2 = str_extract(cyclers_method_2$Gene_Symbols, "(?<=Acr2_)[0-9]+\\.*[0-9]*") %>%       as.numeric
+noise_added  = str_extract(cyclers_method_2$Gene_Symbols, "(?<=SDNoise)[0-9]+\\.*[0-9]*") %>%    as.numeric
+cond_effect = str_extract(cyclers_method_2$Gene_Symbols, "(?<=condOffset)[0-9]+\\.*[0-9]*") %>%     as.numeric
+
+plot(true_amp1, as.numeric(cyclers_method_2$amplitude_CTL), main = "cond_0 amp predicted vs signal")
+plot(true_amp2, as.numeric(cyclers_method_2$amplitude_AD), main = "cond_1 amp predicted vs signal")
+plot(true_phase1, as.numeric(cyclers_method_2$acrophase_CTL), main = "cond_0 phase predicted vs signal")
+plot(true_phase2, as.numeric(cyclers_method_2$acrophase_AD), main = "cond_1 phase predicted vs signal")
+plot(true_mesor, as.numeric(cyclers_method_2$mesor_CTL), main = "cond_0 mesor predicted vs signal")
+plot(true_mesor+cond_effect, as.numeric(cyclers_method_2$mesor_AD), main = "cond_1 mesor predicted vs signal")
+
+plot(true_amp1/true_mesor, as.numeric(cyclers_method_2$amp_ratio_CTL), main = "cond_0 amp_ratio predicted vs signal")
+plot(true_amp2/(true_mesor+cond_effect), as.numeric(cyclers_method_2$amp_ratio_AD), main = "cond_1 amp_ratio predicted vs signal")
+
+```
+
+### **CompareRhythms results on data**
+
+```{r}
+library(compareRhythms)
+
+#remove covariates from top of df
+emat = tmm[!grepl("_D", unlist(tmm[,1])),]
+#make numeric
+emat = apply(emat[,-1], 2, as.numeric)
+# emat = t(apply(emat, 1, blunt_outliers))
+
+#rename the rows, previous step removes rownames
+rownames(emat) = tmm[!grepl("_D", unlist(tmm[,1])), 1] %>% unlist
+
+#create the experimental_design df:
+my_cond = as.factor(as.character(tmm[1,-1]))
+my_cond = relevel(my_cond, "cond_0")
+
+exp_design = data.frame(group = my_cond, time = as.numeric(cyc_pred$Phase)* 12 / pi)
+
+CR_cosinor_method = compareRhythms(emat, exp_design, method = 'cosinor',
+                                   just_classify = F, compare_fdr = 0.2,
+                                   amp_cutoff = 0, rhythm_bonf_cutoff = 1)
+
+```
+
+### **Comparing the 3 methods of is_cycling**
+
+**Method 2 vs CompareRhythms is_cycling**. which genes are cycling in cond_0 or 1? ([should be identical results]{.underline})
+
+```{r}
+###### is_cycling in compareRhythms vs my "method_2"
+method2_vs_CR = merge(cyclers_method_2, CR_cosinor_method, by.x = "Gene_Symbols", by.y = "id")
+plot(-log(method2_vs_CR$p), -log(method2_vs_CR$p_val_cond_0_or_cond_1), main = "-log is_cycling", xlab = "my regression method 2, -log p", ylab = "compareRhythms -logp")
+plot(as.numeric(method2_vs_CR$acrophase_AD), method2_vs_CR$cond_1_phase, main = "cond_1 acrophase parameter", xlab = "my method 2 acrophase", ylab = "compareRhythms acrophase")
+plot(as.numeric(method2_vs_CR$acrophase_CTL), method2_vs_CR$cond_0_phase, main = "cond_0 acrophase parameter", xlab = "my method 2 acrophase", ylab = "compareRhythms acrophase")
+plot(as.numeric(method2_vs_CR$amplitude_AD), method2_vs_CR$cond_1_amp, main = "cond_1 amp parameter", xlab = "my method 2 amp", ylab = "compareRhythms amp")
+plot(as.numeric(method2_vs_CR$amplitude_CTL), method2_vs_CR$cond_0_amp, main = "cond_0 amp parameter", xlab = "my method 2 amp", ylab = "compareRhythms amp")
+
+#the amplitude parameter in mine is exactly half of compareRhythms, that is as expected
+```
+
+**Method 2 vs compareRhythms** **Differential_Rhythms.** ([Should be indentical because compareRhythms uses the same nested linear models for DR as I do, and we already know the is_cycling inputs are the same]{.underline}):
+
+```{r}
+method2_vs_CR_DR = merge(DR_custom_method_2, CR_cosinor_method, by.x = "Gene_Symbols", by.y = "id")
+plot(-log(method2_vs_CR_DR$p), -log(method2_vs_CR_DR$p_val_DR), main = "-log p.val DR", xlab = "my regression method 2, -log p", ylab = "compareRhythms -log p")
+plot(as.numeric(method2_vs_CR_DR$acrophase_AD), method2_vs_CR_DR$cond_1_phase, main = "cond_1 acrophase parameter", xlab = "my method 2 acrophase", ylab = "compareRhythms acrophase")
+plot(as.numeric(method2_vs_CR_DR$acrophase_CTL), method2_vs_CR_DR$cond_0_phase, main = "cond_0 acrophase parameter", xlab = "my method 2 acrophase", ylab = "compareRhythms acrophase")
+plot(as.numeric(method2_vs_CR_DR$amplitude_AD), method2_vs_CR_DR$cond_1_amp, main = "cond_1 amp parameter", xlab = "my method 2 amp", ylab = "compareRhythms amp")
+plot(as.numeric(method2_vs_CR_DR$amplitude_CTL), method2_vs_CR_DR$cond_0_amp, main = "cond_0 amp parameter", xlab = "my method 2 amp", ylab = "compareRhythms amp")
+
+#Plots 2-5 indirectly also show that the cycling parameters in my DR df are the same as the is_cycling df by transitivity
+```
+
+**Method 1 vs Method 2** of **is_cycling.** (should be differences in the p values assigned to genes but not the cycling parameters).
+
+```{r}
+######is_cycling method 1 vs method 2 #####
+#cond_0:
+mthd1_vs_2_ctls = merge(cyclers_method_2, cond_0_cyclers, by = "Gene_Symbols" )
+plot(-log(mthd1_vs_2_ctls$p), -log(as.numeric(mthd1_vs_2_ctls$p_statistic)), main = "-log p of is cycling in cond_0", xlab= "method 2 (all data fed in to is_cycling)", ylab = "method 1")
+Aff = grep("Affine", mthd1_vs_2_ctls$Gene_Symbols)
+points(-log(mthd1_vs_2_ctls$p[Aff]), -log(as.numeric(mthd1_vs_2_ctls$p_statistic[Aff])), col = "red")
+
+plot(as.numeric(mthd1_vs_2_ctls$acrophase), as.numeric(mthd1_vs_2_ctls$acrophase_CTL), main = "cond_0 predicted acrophase", xlab = "method 2", ylab = "method 1")
+plot(as.numeric(mthd1_vs_2_ctls$amplitude), as.numeric(mthd1_vs_2_ctls$amplitude_CTL), main = "cond_0 predicted amp", xlab = "method 2", ylab = "method 1")
+plot(as.numeric(mthd1_vs_2_ctls$amp_ratio), as.numeric(mthd1_vs_2_ctls$amp_ratio_CTL), main = "cond_0 predicted amp_ratio", xlab = "method 2", ylab = "method 1")
+
+
+#cond_1:
+mthd1_vs_2_ads = merge(cyclers_method_2, cond_1_cyclers, by = "Gene_Symbols" )
+plot(-log(mthd1_vs_2_ads$p), -log(as.numeric(mthd1_vs_2_ads$p_statistic)), main = "-log p of is cycling in cond_1", xlab= "method 2 (all data fed in to is_cycling)", ylab = "method 1")
+Aff = grep("Affine", mthd1_vs_2_ads$Gene_Symbols)
+points(-log(mthd1_vs_2_ads$p[Aff]), -log(as.numeric(mthd1_vs_2_ads$p_statistic[Aff])), col = "red")
+plot(as.numeric(mthd1_vs_2_ads$acrophase), as.numeric(mthd1_vs_2_ads$acrophase_AD), main = "cond_1 predicted acrophase", xlab = "method 2", ylab = "method 1")
+plot(as.numeric(mthd1_vs_2_ads$amplitude), as.numeric(mthd1_vs_2_ads$amplitude_AD), main = "cond_1 predicted amp", xlab = "method 2", ylab = "method 1")
+plot(as.numeric(mthd1_vs_2_ads$amp_ratio), as.numeric(mthd1_vs_2_ctls$amp_ratio_AD), main = "cond_1 predicted amp_ratio", xlab = "method 2", ylab = "method 1")
+
+#Plots 1, 5 show the differnces in the methods.
+```
+
+### Testing Mesor_differences
+
+```{r}
+#test all genes for differential mesor
+diff_mesor = mesor_differences(cyc_pred, tmm, DR_genes = tmm$Gene_Symbols[-1], useBatch = F, percentile = 0)
+
+head(diff_mesor %>% arrange(as.numeric(p_mesor)))
+
+```
+
+Accuracy of mesor_differences:
+
+```{r}
+mesor1 = str_extract(diff_mesor$Gene_Symbols, "(?<=mes)[0-9]+\\.*[0-9]*") %>%   as.numeric
+condOffset = str_extract(diff_mesor$Gene_Symbols, "(?<=condOffset)[0-9]+\\.*[0-9]*") %>%          as.numeric
+mean1 = str_extract(diff_mesor$Gene_Symbols, "(?<=mean)[0-9]+\\.*[0-9]*") %>%   as.numeric
+
+plot(mesor1, as.numeric(diff_mesor$mesor_CTL), main = "cond_0 true mesor vs predicted mesor", xlab = "true mesor", ylab = "predicted mesor")
+lines(c(0,100), c(0,100),col = "green")
+plot((mesor1+condOffset), as.numeric(diff_mesor$mesor_AD), main = "cond_1 true mesor vs predicted mesor", xlab = "true mesor", ylab = "predicted mesor")
+lines(c(0,100), c(0,100),col = "green")
+
+#plot(condOffset/mesor1, -log(as.numeric(diff_mesor$p_mesor)), ylim = c(0,50))
+```
+
+## 2) Data With Technical Batches
+
+```{r}
+data_batch = generate_tmm(addBatch = T, sample_size = sample_size, num_genes_rhyth = num_genes_rhyth, num_genes_nonRhyth = num_genes_nonRhyth, num_affine = num_affine, times = times, cond = cond, batch= batch)
+
+tmm_batch = data_batch[[1]]
+cyc_pred_batch = data_batch[[2]]
+synthetic_data_batch = data_batch[[3]]
+noiseless_data_batch = data_batch[[4]]
+```
+
+**Example Genes:**
+
+```{r}
+i = 40
+#rhythmic example w batch
+plot(times, synthetic_data_batch[i, ], main = rownames(synthetic_data_batch)[i])
+points(times, noiseless_data_batch[paste0("noiseless_", rownames(synthetic_data_batch)[i]),], col= "green")
+
+i = 400
+#rhythmic example w batch
+plot(times, synthetic_data_batch[i, ], main = rownames(synthetic_data_batch)[i])
+points(times, noiseless_data_batch[paste0("noiseless_", rownames(synthetic_data_batch)[i]),], col= "green")
+
+i = 1302
+#rhythmic example w batch
+plot(times, synthetic_data_batch[i, ], main = rownames(synthetic_data_batch)[i])
+points(times, noiseless_data_batch[paste0("noiseless_", rownames(synthetic_data_batch)[i]),], col= "green")
+
+```
+
+### My custom Regression (method 1) with batch
+
+```{r}
+### custom regression ##
+cond_0_cyclers_batch = is_cycling(cyc_pred_batch, tmm_batch, "cond_0", useBatch = T, percentile = 0)
+cond_1_cyclers_batch = is_cycling(cyc_pred_batch, tmm_batch, "cond_1", useBatch = T, percentile = 0)
+#filter genes that cycling in cond0 or 1
+strong_cond_0_cyclers_batch = filter(cond_0_cyclers_batch , as.numeric(Bonf) < 0.05)
+strong_cond_1_cyclers_batch = filter(cond_1_cyclers_batch , as.numeric(Bonf) < 0.05)
+DR_genelist_batch = union(strong_cond_0_cyclers_batch$Gene_Symbols, strong_cond_1_cyclers_batch $Gene_Symbols)
+
+#diff rhythms
+diff_rhyth_mthd1_cyclers_batch = diff_rhyth(cyc_pred_batch, tmm_batch, DR_genelist_batch , useBatch = T, percentile =0)
+
+print(paste("Identified", dim(strong_cond_0_cyclers_batch)[1], "cond_0 cyclers"))
+print(paste("Identified", dim(strong_cond_1_cyclers_batch)[1], "cond_1 cyclers"))
+print(paste("Found", length(grep("NonRhyth|Affine", strong_cond_0_cyclers_batch$Gene_Symbols)), "false positive cond_0 cyclers"))
+print(paste("Found", length(grep("NonRhyth|Affine", strong_cond_1_cyclers_batch$Gene_Symbols)), "false positive cond_1 cyclers"))
+
+```
+
+#### Accuracy of custom regression (method 1) with batch
+
+(Batch term in models don't effect the cycling parameters so these will be equal even if I used the non-batched regresion). But the amplitude ratio true vs predicted would be less correct if I left out the batch term in regression. **Note: when I have multiple batches, which mesor is the "true" mesor. Answer: Can't be sure if one batch is more true than other so I take a weighted average of the mesors between batches (this can be seen below).**
+
+```{r}
+#extract the true wave parameters from the "gene names", Any Affine or Non-rhythmic genes should have NA for amp, acrophase parameters and therfore be excluded from plots automatically
+true_amp1 = str_extract(diff_rhyth_mthd1_cyclers_batch$Gene_Symbols, "(?<=Amp1_)[0-9]+\\.*[0-9]*") %>%     as.numeric
+true_amp2 = str_extract(diff_rhyth_mthd1_cyclers_batch$Gene_Symbols, "(?<=Amp2_)[0-9]+\\.*[0-9]*") %>%     as.numeric
+true_phase1 = str_extract(diff_rhyth_mthd1_cyclers_batch$Gene_Symbols, "(?<=Acr1_)[0-9]+\\.*[0-9]*") %>%  as.numeric
+true_phase2 = str_extract(diff_rhyth_mthd1_cyclers_batch$Gene_Symbols, "(?<=Acr2_)[0-9]+\\.*[0-9]*") %>%     as.numeric
+noise_added  = str_extract(diff_rhyth_mthd1_cyclers_batch$Gene_Symbols, "(?<=SDNoise)[0-9]+\\.*[0-9]*") %>%     as.numeric
+
+plot(true_amp1, as.numeric(diff_rhyth_mthd1_cyclers_batch$amplitude_CTL), main = "cond_0 amp predicted vs signal", xlab = "cond 0 true amp", ylab = "predicted amp")
+plot(true_amp2, as.numeric(diff_rhyth_mthd1_cyclers_batch$amplitude_AD), main = "cond_1 amp predicted vs signal", xlab = "cond 1 true amp", ylab = "predicted amp")
+ggplot(diff_rhyth_mthd1_cyclers_batch, aes(true_phase1, as.numeric(acrophase_CTL), color = log(true_amp1)))+geom_point()+ggtitle("cond_0 phase predicted vs signal")+xlab("cond 0 true phase")+ylab("cond 0 predicted phase")
+ggplot(diff_rhyth_mthd1_cyclers_batch, aes(true_phase2, as.numeric(acrophase_AD), color = log(true_amp2)))+geom_point()+ggtitle("cond_1 phase predicted vs signal")+xlab("cond 1 true phase")+ylab("cond 1 predicted phase")
+
+true_mesor0 = str_extract(cond_0_cyclers_batch$Gene_Symbols, "(?<=mes)[0-9]+\\.*[0-9]*") %>% 
+    as.numeric
+true_amp0 = str_extract(cond_0_cyclers_batch$Gene_Symbols, "(?<=Amp1_)[0-9]+\\.*[0-9]*") %>%     as.numeric
+true_amp1 = str_extract(cond_1_cyclers_batch$Gene_Symbols, "(?<=Amp2_)[0-9]+\\.*[0-9]*") %>%  
+    as.numeric
+condOffset = str_extract(cond_1_cyclers_batch$Gene_Symbols, "(?<=condOffset)[0-9]+\\.*[0-9]*") %>%     as.numeric
+
+weighted_avg_cond_0_mesor = (true_mesor0 * length(which(!batch & !cond)) +  (true_mesor0 + batch_effect) * length(which(batch & !cond)))/ length(which(!cond))
+
+weighted_avg_cond_1_mesor = ((true_mesor0 + condOffset) * length(which(!batch & cond)) +  (true_mesor0 + batch_effect+condOffset) * length(which(batch & cond)))/ length(which(cond))
+
+plot(true_amp0/weighted_avg_cond_0_mesor, as.numeric(cond_0_cyclers_batch$amp_ratio), main = "cond_0 true amp ratio vs predicted ", xlab = "true amp ratio", ylab = "predicted amp ratio")
+lines(c(0,100), c(0,100),col = "green")
+
+plot(true_amp1/weighted_avg_cond_1_mesor, as.numeric(cond_1_cyclers_batch$amp_ratio), main = "cond_1 true amp ratio vs predicted", xlab = "true amp ratio", ylab = "predicted amp_ratio")
+lines(c(0,100), c(0,100),col = "green")
+
+```
+
+### Custom Regression Method 2
+
+This is going different from above in that all subjects are tested together for "is_cycling," just like in compareRhythms.
+
+```{r}
+## custom method2 is_cycling ##
+cyclers_method_2_batch = is_cycling_method2(cyc_pred_batch, tmm_batch , useBatch = T, percentile = 0)
+DR_genelist_mthd2_batch = filter(cyclers_method_2_batch, Bonf < 0.05) %>% select(Gene_Symbols) %>% unname %>% unlist
+
+DR_custom_method_2_batch = diff_rhyth(cyc_pred_batch, tmm_batch, DR_genelist_mthd2_batch, useBatch = T, percentile = 0)
+```
+
+#### Accuracy of custom regression (method 2) with batch
+
+```{r}
+#extract the true wave parameters from the "gene names", Any Affine or Non-rhythmic genes should have NA for amp, acrophase parameters and therfore be excluded from plots automatically
+true_mesor = str_extract(cyclers_method_2_batch$Gene_Symbols, "(?<=mes)[0-9]+\\.*[0-9]*") %>%
+  as.numeric
+condOffset = str_extract(cyclers_method_2_batch$Gene_Symbols, "(?<=condOffset)[0-9]+\\.*[0-9]*") %>%
+  as.numeric
+true_amp1 = str_extract(cyclers_method_2_batch$Gene_Symbols, "(?<=Amp1_)[0-9]+\\.*[0-9]*") %>% 
+  as.numeric
+true_amp2 = str_extract(cyclers_method_2_batch$Gene_Symbols, "(?<=Amp2_)[0-9]+\\.*[0-9]*") %>% 
+  as.numeric
+true_phase1 = str_extract(cyclers_method_2_batch$Gene_Symbols, "(?<=Acr1_)[0-9]+\\.*[0-9]*") %>% as.numeric
+true_phase2 = str_extract(cyclers_method_2_batch$Gene_Symbols, "(?<=Acr2_)[0-9]+\\.*[0-9]*") %>% as.numeric
+noise_added  = str_extract(cyclers_method_2_batch$Gene_Symbols, "(?<=SDNoise)[0-9]+\\.*[0-9]*") %>% as.numeric
+
+plot(true_amp1, as.numeric(cyclers_method_2_batch$amplitude_CTL), main = "cond_0 amp predicted vs signal")
+plot(true_amp2, as.numeric(cyclers_method_2_batch$amplitude_AD), main = "cond_1 amp predicted vs signal")
+plot(true_phase1, as.numeric(cyclers_method_2_batch$acrophase_CTL), main = "cond_0 phase predicted vs signal")
+plot(true_phase2, as.numeric(cyclers_method_2_batch$acrophase_AD), main = "cond_1 phase predicted vs signal")
+
+weighted_avg_cond_0_mesor = (true_mesor * length(which(!batch & !cond)) +  (true_mesor + batch_effect) * length(which(batch & !cond)))/ length(which(!cond))
+
+weighted_avg_cond_1_mesor = ((true_mesor + condOffset) * length(which(!batch & cond)) +  (true_mesor + batch_effect+condOffset) * length(which(batch & cond)))/ length(which(cond))
+
+plot(weighted_avg_cond_0_mesor, as.numeric(cyclers_method_2_batch$mesor_CTL), main = "cond_0 true mesor vs predicted mesor", xlab = "true mesor", ylab = "predicted mesor")
+lines(c(0,100), c(0,100),col = "green")
+
+plot(weighted_avg_cond_1_mesor, as.numeric(cyclers_method_2_batch$mesor_AD), main = "cond_1 true mesor vs predicted mesor", xlab = "true mesor", ylab = "predicted mesor")
+lines(c(0,100), c(0,100),col = "green")
+
+plot(true_amp2/ weighted_avg_cond_1_mesor, as.numeric(cyclers_method_2_batch$amp_ratio_AD), main = "cond_1 weighted amp_ratio vs predicted ", xlab = "true weighted amp ratio", ylab = "predicted")
+lines(c(0,100), c(0,100),col = "green")
+
+plot(true_amp1/ weighted_avg_cond_0_mesor, as.numeric(cyclers_method_2_batch$amp_ratio_CTL), main = "cond_0 weighted amp_ratio vs predicted ", xlab = "true weighted amp ratio", ylab = "predicted")
+lines(c(0,100), c(0,100),col = "green")
+```
+
+### **CompareRhythms with Batch on data**
+
+```{r}
+library(compareRhythms)
+
+#remove covariates from top of df
+emat = tmm_batch[!grepl("_D", unlist(tmm_batch[,1])),]
+#make numeric
+emat = apply(emat[,-1], 2, as.numeric)
+# emat = t(apply(emat, 1, blunt_outliers))
+
+#rename the rows, previous step removes rownames
+rownames(emat) = tmm_batch[!grepl("_D", unlist(tmm_batch[,1])), 1] %>% unlist
+
+#create the experimental_design df:
+my_cond = as.factor(as.character(tmm_batch[1,-1]))
+my_cond = relevel(my_cond, "cond_0")
+
+my_batch = as.factor(as.character(tmm_batch[2,-1]))
+my_batch = relevel(my_batch, "cond_0")
+
+exp_design = data.frame(group = my_cond, batch = my_batch, time = as.numeric(cyc_pred_batch$Phase)* 12 / pi)
+
+CR_cosinor_method_batch= compareRhythms(emat, exp_design, method = 'cosinor',  just_classify = F, 
+   compare_fdr = 0.2,
+   amp_cutoff = 0,
+   rhythm_bonf_cutoff = 1)
+```
+
+### **Comparing the 3 methods of is_cycling [with batch]{.underline}**
+
+**Method 2 vs CompareRhythms is_cycling**. which genes are cycling in cond_0 or 1? ([should be identical results]{.underline})
+
+```{r}
+###### is_cycling in compareRhythms vs my "method_2"
+method2_vs_CR = merge(cyclers_method_2_batch, CR_cosinor_method_batch, by.x = "Gene_Symbols", by.y = "id")
+plot(-log(method2_vs_CR$p), -log(method2_vs_CR$p_val_cond_0_or_cond_1), main = "-log is_cycling", xlab = "my regression method 2, -log p", ylab = "compareRhythms -logp")
+plot(as.numeric(method2_vs_CR$acrophase_AD), method2_vs_CR$cond_1_phase, main = "cond_1 acrophase parameter", xlab = "my method 2 acrophase", ylab = "compareRhythms acrophase")
+plot(as.numeric(method2_vs_CR$acrophase_CTL), method2_vs_CR$cond_0_phase, main = "cond_0 acrophase parameter", xlab = "my method 2 acrophase", ylab = "compareRhythms acrophase")
+plot(as.numeric(method2_vs_CR$amplitude_AD), method2_vs_CR$cond_1_amp, main = "cond_1 amp parameter", xlab = "my method 2 amp", ylab = "compareRhythms amp")
+plot(as.numeric(method2_vs_CR$amplitude_CTL), method2_vs_CR$cond_0_amp, main = "cond_0 amp parameter", xlab = "my method 2 amp", ylab = "compareRhythms amp")
+
+#the amplitude parameter in mine is exactly half of compareRhythms, that is as expected
+```
+
+**Method 1 vs Method 2** of **is_cycling with batch.** (should be differences in the p values assigned to genes but not the cycling parameters).
+
+```{r}
+######is_cycling method 1 vs method 2 #####
+#cond_0:
+mthd1_vs_2_ctls_batch = merge(cyclers_method_2_batch, cond_0_cyclers_batch, by = "Gene_Symbols" )
+non_rhyth = grepl("NonRhyth|Affine",mthd1_vs_2_ctls_batch$Gene_Symbols)
+
+ggplot(mthd1_vs_2_ctls_batch,aes(-log(as.numeric(p)), -log(as.numeric(p_statistic)), color = non_rhyth))+ geom_point() + ggtitle("-log p of is cycling in cond_0") + xlab("method 2 (all data fed in to is_cycling)")+ ylab("method 1")
+
+ggplot(mthd1_vs_2_ctls_batch,aes(as.numeric(acrophase), as.numeric(acrophase_CTL), color = non_rhyth))+geom_point() + ggtitle("cond_0 predicted acrophase") + xlab("method 2")+ ylab("method 1")
+
+plot(as.numeric(mthd1_vs_2_ctls_batch$amplitude), as.numeric(mthd1_vs_2_ctls_batch$amplitude_CTL), main = "cond_0 predicted amp", xlab = "method 2", ylab = "method 1")
+plot(as.numeric(mthd1_vs_2_ctls_batch$amp_ratio), as.numeric(mthd1_vs_2_ctls_batch$amp_ratio_CTL), main = "cond_0 predicted amp_ratio", xlab = "method 2", ylab = "method 1")
+
+#cond_1:
+mthd1_vs_2_ads_batch = merge(cyclers_method_2_batch, cond_1_cyclers_batch, by = "Gene_Symbols")
+non_rhyth = grepl("NonRhyth|Affine",mthd1_vs_2_ads_batch$Gene_Symbols)
+
+ggplot(mthd1_vs_2_ads_batch,aes(-log(as.numeric(p)), -log(as.numeric(p_statistic)), color = non_rhyth))+ geom_point() + ggtitle("-log p of is cycling in cond_1") + xlab("method 2 (all data fed in to is_cycling)")+ ylab("method 1")
+
+plot(as.numeric(mthd1_vs_2_ads_batch$acrophase), as.numeric(mthd1_vs_2_ads_batch$acrophase_AD), main = "cond_1 predicted acrophase", xlab = "method 2", ylab = "method 1")
+plot(as.numeric(mthd1_vs_2_ads_batch$amplitude), as.numeric(mthd1_vs_2_ads_batch$amplitude_AD), main = "cond_1 predicted amp", xlab = "method 2", ylab = "method 1")
+plot(as.numeric(mthd1_vs_2_ads_batch$amp_ratio), as.numeric(mthd1_vs_2_ads_batch$amp_ratio_AD), main = "cond_1 predicted amp_ratio", xlab = "method 2", ylab = "method 1")
+
+#Plots 1, 5 show the differnces in the methods.
+```
+
+### Testing Mesor_differences with Batch
+
+```{r}
+#test all genes for differential mesor
+diff_mesor_batch = mesor_differences(cyc_pred_batch, tmm_batch, DR_genes = tmm_batch$Gene_Symbols[-c(1:2)], useBatch = T, percentile = 0)
+
+```
+
+Accuracy of Mesor Differences
+
+```{r}
+mesor = str_extract(diff_mesor_batch$Gene_Symbols, "(?<=mes)[0-9]+\\.*[0-9]*") %>%  
+    as.numeric
+condOffset = str_extract(diff_mesor_batch$Gene_Symbols, "(?<=condOffset)[0-9]+\\.*[0-9]*") %>%     as.numeric
+noise = str_extract(diff_mesor_batch$Gene_Symbols, "(?<=SDNoise)[0-9]+\\.*[0-9]*") %>%     as.numeric
+
+weighted_avg_cond_0_mesor = (mesor * length(which(!batch & !cond)) +  (mesor + batch_effect) * length(which(batch & !cond)))/ length(which(!cond))
+
+weighted_avg_cond_1_mesor = ((mesor + condOffset) * length(which(!batch & cond)) +  (mesor + batch_effect+condOffset) * length(which(batch & cond)))/ length(which(cond))
+
+plot(weighted_avg_cond_0_mesor, as.numeric(diff_mesor_batch$mesor_CTL), main = "cond_0 true mesor vs predicted mesor", xlab = "true mesor", ylab = "predicted mesor")
+lines(c(0,100), c(0,100),col = "green")
+
+plot(weighted_avg_cond_1_mesor, as.numeric(diff_mesor_batch$mesor_AD), main = "cond_1 true mesor vs predicted mesor", xlab = "true mesor", ylab = "predicted mesor")
+lines(c(0,100), c(0,100),col = "green")
+
+# ggplot(diff_mesor_batch, aes(weighted_avg_cond_1_mesor, as.numeric(mesor_AD), color =  noise)) + geom_point()
+```
