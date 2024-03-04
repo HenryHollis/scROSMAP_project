@@ -9,16 +9,15 @@ Read in TMM and cyclops prediction:
 ```{r}
 library(tidyverse)
 #path to cyclops ordering
-cyclops_fit= "/Users/henryhollis/Box Sync/Henry_stuff/AD_project/human_data/Cyclops_folders/training_output/scROSMAP/cogdx_controls/wAD/ExcitatoryNeurons/TMMs_w_batch/Exc3and5_FiltByEdgeRDefault_fixedipBulkChenZhang_condAndBatchCovs_04ContrVar4EGdefault_noTransferFit/Fits/Fit_Output_2024-01-18T10_45_00.csv"
+cyclops_fit= "../Cyclops_ordering/Fits/Fit_Output_2024-02-05T14_13_00.csv"
 
 #I want to arrange the heatmaps by acrophase so I need this
-#CTL_cycling_file = "training_output/scROSMAP/cogdx_controls/wAD/ExcitatoryNeurons/TMMs_w_batch/Exc3and5_FiltByEdgeRDefault_fixedipBulkChenZhang_condAndBatchCovs_04ContrVar4EGdefault_noTransferFit/downstream_output_Exc3_5/cosinor_results_CTL.csv"
-CTL_cycling_file = "/Users/henryhollis/Box Sync/Henry_stuff/AD_project/human_data/Cyclops_folders/training_output/scROSMAP/cogdx_controls/wAD/ExcitatoryNeurons/TMMs_w_batch/Exc3and5_FiltByEdgeRDefault_fixedipBulkChenZhang_condAndBatchCovs_04ContrVar4EGdefault_noTransferFit/downstream_output_Mglia_4_5_6_7_8_10_11_13_15_16/cosinor_results_CTL.csv"
+CTL_cycling_file = "../Cyclops_ordering/downstream_output_Mglia_4_5_6_7_8_10_11_13_15_16/cosinor_results_CTL.csv"
 
 #path to normalized counts
-path_to_tmm_file = "/Users/henryhollis/Box Sync/Henry_stuff/AD_project/human_data/Cyclops_folders/tmms/scROSMAP/cogdx_controls/EdgeR_filt_normed/Microglia_4_5_6_7_8_10_11_13_15_16_FiltByExprDefault_TMM_CombatAdjusted.csv"
+path_to_tmm_file = "../normed_counts/Microglia_4_5_6_7_8_10_11_13_15_16_FiltByExprDefault_TMM_CombatAdjusted.csv"
 
-condition = "cond_0"
+condition = "cond_1"
 if(condition == "cond_0"){
   plot_title = "CTL"
 }else{
@@ -34,7 +33,7 @@ CTL_cycling_res = read_csv(CTL_cycling_file, show_col_types = F)
 Get Kegg Ribosome pathway:
 
 ```{r}
-setwd("~/Box Sync/Henry_stuff/AD_project/scROSMAP/Rscripts/automatic_downstream_analysis/MsigDB_gmts_for_GSEA/")
+setwd("../Analysis_scripts/MsigDB_gmts_for_GSEA/")
 Kegg = read.delim("c2.cp.kegg.v2023.1.Hs.symbols.gmt", sep = '\t', header= F)
 ribo = Kegg[grep("RIBOSOME", Kegg$V1), -c(1,2)] %>% unname %>% unlist
 ```
@@ -66,7 +65,9 @@ heatmap_data = heatmap_data[row_order, ]
 
 ```{r}
 library(gplots)
-heatmap.2(as.matrix(heatmap_data), col = cm.colors, tracecol = "black", trace = "none", dendrogram = "none", scale ="row", Rowv = NA, Colv = NA, labCol = as.character(seq(0, 24, by = 6)), main = paste("KEGG Ribosome Pathway", plot_title))
+# times = as.character(seq(0, 24, by = 6))
+times = c(expression(pi/2), expression(pi), expression(3*pi/2), expression(2*pi))
+heatmap.2(as.matrix(heatmap_data), col = cm.colors, tracecol = "black", trace = "none", dendrogram = "none", scale ="row", Rowv = NA, Colv = NA, labCol = times, main = paste("KEGG Ribosome Pathway", plot_title))
 ```
 
 NOTES: using Combated data, plotting the MEDIANS of the bins
@@ -98,5 +99,7 @@ heatmap_data_oxphos = heatmap_data_oxphos[row_order, ]
 ```
 
 ```{r}
-heatmap.2(as.matrix(heatmap_data_oxphos), col = cm.colors, tracecol = "black", trace = "none", dendrogram = "none", scale ="row", Rowv = NA, Colv = NA, labCol = as.character(seq(0, 24, by = 6)), main = paste("KEGG OxPhos Pathway", plot_title))
+# times = as.character(seq(0, 24, by = 6))
+times = c(expression(pi/2), expression(pi), expression(3*pi/2), expression(2*pi))
+heatmap.2(as.matrix(heatmap_data_oxphos), col = cm.colors, tracecol = "black", trace = "none", dendrogram = "none", scale ="row", Rowv = NA, Colv = NA, labCol = times, main = paste("KEGG OxPhos Pathway", plot_title))
 ```

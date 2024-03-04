@@ -1,0 +1,33 @@
+---
+title: "MetaboAnalyst_custom_plot"
+format: html
+editor: visual
+---
+
+This file is for taking the MetaboAnalyst results and making pretty plots from them.
+
+### Read in the metaboAnalyst Results:
+
+```{r}
+library(tidyverse)
+library(ggrepel)
+pathway_res_CTL = read_csv("../Cyclops_ordering/metabolon/MetaboAnalyst/Cycling_in_CTL_Exc35genes_defaultOptions/MetaboAnalyst_result_pathway.csv", show_col_types = F)
+
+pathway_res_AD = read_csv("../Cyclops_ordering/metabolon/MetaboAnalyst/Cycling_in_AD_Exc35genes_defaultOptions/MetaboAnalyst_result_pathway.csv", show_col_types = F)
+```
+
+Make the Plots:
+
+```{r}
+ggplot(pathway_res_CTL, aes(x= Impact, y = `-log10(p)`, label =str_wrap(`...1`, 25)))+
+  geom_point(size = 5, color = "#0091ff", alpha = 0.7)+
+  ggrepel::geom_text_repel(max.overlaps = 10)+
+   theme_minimal()
+```
+
+```{r}
+ggplot(pathway_res_AD, aes(x= Impact, y = `-log10(p)`, label =str_wrap(`...1`, 25)))+
+  geom_point(size = 5, color = "red", alpha = 0.7)+
+  ggrepel::geom_text_repel(max.overlaps = 10)+
+   theme_minimal()
+```

@@ -26,6 +26,7 @@ cycling_in_AD = read_csv("../Cyclops_ordering/metabolon/cycling_in_AD.csv",show_
 cycling_in_AD_BHQ1 = filter(cycling_in_AD, BHQ < 0.1)
 
 diff_cycling = read_csv("../Cyclops_ordering/metabolon/diff_rhythms_CyclingBHQ1.csv", show_col_types = F)
+diff_cycling_BHQ = filter(diff_cycling, BHQ < 0.3)
 ```
 
 ### Merge with trans_dict
@@ -35,8 +36,11 @@ cycling_CTL = merge(cycling_in_CTL_BHQ1, trans_dict, by.x = "SHORT_NAME", by.y =
 
 cycling_AD = merge(cycling_in_AD_BHQ1, trans_dict, by.x = "SHORT_NAME", by.y = "SHORT_NAME_Metabolon", suffixes = "_metaboAnalyst")
 
+diff_cycling_out = merge(diff_cycling_BHQ, trans_dict, by.x = "SHORT_NAME", by.y = "SHORT_NAME_Metabolon", suffixes = "_metaboAnalyst")
+
 write.table(cycling_CTL, "../Cyclops_ordering/metabolon/MetaboAnalyst/Cycling_in_CTL_BHQ1.csv", sep = ',', row.names = F)
 write.table(cycling_AD, "../Cyclops_ordering/metabolon/MetaboAnalyst/Cycling_in_AD_BHQ1.csv", sep = ',', row.names = F)
+write.table(diff_cycling_out, "../Cyclops_ordering/metabolon/MetaboAnalyst/Diff_cycling_BHQ3.csv", sep = ',', row.names = F)
 ```
 
 ```         
