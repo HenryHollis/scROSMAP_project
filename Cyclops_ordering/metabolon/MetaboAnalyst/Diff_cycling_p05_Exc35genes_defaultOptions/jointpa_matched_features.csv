@@ -1,0 +1,40 @@
+"",matched_features
+Glutathione metabolism,cpd:C00024; hsa:9446; hsa:6241; hsa:79094
+Drug metabolism - other enzymes,hsa:83549; hsa:6241; hsa:4831; hsa:9446
+"Phenylalanine, tyrosine and tryptophan biosynthesis",cpd:C00079; cpd:C00082
+Biosynthesis of unsaturated fatty acids,cpd:C00219; cpd:C06429; cpd:C06428
+Phenylalanine metabolism,cpd:C00079; cpd:C00082
+Arachidonic acid metabolism,cpd:C00219; hsa:8398; hsa:874
+Pyrimidine metabolism,hsa:6241; hsa:4831; hsa:83549
+Lysine degradation,cpd:C00024; hsa:23127
+Synthesis and degradation of ketone bodies,cpd:C00024
+Aminoacyl-tRNA biosynthesis,cpd:C00079; cpd:C00082
+Ubiquinone and other terpenoid-quinone biosynthesis,cpd:C00082
+Linoleic acid metabolism,hsa:8398
+Purine metabolism,hsa:6241; hsa:5137; hsa:4831
+alpha-Linolenic acid metabolism,hsa:8398
+Butanoate metabolism,cpd:C00024
+Pentose and glucuronate interconversions,hsa:51181
+Glycerolipid metabolism,hsa:4023
+Terpenoid backbone biosynthesis,cpd:C00024
+Ether lipid metabolism,hsa:8398
+Nicotinate and nicotinamide metabolism,hsa:23475
+Citrate cycle (TCA cycle),cpd:C00024
+beta-Alanine metabolism,cpd:C00024
+Glycosaminoglycan degradation,hsa:3373
+Pyruvate metabolism,cpd:C00024
+Propanoate metabolism,cpd:C00024
+Metabolism of xenobiotics by cytochrome P450,hsa:9446; hsa:874
+Glyoxylate and dicarboxylate metabolism,cpd:C00024
+Sphingolipid metabolism,hsa:57704
+Glycolysis or Gluconeogenesis,cpd:C00024
+Inositol phosphate metabolism,cpd:C00024
+Fatty acid elongation,cpd:C00024
+Amino sugar and nucleotide sugar metabolism,hsa:1118
+Tryptophan metabolism,cpd:C00024
+Glycerophospholipid metabolism,hsa:8398
+"Valine, leucine and isoleucine degradation",cpd:C00024
+Tyrosine metabolism,cpd:C00082
+Drug metabolism - cytochrome P450,hsa:9446
+Fatty acid degradation,cpd:C00024
+Fatty acid biosynthesis,cpd:C00024

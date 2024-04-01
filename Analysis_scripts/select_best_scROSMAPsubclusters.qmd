@@ -55,10 +55,16 @@ rosmap_meta$apoe_ordinal[is.na(rosmap_meta$apoe_genotype) ] = NA
 rosmap_meta$age_death_numeric = rosmap_meta$age_death %>% str_replace("\\+", "") %>% as.numeric
 
 #adds cogdx score for each subcluster
-pseudobulk_meta$cogdx = rosmap_subject_metadata$cogdx[match(pseudobulk_meta$project_id, rosmap_subject_metadata$projid)]
+pseudobulk_meta$cogdx = rosmap_meta$cogdx[match(pseudobulk_meta$project_id, rosmap_meta$projid)]
+
+pseudobulk_meta$cond_cogdx = rosmap_meta$cond_cogdx[match(pseudobulk_meta$project_id, rosmap_meta$projid)]
+
+pseudobulk_meta$pmi = rosmap_meta$pmi[match(pseudobulk_meta$project_id, rosmap_meta$projid)]
 ```
 
 ### Create Seurat object
+
+notes: "NA" on these plots means the projectid from the 424 .rda file is not found in my rosmap_meta. These are the cogdx 3,6 subjects I exclude.
 
 ```{r}
 #creates a seurat object
@@ -69,6 +75,29 @@ seurat_obj = CreateSeuratObject(
   names.field = 3,
   names.delim = "_",
   meta.data = pseudobulk_meta)
+
+#get Ribo Protein percent
+seurat_obj <- PercentageFeatureSet(seurat_obj, "^RP[SL]", col.name = "percent_ribo")
+
+# Percentage hemoglobin genes - includes all genes starting with HB except HBP.
+seurat_obj <- PercentageFeatureSet(seurat_obj, "^HB[^(P)]", col.name = "percent_hb")
+
+#Does number of ribosoal features (%ribo * n_features) change with cogdx
+RPSL.genes <- grep(pattern = "^RP[SL]", x = rownames(x = seurat_obj@assays$RNA$counts), value = TRUE)
+
+counts.RPS <- Matrix::colSums(seurat_obj@assays$RNA$counts[RPSL.genes, ])
+
+seurat_obj = AddMetaData(
+  object = seurat_obj,
+  metadata = counts.RPS,
+  col.name = "cnts_ribo"
+)
+VlnPlot(seurat_obj, group.by = "cond_cogdx", features = c("cnts_ribo", "pmi"), pt.size = 0.1, ncol = 1, alpha = 0)
+
+#plot QC mertrics
+feats <- c("nFeature_RNA", "nCount_RNA", "percent_ribo")
+VlnPlot(seurat_obj, group.by = "broadclass", features = feats, pt.size = 0.1, ncol = 2, alpha = 0.05) +
+  NoLegend()
 
 #creates a reference correlation matrix
 refCor = getRefCor(species = "human", tissue = "pan", useEntrezGeneId = F)
@@ -336,4 +365,26 @@ qlf.2vs1$table$FDR = p.adjust(qlf.2vs1$table$PValue, method = "BH")
 
 write.table(qlf.2vs1$table, "Inhib_2_8_11_12_13/ Inhib_2_8_11_12_13_filtByExpr_combatSeq_edgeR_DE_QLFTest.csv", sep =',', row.names = T, col.names = NA )
 
+```
+
+Alternative - no combat, supply edgeR with batch information:
+
+```{r}
+all(colnames(cts) == (my_rosmap_meta$projid))
+
+#create DGElist
+y <- DGEList(counts = as.matrix(cts), group = my_rosmap_meta$cond_cogdx)
+#default params for filterByExpression
+keep.genes = filterByExpr(y)
+#filter out the genes
+y = y[keep.genes, , keep=FALSE]
+print(paste("keeping", dim(y)[1], "genes"))
+
+design = model.matrix(~my_rosmap_meta$cond_cogdx + my_rosmap_meta$batch_bin)
+colnames(design) = c("CTL","AD", "Batch10_64")
+
+y1 = estimateDisp(y, design)
+fit <- glmQLFit(y1, design)
+qlf <- glmQLFTest(fit, coef=2)
+topTags(qlf)
 ```

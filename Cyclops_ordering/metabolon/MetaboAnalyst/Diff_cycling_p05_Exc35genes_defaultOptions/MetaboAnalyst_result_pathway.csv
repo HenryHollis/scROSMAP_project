@@ -1,0 +1,40 @@
+"","Total","Expected","Hits","Raw p","-log10(p)","Holm adjust","FDR","Impact"
+"Glutathione metabolism",56,0.48197,4,0.0011144,2.953,0.093609,0.093609,0.18182
+"Drug metabolism - other enzymes",70,0.60246,4,0.0025711,2.5899,0.2134,0.10371,0.14493
+"Phenylalanine, tyrosine and tryptophan biosynthesis",11,0.094672,2,0.0037041,2.4313,0.30373,0.10371,1.2
+"Biosynthesis of unsaturated fatty acids",47,0.40451,3,0.0069865,2.1557,0.56591,0.14672,0.065217
+"Phenylalanine metabolism",21,0.18074,2,0.013428,1.872,1,0.2256,0.4
+"Arachidonic acid metabolism",81,0.69713,3,0.030459,1.5163,1,0.42643,0.35
+"Pyrimidine metabolism",99,0.85205,3,0.050704,1.295,1,0.60844,0.30612
+"Lysine degradation",49,0.42172,2,0.065107,1.1864,1,0.68363,0.0625
+"Synthesis and degradation of ketone bodies",10,0.086066,1,0.082955,1.0812,1,0.77425,0.44444
+"Aminoacyl-tRNA biosynthesis",74,0.63689,2,0.13167,0.88051,1,0.95954,0.027397
+"Ubiquinone and other terpenoid-quinone biosynthesis",17,0.14631,1,0.13708,0.86303,1,0.95954,0.0625
+"Linoleic acid metabolism",17,0.14631,1,0.13708,0.86303,1,0.95954,0.125
+"Purine metabolism",166,1.4287,3,0.16765,0.77561,1,1,0.19394
+"alpha-Linolenic acid metabolism",22,0.18934,1,0.17386,0.7598,1,1,0.095238
+"Butanoate metabolism",29,0.24959,1,0.22285,0.65198,1,1,0.14286
+"Pentose and glucuronate interconversions",32,0.27541,1,0.24299,0.61441,1,1,0.12903
+"Glycerolipid metabolism",35,0.30123,1,0.26263,0.58065,1,1,0.058824
+"Terpenoid backbone biosynthesis",36,0.30984,1,0.26907,0.57013,1,1,0.085714
+"Ether lipid metabolism",39,0.33566,1,0.28807,0.5405,1,1,0.10526
+"Nicotinate and nicotinamide metabolism",42,0.36148,1,0.30659,0.51344,1,1,0.04878
+"Citrate cycle (TCA cycle)",42,0.36148,1,0.30659,0.51344,1,1,0.14634
+"beta-Alanine metabolism",44,0.37869,1,0.31869,0.49664,1,1,0.046512
+"Glycosaminoglycan degradation",44,0.37869,1,0.31869,0.49664,1,1,0.13953
+"Pyruvate metabolism",45,0.3873,1,0.32466,0.48857,1,1,0.15909
+"Propanoate metabolism",48,0.41311,1,0.34228,0.46562,1,1,0.10638
+"Metabolism of xenobiotics by cytochrome P450",145,1.248,2,0.3576,0.4466,1,1,0.19444
+"Glyoxylate and dicarboxylate metabolism",56,0.48197,1,0.38714,0.41213,1,1,0.036364
+"Sphingolipid metabolism",58,0.49918,1,0.39789,0.40024,1,1,0.035088
+"Glycolysis or Gluconeogenesis",61,0.525,1,0.41368,0.38333,1,1,0.05
+"Inositol phosphate metabolism",69,0.59385,1,0.45389,0.34305,1,1,0.014706
+"Fatty acid elongation",75,0.64549,1,0.4823,0.31668,1,1,0.094595
+"Amino sugar and nucleotide sugar metabolism",79,0.67992,1,0.50046,0.30063,1,1,0.051282
+"Tryptophan metabolism",84,0.72295,1,0.5223,0.28208,1,1,0.012048
+"Glycerophospholipid metabolism",86,0.74016,1,0.53078,0.27508,1,1,0.047059
+"Valine, leucine and isoleucine degradation",88,0.75738,1,0.53912,0.26832,1,1,0.057471
+"Tyrosine metabolism",88,0.75738,1,0.53912,0.26832,1,1,0.12644
+"Drug metabolism - cytochrome P450",98,0.84344,1,0.57873,0.23753,1,1,0.020619
+"Fatty acid degradation",102,0.87787,1,0.59364,0.22647,1,1,0.18812
+"Fatty acid biosynthesis",129,1.1102,1,0.68194,0.16626,1,1,0.078125
