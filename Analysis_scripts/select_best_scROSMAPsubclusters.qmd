@@ -11,6 +11,7 @@ library(NMOF)
 library(parallel)
 library(tidyverse)
 library(deltaccd)
+library(gridExtra)
 load("../rosmap424_pseudobulk_by_cluster.rda")
 ```
 
@@ -195,7 +196,7 @@ get_subluster_data = function(str){
                              return.seurat = FALSE)
   cts = cts$RNA[,na.exclude(match(rosmap_meta$projid, colnames(cts$RNA)))]
 }
-cts = get_subluster_data("Exc\\.5$|Exc\\.3$")
+cts = get_subluster_data(".*")
 #"Inh\\.2$|Inh\\.8$|Inh\\.11$|Inh\\.12$|Inh\\.13$"
 #"Exc\\.5$|Exc\\.3$"
 # "Ast\\.1$|Ast\\.2$|Ast\\.5$|Ast\\.6$|Ast\\.7$|Ast\\.8$"
@@ -266,8 +267,12 @@ covs1 = str_replace(covs1, "\\[10,64\\)", "0")
 covs1 = str_replace(covs1, "\\[4,10\\)", "1")
 covs2 = c("ceradsc_D", paste0("cond_",  my_rosmap_meta$ceradsc_bin))
 covs3 = c("braaksc_D", paste0("cond_",  my_rosmap_meta$braaksc_bin))
+covs4 = c("sex_D", paste0("cond_", my_rosmap_meta$msex))
+#fill one missing pmi value to median of pmi's:
+my_rosmap_meta$pmi[which(is.na(my_rosmap_meta$pmi))] = median(my_rosmap_meta$pmi, na.rm = T)
+covs5 = c("pmi_C", my_rosmap_meta$pmi)
 
-out = rbind(covs, covs1, covs2, covs3, out)
+out = rbind(covs, covs1, covs2, covs3, covs4, covs5, out)
 colnames(out) = str_replace(colnames(out), "X", "")
 #Change filename depending on what cell type is selected
 write.table(out, "InhNeurons_2_8_11_12_13_FiltByExprDefault_TMM.csv", sep = ',', row.names = F)
@@ -277,11 +282,29 @@ write.table(out, "InhNeurons_2_8_11_12_13_FiltByExprDefault_TMM.csv", sep = ',',
 ### PCA the tmm
 
 ```{r}
+CYCLOPS_seed_genes = c("DBP", "TEF", "ZNF580", "GFOD1", "CASTOR2", "ETV5", "FMNL1", "MAMLD1", "TM7SF2", "FPGS", "SYNJ2", "HLF", "KBTBD2", "MPP2", "MRGBP", "USP2", "CC2D1B", "GALNT9", "GSTT2B", "NR1D1", "SRSF5", "ZMAT3", "ARNTL", "FAM3A", "FOSL2", "HUNK", "MORN1", "NEXN", "SPHK2", "TRIM9", "ENC1", "GUF1", "IGFBP4", "PER2", "CRY1", "MRAS", "SFPQ", "ARRDC1", "CFAP46", "DNAJB1", "MKKS", "SARS2", "SEC14L1", "SETD4", "SLC6A6", "SPATA7", "TFR2", "PER1", "POR", "SLC16A1", "PER3", "NPAS2", "TSC22D3", "BHLHE41", "NR1D2", "LEO1", "STK35", "GRAMD4", "COQ10B", "DTX4", "PDZRN3", "DUSP11", "OPRL1", "LRRC39", "TRIM24", "RARA", "LDB1", "BHLHE40", "RSPO2", "TRAF5", "ANKRD12")
+CYCLOPS_seed_genes = CYCLOPS_seed_genes[which(CYCLOPS_seed_genes %in% rownames(my_tmm))]
 pc_res = prcomp(t(my_tmm), scale. = T)
-colorvec = my_rosmap_meta$batch_bin
-ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC2, color = colorvec))+geom_point()#+scale_color_gradient(low = "blue", high = "red")
-ggplot(as.data.frame(pc_res$x), aes(x = PC2, y = PC3, color = colorvec))+geom_point()#+scale_color_gradient(low = "blue", high = "red")
-ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC3, color = colorvec))+geom_point()#+scale_color_gradient(low = "blue", high = "red")
+pc_res_seeds = prcomp(t(my_tmm[CYCLOPS_seed_genes,]), scale. = T)
+
+
+plot_pcs = function(pc_res, colorvec, title, continuous = F){
+ if(!continuous){colorvec = as.factor(colorvec)}
+  p1 = ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC2, color = colorvec))+geom_point() + {if(continuous)scale_color_gradient(low = "blue", high = "red")}
+  p2 = ggplot(as.data.frame(pc_res$x), aes(x = PC2, y = PC3, color = colorvec))+geom_point()+ {if(continuous)scale_color_gradient(low = "blue", high = "red")}
+  p3 = ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC3, color = colorvec))+geom_point()+ {if(continuous)scale_color_gradient(low = "blue", high = "red")}
+  p4 = ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC4, color = colorvec))+geom_point()+ {if(continuous)scale_color_gradient(low = "blue", high = "red")}
+  p5 = ggplot(as.data.frame(pc_res$x), aes(x = PC2, y = PC4, color = colorvec))+geom_point()+ {if(continuous)scale_color_gradient(low = "blue", high = "red")}
+  p6 = ggplot(as.data.frame(pc_res$x), aes(x = PC3, y = PC4, color = colorvec))+geom_point()+ {if(continuous)scale_color_gradient(low = "blue", high = "red")}
+  grid.arrange(p1, p2, p3,p4,p5, p6, nrow = 3, top=textGrob(title,gp=gpar(fontsize=12,font=3)))
+}
+
+plot_pcs(pc_res, my_rosmap_meta$batch_bin, "PCA All Genes, Seq. Batch")
+plot_pcs(pc_res_seeds, my_rosmap_meta$batch_bin, "PCA CYCLOPS Seed Genes, Seq. Batch")
+plot_pcs(pc_res, my_rosmap_meta$msex, "PCA All Genes, Sex")
+plot_pcs(pc_res_seeds, my_rosmap_meta$msex, "PCA CYCLOPS Seed Genes, Sex")
+plot_pcs(pc_res, my_rosmap_meta$pmi, "PCA All Genes, PMI", continuous = T)
+plot_pcs(pc_res_seeds, my_rosmap_meta$pmi, "PCA CYCLOPS Seed Genes, PMI", continuous = T)
 ```
 
 ### COMBAT the TMM
@@ -323,8 +346,12 @@ covs1 = str_replace(covs1, "\\[10,64\\)", "0")
 covs1 = str_replace(covs1, "\\[4,10\\)", "1")
 covs2 = c("ceradsc_D", paste0("cond_",  my_rosmap_meta$ceradsc_bin))
 covs3 = c("braaksc_D", paste0("cond_",  my_rosmap_meta$braaksc_bin))
+covs4 = c("sex_D", paste0("cond_", my_rosmap_meta$msex))
+#fill one missing pmi value to median of pmi's:
+my_rosmap_meta$pmi[which(is.na(my_rosmap_meta$pmi))] = median(my_rosmap_meta$pmi, na.rm = T)
+covs5 = c("pmi_C", my_rosmap_meta$pmi)
 
-out = rbind(covs, covs1, covs2, covs3, out)
+out = rbind(covs, covs1, covs2, covs3, covs4, covs5, out)
 colnames(out) = str_replace(colnames(out), "X", "")
 write.table(out, "InhNeurons_2_8_11_12_13_FiltByExprDefault_TMM_CombatAdjusted.csv", sep = ',', row.names = F)
 ```
@@ -332,11 +359,30 @@ write.table(out, "InhNeurons_2_8_11_12_13_FiltByExprDefault_TMM_CombatAdjusted.c
 ### PCA on the combated TMM
 
 ```{r}
+
+CYCLOPS_seed_genes = CYCLOPS_seed_genes[which(CYCLOPS_seed_genes %in% rownames(my_tmm_combat))]
+
 pc_res = prcomp(t(my_tmm_combat), scale. = T)
-colorvec = my_rosmap_meta$pmi
-ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC2, color = colorvec))+geom_point()+scale_color_gradient(low = "blue", high = "red")
-ggplot(as.data.frame(pc_res$x), aes(x = PC2, y = PC3, color = colorvec))+geom_point()+scale_color_gradient(low = "blue", high = "red")
-ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC3, color = colorvec))+geom_point()+scale_color_gradient(low = "blue", high = "red")
+pc_res_seeds = prcomp(t(my_tmm_combat[CYCLOPS_seed_genes,]), scale. = T)
+
+
+plot_pcs = function(pc_res, colorvec, title, continuous = F){
+ if(!continuous){colorvec = as.factor(colorvec)}
+  p1 = ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC2, color = colorvec))+geom_point() + {if(continuous)scale_color_gradient(low = "blue", high = "red")}
+  p2 = ggplot(as.data.frame(pc_res$x), aes(x = PC2, y = PC3, color = colorvec))+geom_point()+ {if(continuous)scale_color_gradient(low = "blue", high = "red")}
+  p3 = ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC3, color = colorvec))+geom_point()+ {if(continuous)scale_color_gradient(low = "blue", high = "red")}
+  p4 = ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC4, color = colorvec))+geom_point()+ {if(continuous)scale_color_gradient(low = "blue", high = "red")}
+  p5 = ggplot(as.data.frame(pc_res$x), aes(x = PC2, y = PC4, color = colorvec))+geom_point()+ {if(continuous)scale_color_gradient(low = "blue", high = "red")}
+  p6 = ggplot(as.data.frame(pc_res$x), aes(x = PC3, y = PC4, color = colorvec))+geom_point()+ {if(continuous)scale_color_gradient(low = "blue", high = "red")}
+  grid.arrange(p1, p2, p3,p4,p5, p6, nrow = 3, top=textGrob(title,gp=gpar(fontsize=12,font=3)))
+}
+
+plot_pcs(pc_res, my_rosmap_meta$batch_bin, "PCA All Genes, Seq. Batch")
+plot_pcs(pc_res_seeds, my_rosmap_meta$batch_bin, "PCA CYCLOPS Seed Genes, Seq. Batch")
+plot_pcs(pc_res, my_rosmap_meta$msex, "PCA All Genes, Sex")
+plot_pcs(pc_res_seeds, my_rosmap_meta$msex, "PCA CYCLOPS Seed Genes, Sex")
+plot_pcs(pc_res, my_rosmap_meta$pmi, "PCA All Genes, PMI", continuous = T)
+plot_pcs(pc_res_seeds, my_rosmap_meta$pmi, "PCA CYCLOPS Seed Genes, PMI", continuous = T)
 ```
 
 ### edgeR Differential Expression
