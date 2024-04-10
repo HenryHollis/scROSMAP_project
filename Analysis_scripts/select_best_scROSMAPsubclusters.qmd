@@ -60,6 +60,12 @@ pseudobulk_meta$cogdx = rosmap_meta$cogdx[match(pseudobulk_meta$project_id, rosm
 pseudobulk_meta$cond_cogdx = rosmap_meta$cond_cogdx[match(pseudobulk_meta$project_id, rosmap_meta$projid)]
 
 pseudobulk_meta$pmi = rosmap_meta$pmi[match(pseudobulk_meta$project_id, rosmap_meta$projid)]
+
+pseudobulk_meta$sex = rosmap_meta$msex[match(pseudobulk_meta$project_id, rosmap_meta$projid)]
+
+sex_table = table(rosmap_meta$cond_cogdx, rosmap_meta$msex)
+colnames(sex_table) = c("female", "male")
+rownames(sex_table)= c("cond_0", "cond_1")
 ```
 
 ### Create Seurat object
@@ -189,7 +195,7 @@ get_subluster_data = function(str){
                              return.seurat = FALSE)
   cts = cts$RNA[,na.exclude(match(rosmap_meta$projid, colnames(cts$RNA)))]
 }
-cts = get_subluster_data("Inh\\.2$|Inh\\.8$|Inh\\.11$|Inh\\.12$|Inh\\.13$")
+cts = get_subluster_data("Exc\\.5$|Exc\\.3$")
 #"Inh\\.2$|Inh\\.8$|Inh\\.11$|Inh\\.12$|Inh\\.13$"
 #"Exc\\.5$|Exc\\.3$"
 # "Ast\\.1$|Ast\\.2$|Ast\\.5$|Ast\\.6$|Ast\\.7$|Ast\\.8$"
@@ -273,9 +279,9 @@ write.table(out, "InhNeurons_2_8_11_12_13_FiltByExprDefault_TMM.csv", sep = ',',
 ```{r}
 pc_res = prcomp(t(my_tmm), scale. = T)
 colorvec = my_rosmap_meta$batch_bin
-ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC2, color = colorvec))+geom_point()
-ggplot(as.data.frame(pc_res$x), aes(x = PC2, y = PC3, color = colorvec))+geom_point()
-ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC3, color = colorvec))+geom_point()
+ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC2, color = colorvec))+geom_point()#+scale_color_gradient(low = "blue", high = "red")
+ggplot(as.data.frame(pc_res$x), aes(x = PC2, y = PC3, color = colorvec))+geom_point()#+scale_color_gradient(low = "blue", high = "red")
+ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC3, color = colorvec))+geom_point()#+scale_color_gradient(low = "blue", high = "red")
 ```
 
 ### COMBAT the TMM
@@ -327,10 +333,10 @@ write.table(out, "InhNeurons_2_8_11_12_13_FiltByExprDefault_TMM_CombatAdjusted.c
 
 ```{r}
 pc_res = prcomp(t(my_tmm_combat), scale. = T)
-colorvec = my_rosmap_meta$batch_bin
-ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC2, color = colorvec))+geom_point()
-ggplot(as.data.frame(pc_res$x), aes(x = PC2, y = PC3, color = colorvec))+geom_point()
-ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC3, color = colorvec))+geom_point()
+colorvec = my_rosmap_meta$pmi
+ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC2, color = colorvec))+geom_point()+scale_color_gradient(low = "blue", high = "red")
+ggplot(as.data.frame(pc_res$x), aes(x = PC2, y = PC3, color = colorvec))+geom_point()+scale_color_gradient(low = "blue", high = "red")
+ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC3, color = colorvec))+geom_point()+scale_color_gradient(low = "blue", high = "red")
 ```
 
 ### edgeR Differential Expression
