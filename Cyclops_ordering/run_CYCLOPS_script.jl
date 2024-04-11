@@ -1,17 +1,16 @@
 using DataFrames, Statistics, StatsBase, LinearAlgebra, MultivariateStats, PyPlot, Distributed, Random, CSV, Revise, Distributions, Dates, MultipleTesting
 
-base_path = joinpath(homedir(), "Box Sync", "Henry_stuff", "AD_project", "human_data", "Cyclops_folders") # define the base path in which the data file, the seed gene list, and the sample collection time file are located
-data_path = joinpath(base_path, "tmms") # path for data folder in base folder
-seed_path = joinpath(base_path, "seed_data") # path for data folder in base folder
-output_path_warmup = joinpath(base_path, "output_warmup") # warmup output folder in base folder
-output_path = joinpath(base_path, "training_output", "scROSMAP", "cogdx_controls", "wAD", "ExcitatoryNeurons", "TMMs_w_batch") # real training run output folder in base folder
+base_path = joinpath(homedir(), "Box Sync", "Henry_stuff", "AD_project", "scROSMAP", "scrosmap_covariate_fork", "scROSMAP_project") # define the base path in which the data file, the seed gene list, and the sample collection time file are located
+data_path = joinpath(base_path, "normed_counts") # path for data folder in base folder
+seed_path = joinpath(base_path, "Cyclops_ordering") # path for data folder in base folder
+output_path = joinpath(homedir(), "Desktop") # real training run output folder in base folder
 
-TMM = CSV.read(joinpath(data_path, "scROSMAP/cogdx_controls/EdgeR_filt_normed/ExcSubtypes3and5_FiltByExprDefault_TMM.csv"))
+TMM = CSV.read(joinpath(data_path, "ExcSubtypes3and5_FiltByExprDefault_TMM.csv"))
 
-TMM = TMM[Not(3:4), :]
+TMM = TMM[Not(3:6), :]
 nth_seed_cutoff =  size(TMM, 1)-2                    #FIXME to "-1" with no covariates, "-2" with covariates.
 nth_seed_cutoff = min(nth_seed_cutoff, 10000)
-seed_genes = unique(CSV.read(joinpath(seed_path, "scROSMAP/Dec13_batch_corrected_mouse_data/WTBulkJTKbhq01_union9to12Zhang_union25Chen.csv"), header = false)).Column1
+seed_genes = unique(CSV.read(joinpath(seed_path, "seed_gene_list_nonUnique.csv"), header = false)).Column1
 
 # make changes to training parameters, if required. Below are the defaults for the current version of cyclops.
 training_parameters = Dict(:regex_cont => r".*_C",			# What is the regex match for continuous covariates in the data file

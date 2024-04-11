@@ -20,18 +20,22 @@ is_cycling = function(cyc_pred, tmm, cond_subset, pb = NULL, useBatch = F, perce
   if(useBatch){cat("\nNOTE: Using batches in regression.")}
 
   #test significant in the following genes, here that all of them.
-  seedlist = unlist(unname(tmm[!grepl("_D", unlist(tmm[,1])), 1])) #ASSUMES FIRST COL is names
+  seedlist = unlist(unname(tmm[!grepl("_D|_C", unlist(tmm[,1])), 1])) #ASSUMES FIRST COL is names
 
   cond_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "cond_d")
   cyc_pred$Covariate_D = tmm[cond_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
-
+  sex_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "sex_d")
+  cyc_pred$sex = tmm[sex_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+  pmi_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "pmi_c")
+  cyc_pred$pmi = tmm[pmi_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+  
   if (useBatch){
     batch_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "batch_d")
     cyc_pred$batch = tmm[batch_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
-    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase, batch) %>% filter(Covariate_D == cond_subset) %>% arrange(Phase)
+    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase, batch, sex, pmi) %>% filter(Covariate_D == cond_subset) %>% arrange(Phase)
 
   }else{
-    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase) %>% filter(Covariate_D == cond_subset) %>% arrange(Phase)
+    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase, sex, pmi) %>% filter(Covariate_D == cond_subset) %>% arrange(Phase)
   }
 
   gene = tmm[which(unlist(unname(tmm[,1])) %in% seedlist), -1] # since seedlist is all genes, "gene" will be tmm without gene_names
@@ -44,11 +48,15 @@ is_cycling = function(cyc_pred, tmm, cond_subset, pb = NULL, useBatch = F, perce
     b = as.factor(preds$batch[match(rownames(gene1), preds$ID)]) #the batch variable
   }
   times = as.numeric(preds$Phase[match(rownames(gene1), preds$ID)]) #the given phase of each subject
-
+  s = as.factor(preds$sex[match(rownames(gene1), preds$ID)])
+  p = as.numeric(preds$pmi[match(rownames(gene1), preds$ID)])
+  
   #loop:
   all_genes = foreach (gene_i = 1:ncol(gene1), .combine = rbind) %do%{
     gexp1 = as.numeric(unlist(gene1[,gene_i]))
     times1 = times
+    s1 = s
+    p1 = p
     if(useBatch){b1 = b}
 
     rm_NA = which(is.na(gexp1))
@@ -56,15 +64,22 @@ is_cycling = function(cyc_pred, tmm, cond_subset, pb = NULL, useBatch = F, perce
       if(!is_empty(rm_NA)){
         gexp1 = gexp1[-rm_NA]
         times1 = times1[-rm_NA]
+        s1 = s1[-rm_NA]
+        p1 = p1[-rm_NA]
         if(useBatch){b1 = b1[-rm_NA]}
       }
       gexp1 = blunt_outliers(gexp1, percentile = percentile)
+      
       if (useBatch){
-        partial_model = lm(gexp1 ~ b1)
-        full_model = lm(gexp1 ~ sin(times1) + cos(times1)+ b1)
-      }else{
-        partial_model = lm(gexp1 ~ 1)
-        full_model = lm(gexp1 ~ sin(times1) + cos(times1))
+          partial_model = lm(gexp1 ~ b1 + p1 + s1)
+          full_model = lm(gexp1 ~ sin(times1) + cos(times1)+ b1 + p1 + s1)
+          design_matrix <- model.matrix(gexp1 ~ sin(times1) + cos(times1)+ b1 + p1 + s1)
+          
+        }else{
+          partial_model = lm(gexp1 ~ p1 + s1)
+          full_model = lm(gexp1 ~ sin(times1) + cos(times1) + p1 + s1)
+          design_matrix <- model.matrix(gexp1 ~ sin(times1) + cos(times1)+ p1 + s1)
+
       }
 
       anova_results = anova(partial_model, full_model)
@@ -75,14 +90,17 @@ is_cycling = function(cyc_pred, tmm, cond_subset, pb = NULL, useBatch = F, perce
       p_statistic = anova_results$`Pr(>F)`[2]
       Gene_Symbols = colnames(gene1)[gene_i]
       amplitude = sqrt(sin_coff^2 + cos_coeff^2)
-      if(useBatch){
-        amp_ratio = amplitude / (( full_model[["coefficients"]][["(Intercept)"]] * length(which(b1 == levels(b1)[1])) +
-                                     (full_model[["coefficients"]][["b1cond_1"]] + full_model[["coefficients"]][["(Intercept)"]])* length(which(b1 == levels(b1)[2])) ) /
-                                   length(b) )
-      }else{
-        amp_ratio = amplitude/ full_model[["coefficients"]][["(Intercept)"]]
-      }
+        # batch_weighted_mesor = (sum(p1*full_model[["coefficients"]][["p1"]]) +(     full_model[["coefficients"]][["(Intercept)"]] * sum(b1 == levels(b1)[1] & s1 == levels(s1)[1]) + # num_B1S1* intercept
+        #                             (full_model[["coefficients"]][["b1cond_1"]] + full_model[["coefficients"]][["(Intercept)"]])* sum(b1 == levels(b1)[2] & s1 == levels(s1)[1]) + # num_B2S1 * (int + B_offset)
+        #                              (full_model[["coefficients"]][["s1cond_1"]] + full_model[["coefficients"]][["(Intercept)"]])*sum(b1 == levels(b1)[1] & s1 == levels(s1)[2]) + #num_B1S2 * (int + S_offset)
+        #                               (full_model[["coefficients"]][["b1cond_1"]] + full_model[["coefficients"]][["s1cond_1"]] + full_model[["coefficients"]][["(Intercept)"]])* sum(b1 == levels(b1)[2] & s1 == levels(s1)[2])  ))/ #num_B2S2 * (int + B_offset + S_offset)
+        #                           length(b1)
+        
+        batch_weighted_mesor = mean(design_matrix[,-c(2, 3)] %*% full_model[["coefficients"]][-c(2, 3)]) #tested, gives same results as above.
+        
+        amp_ratio = amplitude / batch_weighted_mesor
 
+     
       if (!is.null(pb)){
         if(!pb$finished){
           pb$tick()
@@ -106,18 +124,22 @@ is_cycling_method2 = function(cyc_pred, tmm, pb = NULL, useBatch = F, percentile
   cat("\nRunning is_cycling_method2() (analogue of compareRhythms) on all subjects")
   if(useBatch){cat("\nNOTE: Using batches in regression.")}
 
-  seedlist = unlist(unname(tmm[!grepl("_D", unlist(tmm[,1])), 1])) #ASSUMES FIRST COL is names
+  seedlist = unlist(unname(tmm[!grepl("_D|_C", unlist(tmm[,1])), 1])) #ASSUMES FIRST COL is names
 
   cond_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "cond_d")
   cyc_pred$Covariate_D = tmm[cond_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
-
+  sex_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "sex_d")
+  cyc_pred$sex = tmm[sex_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+  pmi_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "pmi_c")
+  cyc_pred$pmi = tmm[pmi_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+  
   if (useBatch){
     batch_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "batch_d")
     cyc_pred$batch = tmm[batch_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
-    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase, batch) %>% arrange(Phase)
+    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase, batch, pmi, sex) %>% arrange(Phase)
 
   }else{
-    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase) %>% arrange(Phase)
+    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase, pmi, sex) %>% arrange(Phase)
   }
 
 
@@ -131,11 +153,15 @@ is_cycling_method2 = function(cyc_pred, tmm, pb = NULL, useBatch = F, percentile
   }
   I = as.factor(preds$Covariate_D[match(rownames(gene1), preds$ID)]) # CTL or AD factor
   times = as.numeric(preds$Phase[match(rownames(gene1), preds$ID)])  #in the case that I have CYCLOPS preds for subs not in tmm...
-
+  s = as.factor(preds$sex[match(rownames(gene1), preds$ID)]) #sex of each subject
+  p = as.numeric(preds$pmi[match(rownames(gene1), preds$ID)]) #pmi of each subject
+  
   all_genes = foreach (gene_i = 1:ncol(gene1), .combine = rbind) %do%{
     gexp1 = as.numeric(unlist(gene1[,gene_i]))
     times1 = times
     I1 = I
+    s1 = s
+    p1 = p
     if(useBatch){b1 = b}
     rm_NA = which(is.na(gexp1))
     if (length(rm_NA) <= floor(.7*nrow(gene1))){ #only proceed if >70% of data are not NA
@@ -143,6 +169,8 @@ is_cycling_method2 = function(cyc_pred, tmm, pb = NULL, useBatch = F, percentile
         gexp1 = gexp1[-rm_NA]
         times1 = times1[-rm_NA]
         I1 = I[-rm_NA]
+        s1 = s1[-rm_NA]
+        p1 = p1[-rm_NA]
         if(useBatch){b1 = b1[-rm_NA]}
       }
 
@@ -150,16 +178,18 @@ is_cycling_method2 = function(cyc_pred, tmm, pb = NULL, useBatch = F, percentile
       gexp1[I1==levels(I1)[2]] = blunt_outliers(gexp1[I1==levels(I1)[2]], percentile = percentile)
 
       if (useBatch){
-        partial_model = lm(gexp1 ~ I1 + b1)
-        full_model = lm(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + b1)
+        partial_model = lm(gexp1 ~ I1 + b1 + p1 + s1)
+        full_model = lm(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + b1 + p1 + s1)
+        design_matrix <- model.matrix(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + b1 + p1 + s1)
       }else{
-        partial_model = lm(gexp1 ~ I1)
-        full_model = lm(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 )
+        partial_model = lm(gexp1 ~ I1 + p1 + s1)
+        full_model = lm(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + p1 + s1 )
+        design_matrix <- model.matrix(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + p1 + s1)
       }
 
       anova_results = anova(partial_model, full_model)
 
-      p = anova_results$`Pr(>F)`[2]
+      p_val = anova_results$`Pr(>F)`[2]
       Gene_Symbols = colnames(gene1)[gene_i]
       sin_coeff = full_model[["coefficients"]][["sin(times1)"]]
       cos_coeff = full_model[["coefficients"]][["cos(times1)"]]
@@ -170,26 +200,11 @@ is_cycling_method2 = function(cyc_pred, tmm, pb = NULL, useBatch = F, percentile
       amplitude_CTL = sqrt((sin_coeff^2) + (cos_coeff^2))
       amplitude_AD = sqrt((sin_coeff2^2) + (cos_coeff2^2))
 
-      if(useBatch){
-        #When you have multiple batches, which batch do you use as the mesor? We take the weighted average
-        # here avg_cond_0_mesor is ((#_cond0_b0 * intercept) + num_cond0_b1 * (intercept + b1_offset)  ) / num_Cond_0
-
-        avg_cond_0_mesor = ( (full_model[["coefficients"]][["(Intercept)"]] * length(which(b == levels(b)[1] & I == levels(I)[1])) ) +
-                               ((full_model[["coefficients"]][["(Intercept)"]] + full_model[["coefficients"]][["b1cond_1"]]) * length(which(b == levels(b)[2] & I == levels(I)[1])) ) ) /
-          length(which(I == levels(I)[1]))
-
-        # here avg_cond_1_mesor is (#_cond1_b0 * (intercept + cond1_offset) + #_cond1_b1 * (intercept + cond1_offset + b1_offset)  ) / num_Cond_1
-        avg_cond_1_mesor = ((full_model[["coefficients"]][["(Intercept)"]] + full_model[["coefficients"]][["I1cond_1"]] ) * length(which(b == levels(b)[1] & I == levels(I)[2])) +
-                              (full_model[["coefficients"]][["(Intercept)"]] + full_model[["coefficients"]][["I1cond_1"]] + full_model[["coefficients"]][["b1cond_1"]] ) * length(which(b == levels(b)[2] & I == levels(I)[2])) ) /
-          length(which(I == levels(I)[2]))
-
-        mesor_CTL = avg_cond_0_mesor
-        mesor_AD = avg_cond_1_mesor
-
-      }else{
-        mesor_CTL = full_model[["coefficients"]][["(Intercept)"]]
-        mesor_AD = full_model[["coefficients"]][["(Intercept)"]] + full_model[["coefficients"]][["I1cond_1"]]
-      }
+      
+      rm_coeffs = grep("sin|cos",names(full_model[["coefficients"]]))
+      mesor_AD = mean(subset(design_matrix[,-rm_coeffs], design_matrix[, "I1cond_1"]== 1 ) %*% full_model[["coefficients"]][-rm_coeffs]) #tested, gives same results as above.
+      mesor_CTL = mean(subset(design_matrix[,-rm_coeffs], design_matrix[, "I1cond_1"]== 0 ) %*% full_model[["coefficients"]][-rm_coeffs]) #tested, gives same results as above.
+     
       amp_ratio_CTL = amplitude_CTL/ mesor_CTL
       amp_ratio_AD = amplitude_AD/ mesor_AD
 
@@ -199,7 +214,7 @@ is_cycling_method2 = function(cyc_pred, tmm, pb = NULL, useBatch = F, percentile
         }
       }
 
-      info = cbind( Gene_Symbols, p, acrophase_AD, acrophase_CTL, amplitude_AD, amplitude_CTL, amp_ratio_CTL, amp_ratio_AD, mesor_CTL, mesor_AD)
+      info = cbind( Gene_Symbols, p_val, acrophase_AD, acrophase_CTL, amplitude_AD, amplitude_CTL, amp_ratio_CTL, amp_ratio_AD, mesor_CTL, mesor_AD)
       return(info)
     }
     return(cbind( colnames(gene1)[gene_i], NA,NA, NA, NA, NA, NA, NA, NA, NA))
@@ -207,9 +222,9 @@ is_cycling_method2 = function(cyc_pred, tmm, pb = NULL, useBatch = F, percentile
 
 
   all_genes = as_tibble(all_genes)
-  all_genes$p = as.numeric(all_genes$p)
-  all_genes$BHQ = p.adjust(as.numeric(all_genes$p), "BH")
-  all_genes$Bonf = p.adjust(as.numeric(all_genes$p), "bonferroni")
+  all_genes$p_val = as.numeric(all_genes$p_val)
+  all_genes$BHQ = p.adjust(as.numeric(all_genes$p_val), "BH")
+  all_genes$Bonf = p.adjust(as.numeric(all_genes$p_val), "bonferroni")
   all_genes$Log_AD_CTL_ampRatio = log(as.numeric(all_genes$amplitude_AD) / as.numeric(all_genes$amplitude_CTL))
   return(all_genes)
 
@@ -222,14 +237,18 @@ diff_rhyth = function(cyc_pred, tmm, seedlist,  pb = NULL, useBatch = F, percent
 
   cond_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "cond_d")
   cyc_pred$Covariate_D = tmm[cond_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
-
+  sex_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "sex_d")
+  cyc_pred$sex = tmm[sex_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+  pmi_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "pmi_c")
+  cyc_pred$pmi = tmm[pmi_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+  
   if (useBatch){
     batch_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "batch_d")
     cyc_pred$batch = tmm[batch_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
-    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase, batch) %>% arrange(Phase)
+    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase, batch, pmi, sex) %>% arrange(Phase)
 
   }else{
-    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase) %>% arrange(Phase)
+    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase, pmi, sex) %>% arrange(Phase)
   }
 
 
@@ -242,11 +261,15 @@ diff_rhyth = function(cyc_pred, tmm, seedlist,  pb = NULL, useBatch = F, percent
   }
   I = as.factor(preds$Covariate_D[match(rownames(gene1), preds$ID)])  # condtion factor
   times = as.numeric(preds$Phase[match(rownames(gene1), preds$ID)]) #in the case that I have CYCLOPS preds for subs not in tmm...
-
+  s = as.factor(preds$sex[match(rownames(gene1), preds$ID)]) #sex of each subject
+  p = as.numeric(preds$pmi[match(rownames(gene1), preds$ID)]) #pmi of each subject
+  
   all_genes = foreach (gene_i = 1:ncol(gene1), .combine = rbind) %do%{
     gexp1 = as.numeric(unlist(gene1[,gene_i]))
     times1 = times
     I1 = I
+    s1 = s
+    p1 = p
     if(useBatch){b1 = b}
 
     rm_NA = which(is.na(gexp1))
@@ -255,6 +278,8 @@ diff_rhyth = function(cyc_pred, tmm, seedlist,  pb = NULL, useBatch = F, percent
         gexp1 = gexp1[-rm_NA]
         times1 = times1[-rm_NA]
         I1 = I[-rm_NA]
+        s1 = s1[-rm_NA]
+        p1 = p1[-rm_NA]
         if(useBatch){b1 = b1[-rm_NA]}
       }
 
@@ -262,15 +287,19 @@ diff_rhyth = function(cyc_pred, tmm, seedlist,  pb = NULL, useBatch = F, percent
       gexp1[I1==levels(I1)[2]] = blunt_outliers(gexp1[I1==levels(I1)[2]], percentile = percentile)
 
       if (useBatch){
-        partial_model = lm(gexp1 ~ sin(times1) + cos(times1) + I1 + b1)
-        full_model = lm(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + b1)
+        partial_model = lm(gexp1 ~ sin(times1) + cos(times1) + I1 + b1 + p1 + s1)
+        full_model = lm(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + b1 + p1 + s1)
+        design_matrix <- model.matrix(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + b1 + p1 + s1)
       }else{
-        partial_model = lm(gexp1 ~ sin(times1) + cos(times1) + I1 + 0)
-        full_model = lm(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + 0)
+        # partial_model = lm(gexp1 ~ sin(times1) + cos(times1) + I1 + 0)
+        # full_model = lm(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + 0)
+        partial_model = lm(gexp1 ~ sin(times1) + cos(times1) + I1 + p1 + s1 )
+        full_model = lm(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + p1 + s1)
+        design_matrix <- model.matrix(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + p1 + s1 )
       }
       anova_results = anova(partial_model, full_model)
 
-      p = anova_results$`Pr(>F)`[2]
+      p_val = anova_results$`Pr(>F)`[2]
       Gene_Symbols = colnames(gene1)[gene_i]
       sin_coeff = full_model[["coefficients"]][["sin(times1)"]]
       cos_coeff = full_model[["coefficients"]][["cos(times1)"]]
@@ -286,7 +315,7 @@ diff_rhyth = function(cyc_pred, tmm, seedlist,  pb = NULL, useBatch = F, percent
         }
       }
 
-      info = cbind( Gene_Symbols, p, acrophase_AD, acrophase_CTL, amplitude_AD, amplitude_CTL)
+      info = cbind( Gene_Symbols, p_val, acrophase_AD, acrophase_CTL, amplitude_AD, amplitude_CTL)
       return(info)
     }
     return(cbind( colnames(gene1)[gene_i], NA,NA, NA, NA, NA, NA))
@@ -294,9 +323,9 @@ diff_rhyth = function(cyc_pred, tmm, seedlist,  pb = NULL, useBatch = F, percent
 
 
   all_genes = as_tibble(all_genes)
-  all_genes$p = as.numeric(all_genes$p)
-  all_genes$BHQ = p.adjust(as.numeric(all_genes$p), "BH")
-  all_genes$Bonf = p.adjust(as.numeric(all_genes$p), "bonferroni")
+  all_genes$p_val = as.numeric(all_genes$p_val)
+  all_genes$BHQ = p.adjust(as.numeric(all_genes$p_val), "BH")
+  all_genes$Bonf = p.adjust(as.numeric(all_genes$p_val), "bonferroni")
   all_genes$Log_AD_CTL_ampRatio = log(as.numeric(all_genes$amplitude_AD) / as.numeric(all_genes$amplitude_CTL))
   return(all_genes)
 
@@ -320,16 +349,20 @@ diff_rhyth_AD_severity = function(cyc_pred, tmm, seedlist, rosmap_clin_path,  pb
 
   cond_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "cond_d")
   cyc_pred$Covariate_D = tmm[cond_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
-
+  sex_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "sex_d")
+  cyc_pred$sex = tmm[sex_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+  pmi_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "pmi_c")
+  cyc_pred$pmi = tmm[pmi_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+  
   if (useBatch){
     batch_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "batch_d")
     cyc_pred$batch = tmm[batch_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
-    cyc_pred_merged = merge(cyc_pred, rosmap_clin, by.x = "ID", by.y = "projid", y.keep = F)
-    preds = cyc_pred_merged %>% dplyr::filter(Covariate_D == "cond_1") %>% dplyr::select(ID, Phase, cogdx, ceradsc_bin, batch) %>% arrange(Phase)
+    cyc_pred_merged = merge(cyc_pred, dplyr::select(rosmap_clin, !pmi), by.x = "ID", by.y = "projid", y.keep = F)
+    preds = cyc_pred_merged %>% dplyr::filter(Covariate_D == "cond_1") %>% dplyr::select(ID, Phase, cogdx, ceradsc_bin, batch, pmi, sex) %>% arrange(Phase)
 
   }else{
-    cyc_pred_merged = merge(cyc_pred, rosmap_clin, by.x = "ID", by.y = "projid", y.keep = F)
-    preds = cyc_pred_merged %>% dplyr::filter(Covariate_D == "cond_1") %>% dplyr::select(ID, Phase, cogdx, ceradsc_bin) %>% arrange(Phase)
+    cyc_pred_merged = merge(cyc_pred, dplyr::select(rosmap_clin, !pmi), by.x = "ID", by.y = "projid", y.keep = F)
+    preds = cyc_pred_merged %>% dplyr::filter(Covariate_D == "cond_1") %>% dplyr::select(ID, Phase, cogdx, ceradsc_bin, pmi, sex) %>% arrange(Phase)
   }
 
   gene = tmm[which(unlist(unname(tmm[,1])) %in% seedlist), -1] # "gene" is tmm with only seedlist subset
@@ -339,6 +372,9 @@ diff_rhyth_AD_severity = function(cyc_pred, tmm, seedlist, rosmap_clin_path,  pb
   cog = as.factor(preds$cogdx[match(rownames(gene1), preds$ID)])      # cogdx score 4 or 5
   cerad = as.factor(preds$ceradsc_bin[match(rownames(gene1), preds$ID)])
   times = as.numeric(preds$Phase[match(rownames(gene1), preds$ID)]) #in the case that I have CYCLOPS preds for subs not in tmm...
+  s = as.factor(preds$sex[match(rownames(gene1), preds$ID)]) #sex of each subject
+  p = as.numeric(preds$pmi[match(rownames(gene1), preds$ID)]) #pmi of each subject
+  
   if (useBatch){b = as.factor(preds$batch[match(rownames(gene1), preds$ID)]) }
 
   all_genes = foreach (gene_i = 1:ncol(gene1), .combine = rbind) %do%{
@@ -346,6 +382,8 @@ diff_rhyth_AD_severity = function(cyc_pred, tmm, seedlist, rosmap_clin_path,  pb
     times1 = times
     I_local_cog = cog
     I_local_cerad = cerad
+    s1 = s
+    p1 = p
     if(useBatch){b1 = b}
 
     rm_NA = which(is.na(gexp1))
@@ -355,16 +393,22 @@ diff_rhyth_AD_severity = function(cyc_pred, tmm, seedlist, rosmap_clin_path,  pb
         times1 = times1[-rm_NA]
         I_local_cog = cog[-rm_NA]
         I_local_cerad = cerad[-rm_NA]
+        s1 = s1[-rm_NA]
+        p1 = p1[-rm_NA]
         if(useBatch){b1 = b1[-rm_NA]}
       }
 
       gexp1 = blunt_outliers(gexp1, percentile = percentile)
       if(useBatch){
-        partial_model = lm(gexp1 ~ sin(times1) + cos(times1) + I_local_cog + b1)
-        full_model = lm(gexp1 ~ I_local_cog*sin(times1) + I_local_cog*cos(times1) + I_local_cog + b1)
+        partial_model = lm(gexp1 ~ sin(times1) + cos(times1) + I_local_cog + b1 + p1 +s1)
+        full_model = lm(gexp1 ~ I_local_cog*sin(times1) + I_local_cog*cos(times1) + I_local_cog + b1 + p1 + s1)
+        # design_matrix <- model.matrix(gexp1 ~ I_local_cog*sin(times1) + I_local_cog*cos(times1) + I_local_cog + b1 + p1 + s1)
+      
       }else{
-        partial_model = lm(gexp1 ~ sin(times1) + cos(times1) + I_local_cog + 0)
-        full_model = lm(gexp1 ~ I_local_cog*sin(times1) + I_local_cog*cos(times1) + I_local_cog + 0)
+        partial_model = lm(gexp1 ~ sin(times1) + cos(times1) + I_local_cog + p1 + s1)
+        full_model = lm(gexp1 ~ I_local_cog*sin(times1) + I_local_cog*cos(times1) + I_local_cog + p1 + s1)
+        # design_matrix <- model.matrix(gexp1 ~ I_local_cog*sin(times1) + I_local_cog*cos(times1) + I_local_cog + p1 + s1)
+        
       }
 
       anova_results = anova(partial_model, full_model)
@@ -382,11 +426,11 @@ diff_rhyth_AD_severity = function(cyc_pred, tmm, seedlist, rosmap_clin_path,  pb
 
       ####### ceradsc_binned #########
       if(useBatch){
-        partial_model_cerad = lm(gexp1 ~ sin(times1) + cos(times1) + I_local_cerad + b1)
-        full_model_cerad = lm(gexp1 ~ I_local_cerad*sin(times1) + I_local_cerad*cos(times1) + I_local_cerad + b1)
+        partial_model_cerad = lm(gexp1 ~ sin(times1) + cos(times1) + I_local_cerad + b1 + p1 + s1)
+        full_model_cerad = lm(gexp1 ~ I_local_cerad*sin(times1) + I_local_cerad*cos(times1) + I_local_cerad + b1 + p1 + s1)
       }else{
-        partial_model_cerad = lm(gexp1 ~ sin(times1) + cos(times1) + I_local_cerad + 0)
-        full_model_cerad = lm(gexp1 ~ I_local_cerad*sin(times1) + I_local_cerad*cos(times1) + I_local_cerad + 0)
+        partial_model_cerad = lm(gexp1 ~ sin(times1) + cos(times1) + I_local_cerad + p1 + s1)
+        full_model_cerad = lm(gexp1 ~ I_local_cerad*sin(times1) + I_local_cerad*cos(times1) + I_local_cerad + p1 + s1)
       }
       anova_results_cerad = anova(partial_model_cerad, full_model_cerad)
       p_cerad = anova_results_cerad$`Pr(>F)`[2]
@@ -433,14 +477,18 @@ mesor_differences = function(cyc_pred, tmm, DR_genes, pb = NULL, useBatch = F, p
 
   cond_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "cond_d")
   cyc_pred$Covariate_D = tmm[cond_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
-
+  sex_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "sex_d")
+  cyc_pred$sex = tmm[sex_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+  pmi_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "pmi_c")
+  cyc_pred$pmi = tmm[pmi_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+  
   if (useBatch){
     batch_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "batch_d")
     cyc_pred$batch = tmm[batch_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
-    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase, batch) %>% arrange(Phase)
+    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase, batch, pmi, sex) %>% arrange(Phase)
 
   }else{
-    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase) %>% arrange(Phase)
+    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase, pmi, sex) %>% arrange(Phase)
   }
 
   gene = tmm[which(unlist(unname(tmm[,1])) %in% DR_genes), -1] # "gene" is tmm with only seedlist subset
@@ -452,49 +500,37 @@ mesor_differences = function(cyc_pred, tmm, DR_genes, pb = NULL, useBatch = F, p
   }
   I = as.factor(preds$Covariate_D[match(rownames(gene1), preds$ID)])  # condition factor
   times = as.numeric(preds$Phase[match(rownames(gene1), preds$ID)])
-
+  s = as.factor(preds$sex[match(rownames(gene1), preds$ID)]) #sex of each subject
+  p = as.numeric(preds$pmi[match(rownames(gene1), preds$ID)]) #pmi of each subject
+  
 
   all_genes = foreach (gene_i = 1:ncol(gene1), .combine = rbind) %do%{
     gexp1 = as.numeric(unlist(gene1[,gene_i]))
     gexp1 = blunt_outliers(gexp1, percentile = percentile)
     if(useBatch){
-      partial_model = lm(gexp1 ~ sin(times) + cos(times) + b)
-      full_model = lm(gexp1 ~ sin(times) + cos(times) + I + b)
+      partial_model = lm(gexp1 ~ sin(times) + cos(times) + b + p + s)
+      full_model = lm(gexp1 ~ sin(times) + cos(times) + I + b + p + s)
+      design_mat = model.matrix(gexp1 ~ sin(times) + cos(times) + I + b + p + s)
     }else{
-      partial_model = lm(gexp1 ~ sin(times) + cos(times))
-      full_model = lm(gexp1 ~ sin(times) + cos(times) + I)
-
+      partial_model = lm(gexp1 ~ sin(times) + cos(times) + p + s)
+      full_model = lm(gexp1 ~ sin(times) + cos(times) + I + p + s)
+      design_mat = model.matrix(gexp1 ~ sin(times) + cos(times) + I + p + s)
     }
 
     anova_results = anova(partial_model, full_model)
-    wilcox_test = wilcox.test(gexp1[I == levels(I)[1]], gexp1[I == levels(I)[2]])
-    p_wilcox = wilcox_test$p.value
+    # wilcox_test = wilcox.test(gexp1[I == levels(I)[1]], gexp1[I == levels(I)[2]])
+    # p_wilcox = wilcox_test$p.value
 
-    t_test = t.test(gexp1[I == levels(I)[1]], gexp1[I == levels(I)[2]])
-    p_ttest = t_test$p.value
+    # t_test = t.test(gexp1[I == levels(I)[1]], gexp1[I == levels(I)[2]])
+    # p_ttest = t_test$p.value
 
     p_mesor = anova_results$`Pr(>F)`[2]
     Gene_Symbols = colnames(gene1)[gene_i]
-    if(useBatch){
-      #When you have multiple batches, which batch do you use as the mesor? We take the weighted average
-      # here avg_cond_0_mesor is ((#_cond0_b0 * intercept) + num_cond0_b1 * (intercept + b1_offset)  ) / num_Cond_0
-      avg_cond_0_mesor = ( (full_model[["coefficients"]][["(Intercept)"]] * length(which(b == levels(b)[1] & I == levels(I)[1])) ) +
-                            ((full_model[["coefficients"]][["(Intercept)"]] + full_model[["coefficients"]][["bcond_1"]]) * length(which(b == levels(b)[2] & I == levels(I)[1])) ) ) /
-        length(which(I == levels(I)[1]))
-
-      # here avg_cond_1_mesor is (#_cond1_b0 * (intercept + cond1_offset) + #_cond1_b1 * (intercept + cond1_offset + b1_offset)  ) / num_Cond_1
-      avg_cond_1_mesor = ((full_model[["coefficients"]][["(Intercept)"]] + full_model[["coefficients"]][["Icond_1"]] ) * length(which(b == levels(b)[1] & I == levels(I)[2])) +
-                            (full_model[["coefficients"]][["(Intercept)"]] + full_model[["coefficients"]][["bcond_1"]] + full_model[["coefficients"]][["Icond_1"]] ) * length(which(b == levels(b)[2] & I == levels(I)[2])) ) /
-        length(which(I == levels(I)[2]))
-      mesor_AD = avg_cond_1_mesor
-      mesor_CTL = avg_cond_0_mesor
-
-      # mesor_prcnt_change = avg_cond_1_mesor / avg_cond_0_mesor
-    }else{
-      mesor_CTL = full_model[["coefficients"]][["(Intercept)"]]
-      mesor_AD = full_model[["coefficients"]][["(Intercept)"]] + full_model[["coefficients"]][["Icond_1"]]
-
-    }
+    
+    rm_coeffs = grep("sin|cos",names(full_model[["coefficients"]]))
+    mesor_AD = mean(subset(design_mat[,-rm_coeffs], design_mat[, "Icond_1"]== 1 ) %*% full_model[["coefficients"]][-rm_coeffs]) 
+    mesor_CTL = mean(subset(design_mat[,-rm_coeffs], design_mat[, "Icond_1"]== 0 ) %*% full_model[["coefficients"]][-rm_coeffs]) 
+    
     # sin_coeff = full_model1[["coefficients"]][["sin(times)"]]
     # cos_coeff = full_model1[["coefficients"]][["cos(times)"]]
     # sin_coeff2 = full_model1[["coefficients"]][["Icond_1:sin(times)"]] + sin_coeff
@@ -509,14 +545,14 @@ mesor_differences = function(cyc_pred, tmm, DR_genes, pb = NULL, useBatch = F, p
       }
     }
 
-    info = cbind( Gene_Symbols, p_mesor, p_wilcox, p_ttest, mesor_CTL, mesor_AD)
+    info = cbind( Gene_Symbols, p_mesor, mesor_CTL, mesor_AD)
     return(info)
   }
   all_genes = as_tibble(all_genes)
   all_genes$BHQ = p.adjust(as.numeric(all_genes$p_mesor), "BH")
   all_genes$Bonf = p.adjust(as.numeric(all_genes$p_mesor), "bonferroni")
-  all_genes$BHQ_wilcox = p.adjust(as.numeric(all_genes$p_wilcox), "BH")
-  all_genes$BHQ_ttest = p.adjust(as.numeric(all_genes$p_ttest), "BH")
+  # all_genes$BHQ_wilcox = p.adjust(as.numeric(all_genes$p_wilcox), "BH")
+  # all_genes$BHQ_ttest = p.adjust(as.numeric(all_genes$p_ttest), "BH")
 
   return(all_genes)
 }
@@ -574,7 +610,7 @@ run_cycling_and_dr_analysis = function(order_path, tmm_path, isCyclingSigCutoff 
   DR_genelist_list = list(seedlist_AR20, seedlist_AR33, seedlist_AR1, seedlist_method2_AR20, seedlist_method2_AR1)
 
   ##### mesor differences ######
-  gene_list_mesor =  unlist(unname(tmm[!grepl("_D", unlist(tmm[,1])), 1])) # TEST ALL genes for Mesor diff (not just cyclers)
+  gene_list_mesor =  unlist(unname(tmm[!grepl("_D|_C", unlist(tmm[,1])), 1])) # TEST ALL genes for Mesor diff (not just cyclers)
   pb <- progress_bar$new(total = length(gene_list_mesor))
   differential_mesor = mesor_differences(cyc_pred, tmm, gene_list_mesor,useBatch = useBatch, pb = pb, percentile = percentile)
   Ensembl = Ensembl_dict$ENSEMBL[match(differential_mesor$Gene_Symbols, Ensembl_dict$Gene_Symbol)]

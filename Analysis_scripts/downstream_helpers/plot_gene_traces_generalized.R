@@ -22,14 +22,18 @@ plot_gene_trace = function(cyc_pred, tmm, seedlist,  useBatch = F,
   
   cond_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "cond_d")
   cyc_pred$Covariate_D = tmm[cond_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+  sex_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "sex_d")
+  cyc_pred$sex = tmm[sex_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+  pmi_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "pmi_c")
+  cyc_pred$pmi = tmm[pmi_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
   
   if (useBatch){
     batch_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "batch_d")
     cyc_pred$batch = tmm[batch_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
-    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase, batch) %>% arrange(Phase)
+    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase, batch, pmi, sex) %>% arrange(Phase)
     
   }else{
-    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase) %>% arrange(Phase)
+    preds= dplyr::select(cyc_pred, ID, Covariate_D, Phase, pmi, sex) %>% arrange(Phase)
   }
   
    df = column_to_rownames(tmm, var = "Gene_Symbols") %>%
@@ -41,12 +45,16 @@ plot_gene_trace = function(cyc_pred, tmm, seedlist,  useBatch = F,
   }
   I = as.factor(df$Cond_D)  # condtion factor
   times = as.numeric(df$Phase) #in the case that I have CYCLOPS preds for subs not in tmm...
+  s = as.factor(df$sex_D) #sex of each subject
+  p = as.numeric(df$pmi_C) #pmi of each subject
   
   all_genes = foreach (i = 1:length(seedlist)) %do%{
     if (!(seedlist[i] %in% colnames(df))) {print(paste(seedlist[i],"not found")); return()}
     gexp1 = as.numeric(unlist(df[,seedlist[i]]))
     times1 = df$Phase
     I1 = I
+    s1 = s
+    p1 = p
     my_df = df
     if(useBatch){b1 = b}
     
@@ -56,6 +64,8 @@ plot_gene_trace = function(cyc_pred, tmm, seedlist,  useBatch = F,
         gexp1 = gexp1[-rm_NA] #remove them from the expression, times, and condition vectors
         times1 = times1[-rm_NA]
         I1 = I[-rm_NA]
+        s1 = s1[-rm_NA]
+        p1 = p1[-rm_NA]
         my_df = my_df[-rm_NA,]
         if(useBatch){b1 = b1[-rm_NA]} #and batch vector if using batch
       }
@@ -65,37 +75,46 @@ plot_gene_trace = function(cyc_pred, tmm, seedlist,  useBatch = F,
       gexp1[I1==levels(I1)[2]] = blunt_outliers(gexp1[I1==levels(I1)[2]], percentile = percentile)
       
       if (useBatch){
-        partial_model = lm(gexp1 ~ sin(times1) + cos(times1) + I1 + b1)
-        full_model = lm(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + b1)
+        partial_model = lm(gexp1 ~ sin(times1) + cos(times1) + I1 + b1 + p1 + s1)
+        full_model = lm(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + b1+ p1 + s1)
+        design_matrix = model.matrix(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + b1+ p1 + s1)
       }else{
-        partial_model = lm(gexp1 ~ sin(times1) + cos(times1) + I1 + 0)
-        full_model = lm(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + 0)
+        partial_model = lm(gexp1 ~ sin(times1) + cos(times1) + I1 + p1 + s1)
+        full_model = lm(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + p1 + s1)
+        design_matrix = model.matrix(gexp1 ~ I1*sin(times1) + I1*cos(times1) + I1 + p1 + s1)
       }
       anova_results = anova(partial_model, full_model)
       
-      if(useBatch){
-        #When you have multiple batches, which batch do you use as the fitted values? We take the weighted average:
-        CTL_B1 = which(b == levels(b)[1] & I1 == levels(I1)[1])
-        CTL_B1_mesor = full_model[["coefficients"]][["(Intercept)"]] 
-        CTL_B2 = which(b == levels(b)[2] & I1 == levels(I1)[1])
-        CTL_B2_mesor = full_model[["coefficients"]][["(Intercept)"]] + full_model[["coefficients"]][["b1cond_1"]] 
-        CTL_either = which(I1 == levels(I1)[1])
-        avg_cond_0_fitted = ( CTL_B1_mesor * length(CTL_B1) + 
-                              CTL_B2_mesor * length(CTL_B2)  ) / length(CTL_either)
-        full_model$fitted.values[CTL_B1] = full_model$fitted.values[CTL_B1] + (avg_cond_0_fitted - CTL_B1_mesor)
-        full_model$fitted.values[CTL_B2] = full_model$fitted.values[CTL_B2] + (avg_cond_0_fitted - CTL_B2_mesor)
-        
-        AD_B1 = which(b == levels(b)[1] & I1 == levels(I1)[2])
-        AD_B1_mesor = full_model[["coefficients"]][["(Intercept)"]] + full_model[["coefficients"]][["I1cond_1"]] 
-        AD_B2 = which(b == levels(b)[2] & I1 == levels(I1)[2])
-        AD_B2_mesor = full_model[["coefficients"]][["(Intercept)"]] + full_model[["coefficients"]][["I1cond_1"]] + full_model[["coefficients"]][["b1cond_1"]]
-        AD_either = which(I1 == levels(I1)[2])
-        avg_cond_1_fitted = ( AD_B1_mesor * length(AD_B1) + 
-                               AD_B2_mesor * length(AD_B2) ) / length(AD_either)
-        
-        full_model$fitted.values[AD_B1] = full_model$fitted.values[AD_B1] + (avg_cond_1_fitted - AD_B1_mesor)
-        full_model$fitted.values[AD_B2] = full_model$fitted.values[AD_B2] + (avg_cond_1_fitted - AD_B2_mesor)
-      }
+      rm_coeffs = grep("sin|cos",names(full_model[["coefficients"]]))
+      mesor_AD = mean(subset(design_matrix[,-rm_coeffs], design_matrix[, "I1cond_1"]== 1 ) %*% full_model[["coefficients"]][-rm_coeffs])
+      mesor_CTL = mean(subset(design_matrix[,-rm_coeffs], design_matrix[, "I1cond_1"]== 0 ) %*% full_model[["coefficients"]][-rm_coeffs])
+      
+      full_model$fitted.values[I == levels(I)[1]] = full_model$fitted.values[I == levels(I)[1]] - subset(design_matrix[,-rm_coeffs], design_matrix[, "I1cond_1"]== 0 ) %*% full_model[["coefficients"]][-rm_coeffs] + mesor_CTL 
+      full_model$fitted.values[I == levels(I)[2]] = full_model$fitted.values[I == levels(I)[2]] - subset(design_matrix[,-rm_coeffs], design_matrix[, "I1cond_1"]== 1 ) %*% full_model[["coefficients"]][-rm_coeffs] + mesor_AD
+      
+      # if(useBatch){
+      #   #When you have multiple batches, which batch do you use as the fitted values? We take the weighted average:
+      #   CTL_B1 = which(b == levels(b)[1] & I1 == levels(I1)[1])
+      #   CTL_B1_mesor = full_model[["coefficients"]][["(Intercept)"]] 
+      #   CTL_B2 = which(b == levels(b)[2] & I1 == levels(I1)[1])
+      #   CTL_B2_mesor = full_model[["coefficients"]][["(Intercept)"]] + full_model[["coefficients"]][["b1cond_1"]] 
+      #   CTL_either = which(I1 == levels(I1)[1])
+      #   avg_cond_0_fitted = ( CTL_B1_mesor * length(CTL_B1) + 
+      #                         CTL_B2_mesor * length(CTL_B2)  ) / length(CTL_either)
+      #   full_model$fitted.values[CTL_B1] = full_model$fitted.values[CTL_B1] + (avg_cond_0_fitted - CTL_B1_mesor)
+      #   full_model$fitted.values[CTL_B2] = full_model$fitted.values[CTL_B2] + (avg_cond_0_fitted - CTL_B2_mesor)
+      #   
+      #   AD_B1 = which(b == levels(b)[1] & I1 == levels(I1)[2])
+      #   AD_B1_mesor = full_model[["coefficients"]][["(Intercept)"]] + full_model[["coefficients"]][["I1cond_1"]] 
+      #   AD_B2 = which(b == levels(b)[2] & I1 == levels(I1)[2])
+      #   AD_B2_mesor = full_model[["coefficients"]][["(Intercept)"]] + full_model[["coefficients"]][["I1cond_1"]] + full_model[["coefficients"]][["b1cond_1"]]
+      #   AD_either = which(I1 == levels(I1)[2])
+      #   avg_cond_1_fitted = ( AD_B1_mesor * length(AD_B1) + 
+      #                          AD_B2_mesor * length(AD_B2) ) / length(AD_either)
+      #   
+      #   full_model$fitted.values[AD_B1] = full_model$fitted.values[AD_B1] + (avg_cond_1_fitted - AD_B1_mesor)
+      #   full_model$fitted.values[AD_B2] = full_model$fitted.values[AD_B2] + (avg_cond_1_fitted - AD_B2_mesor)
+      # }
       
       fitted_ctl = full_model$fitted.values[I1==levels(I1)[1]]
       fitted_ad = full_model$fitted.values[I1==levels(I1)[2]]
@@ -109,7 +128,7 @@ plot_gene_trace = function(cyc_pred, tmm, seedlist,  useBatch = F,
       df_CTL$fitted_values = fitted_ctl
       if(split_cond_plots){
         
-        p1 = ggplot(df_CTL , aes(x = Phase , y = df_CTL[,seedlist[i]])) +
+        plot1 = ggplot(df_CTL , aes(x = Phase , y = df_CTL[,seedlist[i]])) +
           ylim(ylim_min, ylim_max)+
           geom_point(aes(color = "CTL")) +
           geom_line(mapping=aes(x=Phase, y=fitted_values, color = "CTL"), linetype = "solid",linewidth = 2) +
@@ -122,7 +141,7 @@ plot_gene_trace = function(cyc_pred, tmm, seedlist,  useBatch = F,
                              expression(3*pi/2), expression(2*pi)))
         
        
-        p2 = ggplot(df_AD , aes(x = Phase , y = df_AD[,seedlist[i]])) +
+        plot2 = ggplot(df_AD , aes(x = Phase , y = df_AD[,seedlist[i]])) +
           ylim(ylim_min, ylim_max)+
           geom_point(aes(color = "AD")) +
           geom_line(mapping=aes(x=Phase, y=fitted_values, color = "AD"), linetype = "solid",linewidth = 2) +
@@ -133,11 +152,11 @@ plot_gene_trace = function(cyc_pred, tmm, seedlist,  useBatch = F,
           scale_x_continuous(breaks = seq(0, 2 * pi, by = pi/2),
                              labels = c("0", expression(pi/2), expression(pi),
                                         expression(3*pi/2), expression(2*pi)))
-        p = grid.arrange(p1, p2, nrow = 1)
+        plot = grid.arrange(plot1, plot2, nrow = 1)
       }else{
-        p = ggplot(df_AD, aes(x = Phase , y = df_AD[,seedlist[i]], color = "AD")) +
+        plot = ggplot(df_AD, aes(x = Phase , y = df_AD[,seedlist[i]], color = "AD")) +
           geom_point(aes(color = "AD")) +
-          geom_line(mapping=aes(x=Phase, y=df_AD[,seedlist[i]], color = "AD"), linetype = "solid", linewidth = 2) +
+          geom_line(mapping=aes(x=Phase, y=fitted_values, color = "AD"), linetype = "solid", linewidth = 2) +
           geom_point(data = df_CTL, mapping = aes(x = Phase , y = df_CTL[,seedlist[i]], color = "CTL")) +
           geom_line(data=df_CTL, mapping=aes(x=Phase, y=fitted_values, color = "CTL"), linetype = "solid", linewidth = 2) +
           labs(title = paste0(seedlist[i]), x = "Predicted Phase", y = "Expression")+
@@ -151,7 +170,7 @@ plot_gene_trace = function(cyc_pred, tmm, seedlist,  useBatch = F,
       
       #print(p)
       if(savePlots){
-        ggsave(paste0("plots/", seedlist[i], "_gene_trace.png"),p)
+        ggsave(paste0("plots/", seedlist[i], "_gene_trace.png"),plot)
       }
     }
   }

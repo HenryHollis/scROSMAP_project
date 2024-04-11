@@ -81,7 +81,7 @@ With custom regression, I have to remake clock face plots, genes plots, etc.
 
 ```{r}
 library(JuliaCall)
-julia = julia_setup("/Applications/Julia-1.6.app/Contents/Resources/julia/bin/")
+julia = julia_setup("/Applications/Julia-1.10.app/Contents/Resources/julia/bin/")
 
 setwd(path_to_cyclops_ordering)
 if (!(dir.exists("downstream_output/plots"))){
