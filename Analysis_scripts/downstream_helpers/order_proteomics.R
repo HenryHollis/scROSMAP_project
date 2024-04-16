@@ -33,12 +33,15 @@ plot_prot = function( tmt_filename, path_to_cyclops_ordering,genelist, percentil
   cyc_pred_file = list.files(path = paste0(path_to_cyclops_ordering, "/Fits/"), pattern = '*Fit_Output_*')
   cyc_pred = read_csv(paste(path_to_cyclops_ordering, "Fits", cyc_pred_file[1], sep = '/'), show_col_types = F)
   cyc_pred = cyc_pred[na.exclude(match(colnames(prot), cyc_pred$ID)),] #keep the samples in cyc_pred that I have protein data for
+  cyc_pred$pmi = ros_clin$pmi[match(cyc_pred$ID, ros_clin$projid)]
+  cyc_pred$sex = ros_clin$msex[match(cyc_pred$ID, ros_clin$projid)]
   keep_subs = c(1, which(colnames(prot) %in% cyc_pred$ID))
   prot= prot[, keep_subs]  #keep the protein samples I have ordering for
   all(colnames(prot)[-1] == cyc_pred$ID) #double check all protein emat columns equal cyc_pred columns
   
   tmm = as.data.frame(prot)
-  tmm = rbind(c("Cond_D", cyc_pred$Covariate_D), prot ) #Add condition to protein expression
+  tmm = rbind(c("Cond_D", cyc_pred$Covariate_D),c("pmi_C", cyc_pred$pmi),
+              c("sex_D", paste0("cond_", cyc_pred$sex)), prot ) 
   
   colnames(tmm)[1] = "Gene_Symbols"
   plot_gene_trace(cyc_pred, tmm, genelist, savePlots = F)
@@ -75,12 +78,15 @@ order_prot = function( tmt_filename, path_to_cyclops_ordering , isCyclingBHQCuto
   cyc_pred_file = list.files(path = paste0(path_to_cyclops_ordering, "/Fits/"), pattern = '*Fit_Output_*')
   cyc_pred = read_csv(paste(path_to_cyclops_ordering, "Fits", cyc_pred_file[1], sep = '/'), show_col_types = F)
   cyc_pred = cyc_pred[na.exclude(match(colnames(prot), cyc_pred$ID)),] #keep the samples in cyc_pred that I have protein data for
+  cyc_pred$pmi = ros_clin$pmi[match(cyc_pred$ID, ros_clin$projid)]
+  cyc_pred$sex = ros_clin$msex[match(cyc_pred$ID, ros_clin$projid)]
   keep_subs = c(1, which(colnames(prot) %in% cyc_pred$ID))
   prot= prot[, keep_subs]  #keep the protein samples I have ordering for
   all(colnames(prot)[-1] == cyc_pred$ID) #double check all protein emat columns equal cyc_pred columns
   
   tmm = as.data.frame(prot)
-  tmm = rbind(c("Cond_D", cyc_pred$Covariate_D), prot ) #Add condition to protein expression
+  tmm = rbind(c("Cond_D", cyc_pred$Covariate_D),c("pmi_C", cyc_pred$pmi),
+              c("sex_D", paste0("cond_", cyc_pred$sex)), prot ) #Add condition to protein expression
   
   ###pca##
   # complete_prot = prot[complete.cases(prot), ] %>% column_to_rownames(var = "Protein_Symbols")
@@ -99,7 +105,7 @@ order_prot = function( tmt_filename, path_to_cyclops_ordering , isCyclingBHQCuto
   
   #diff mesor for all proteins
   pb = progress_bar$new(total = dim(prot)[1])
-  gene_list_mesor =  unlist(unname(tmm[!grepl("_D", unlist(tmm[,1])), 1])) # TEST ALL genes for Mesor diff (not just cyclers)
+  gene_list_mesor =  unlist(unname(tmm[!grepl("_D|_C", unlist(tmm[,1])), 1])) # TEST ALL genes for Mesor diff (not just cyclers)
   diff_mesor = mesor_differences(cyc_pred, tmm, gene_list_mesor, pb = pb, percentile = percentile)
   
   #Create cycling lists for diff_rhythms
@@ -140,7 +146,7 @@ order_prot = function( tmt_filename, path_to_cyclops_ordering , isCyclingBHQCuto
 
 write_prot_rnks = function(path_to_cyclops_ordering){
   print("Creating rnk files for fGSEA.")
-  ## is cycling in CTL ranked by -log(p)
+  ## is cycling in CTL ranked by -log(p_val)
   CTL_cyclers_file = list.files(path = paste0(path_to_cyclops_ordering, "/proteomics"), pattern = "cycling_in_CTL_CyclingBHQ\\d+_blunting.*csv")
   if (!purrr::is_empty(CTL_cyclers_file)){
     CTL_cyclers = read_csv(paste0(path_to_cyclops_ordering, "/proteomics/", CTL_cyclers_file), show_col_types = FALSE)
@@ -148,7 +154,7 @@ write_prot_rnks = function(path_to_cyclops_ordering){
     df1 = data.frame(genes = ranked_CTL_cyclers$Uniprot, metric = -log(ranked_CTL_cyclers$p_statistic))
     write.table(df1, paste0(path_to_cyclops_ordering, "/proteomics/fGSEA/rnk_files/CTL_cyclers_minusLogPRanked.rnk"), sep = '\t', col.names = F, row.names = F)
   } 
-  ## is cycling in AD ranked by -log(p)
+  ## is cycling in AD ranked by -log(p_val)
   AD_cyclers_file = list.files(path = paste0(path_to_cyclops_ordering, "/proteomics"), pattern = "cycling_in_AD_CyclingBHQ\\d+_blunting.*csv")
   if (!purrr::is_empty(AD_cyclers_file)){
     AD_cyclers = read_csv(paste0(path_to_cyclops_ordering, "/proteomics/", AD_cyclers_file), show_col_types = F)
@@ -156,12 +162,12 @@ write_prot_rnks = function(path_to_cyclops_ordering){
     df2 = data.frame(genes = ranked_AD_cyclers$Uniprot, metric = -log(ranked_AD_cyclers$p_statistic))
     write.table(df2, paste0(path_to_cyclops_ordering, "/proteomics/fGSEA/rnk_files/AD_cyclers_minusLogPRanked.rnk"), sep = '\t', col.names = F, row.names = F)
   }
-  ## DR cyclers ranked by -log(p)
+  ## DR cyclers ranked by -log(p_val)
   DR_cyclers_file = list.files(path = paste0(path_to_cyclops_ordering, "/proteomics"), pattern = "diff_rhythms_Cycling.*.csv")
   if (!purrr::is_empty(DR_cyclers_file)){
     DR_cyclers = read_csv(paste0(path_to_cyclops_ordering, "/proteomics/", DR_cyclers_file), show_col_types = F)
-    ranked_DR_cyclers = arrange(DR_cyclers, p)
-    df3 = data.frame(genes = ranked_DR_cyclers$Uniprot, metric = -log(ranked_DR_cyclers$p))
+    ranked_DR_cyclers = arrange(DR_cyclers, p_val)
+    df3 = data.frame(genes = ranked_DR_cyclers$Uniprot, metric = -log(ranked_DR_cyclers$p_val))
     write.table(df3, paste0(path_to_cyclops_ordering, "/proteomics/fGSEA/rnk_files/DR_cyclers_minusLogPRanked.rnk"), sep = '\t', col.names = F, row.names = F)
   }
   

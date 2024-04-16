@@ -1,0 +1,3 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,Endoderm differentiation WP2853,0.014639581463364849,139.6,589.6740797758147,['NME1'],0.015110030581653552,0,0,1
+2,Pyrimidine metabolism WP4022,0.015110030581653552,135.06451612903226,566.2440018254292,['NME1'],0.015110030581653552,0,0,1

@@ -74,13 +74,28 @@ plot_clock_face = function(plotname, df_filename,mouse_data = mouse_data, BHQ_cu
   # print(paste0("shifted phases to ", round(subtract_acro, 3), " and flipped = ", flipped))
   #plot(df$phase_MA, mouse_data$acrophase)
   if(length(keep_genes )>1){
-    julia_source("../Analysis_scripts/downstream_helpers/plot_clock_face.jl")
-    julia_call(
-      "plot_clock_face",
-      plotname, df$Gene_Symbols, df$phase_MA, mouse_data$Gene_Symbols, mouse_data$acrophase, df$BHQ, df$amp_ratio,
-      need_return = c("R", "Julia", "None"),
-      show_value = F
-    ) 
+    genes_str <- paste(df$Gene_Symbols, collapse = ",")
+    phase_str <- paste(df$phase_MA, collapse = ",")
+    ref_genes_str <- paste(mouse_data$Gene_Symbols, collapse = ",")
+    ref_phase_str <- paste(mouse_data$acrophase, collapse = ",")
+    BHQ_str = paste(df$BHQ, collapse = ",")
+    AR_str = paste(df$amp_ratio, collapse = ",")
+    if(genes_str == ref_genes_str){
+      command <- paste("julia", "../Analysis_scripts/downstream_helpers/plot_clock_face.jl", plotname, genes_str, phase_str, ref_genes_str, ref_phase_str, BHQ_str, AR_str)
+      system(command)
+    }else{
+      print("Error")
+    }
+    
+    #I was using Julia call but was having trouble getting it to work with arm64 julia
+    # julia_source("../Analysis_scripts/downstream_helpers/plot_clock_face.jl")
+    # julia_call(
+    #   "plot_clock_face",
+    #   plotname, df$Gene_Symbols, df$phase_MA, mouse_data$Gene_Symbols, mouse_data$acrophase, df$BHQ, df$amp_ratio,
+    #   need_return = c("R", "Julia", "None"),
+    #   show_value = F
+    # ) 
+  
   }else{
     print("Not enough genes meet cutoffs, change BHQ_cutoff or amp_ratio_cutoff")
   }

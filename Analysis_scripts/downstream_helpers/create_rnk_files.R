@@ -24,10 +24,10 @@ write_rnks = function(path_to_cyclops_ordering, isCyclingBHQCutoff_str){
   df3 = data.frame(genes = ranked_DR_genes_AR1$Gene_Symbols, metric = ranked_DR_genes_AR1$Log_AD_CTL_ampRatio)
   write.table(df3, paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/rnk_files/DRgenesAmpRatio1_Log(AD-CTL)ranked.rnk"), sep = '\t', col.names = F, row.names = F)
   
-  #Cycling with AR > .1 & BHQ < cutoff Cycling -> DR testing, -log(p) ranked
+  #Cycling with AR > .1 & BHQ < cutoff Cycling -> DR testing, -log(p_val) ranked
   ranked_DR_genes_AR1 = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/diff_rhythms_CyclingBHQ",isCyclingBHQCutoff_str,"AmpRatio1.csv"), show_col_types = FALSE)
-  ranked_DR_genes_AR1 = arrange(ranked_DR_genes_AR1, p)
-  df4 = data.frame(genes = ranked_DR_genes_AR1$Gene_Symbols, metric = -log(ranked_DR_genes_AR1$p))
+  ranked_DR_genes_AR1 = arrange(ranked_DR_genes_AR1, p_val)
+  df4 = data.frame(genes = ranked_DR_genes_AR1$Gene_Symbols, metric = -log(ranked_DR_genes_AR1$p_val))
   write.table(df4, paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/rnk_files/DRgenesAmpRatio1_minusLogPRanked.rnk"), sep = '\t', col.names = F, row.names = F)
   
   #Cycling with AR > .25 & BHQ < cutoff Cycling -> DR testing, log(AD_amp/CTL_amp) ranked
@@ -36,16 +36,16 @@ write_rnks = function(path_to_cyclops_ordering, isCyclingBHQCutoff_str){
   df5 = data.frame(genes = ranked_DR_genes_AR25$Gene_Symbols, metric = ranked_DR_genes_AR25$Log_AD_CTL_ampRatio)
   write.table(df5, paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/rnk_files/DRgenesAmpRatio20_Log(AD-CTL)ranked.rnk"), sep = '\t', col.names = F, row.names = F)
   
-  #Cycling with AR > .25 & BHQ < cutoff Cycling -> DR testing, -log(p) ranked
+  #Cycling with AR > .25 & BHQ < cutoff Cycling -> DR testing, -log(p_val) ranked
   ranked_DR_genes_AR25 = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/diff_rhythms_CyclingBHQ",isCyclingBHQCutoff_str,"AmpRatio20.csv"), show_col_types = FALSE)
-  ranked_DR_genes_AR25 = arrange(ranked_DR_genes_AR25, p)
-  df6 = data.frame(genes = ranked_DR_genes_AR25$Gene_Symbols, metric = -log(ranked_DR_genes_AR25$p))
+  ranked_DR_genes_AR25 = arrange(ranked_DR_genes_AR25, p_val)
+  df6 = data.frame(genes = ranked_DR_genes_AR25$Gene_Symbols, metric = -log(ranked_DR_genes_AR25$p_val))
   write.table(df6, paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/rnk_files/DRgenesAmpRatio20_minusLogPRanked.rnk"), sep = '\t', col.names = F, row.names = F)
   
-  #Cycling via Method 2 (BHQ < cutoff & AR > 0.25) -> diff rhythms, -log(p value DR) RANKED
+  #Cycling via Method 2 (BHQ < cutoff & AR > 0.25) -> diff rhythms, -log(p_val value DR) RANKED
   ranked_DR_genes_AR25_method2 = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/diff_rhythms_method2_CyclingBHQ",isCyclingBHQCutoff_str,"AmpRatio20.csv"), show_col_types = FALSE)
-  ranked_DR_genes_AR25_method2 = arrange(ranked_DR_genes_AR25_method2, p)
-  df7 = data.frame(genes = ranked_DR_genes_AR25_method2$Gene_Symbols, metric = -log(ranked_DR_genes_AR25_method2$p))
+  ranked_DR_genes_AR25_method2 = arrange(ranked_DR_genes_AR25_method2, p_val)
+  df7 = data.frame(genes = ranked_DR_genes_AR25_method2$Gene_Symbols, metric = -log(ranked_DR_genes_AR25_method2$p_val))
   write.table(df7, paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/rnk_files/DRgenesAmpRatio20_minusLogPRanked_method2.rnk"), sep = '\t', col.names = F, row.names = F)
   
   #Cycling via Method 2 (BHQ < cutoff & AR > 0.25) -> diff rhythms, log(AD_amp/CTL_amp) ranked

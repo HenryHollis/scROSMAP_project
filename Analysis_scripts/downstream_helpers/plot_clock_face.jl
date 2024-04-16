@@ -1,5 +1,32 @@
 using PyPlot, Colors
 
+# Check if the correct number of command-line arguments is provided
+if length(ARGS) != 7
+    println("Usage: julia plot_clock_face.jl <plotname> <Gene_Symbols> <Gene_Phases> <Ref_Gene_Symbols> <Ref_Phases> <BHQ> <amp_ratios>")
+    exit(1)  # Exit with error status
+end
+
+plotname_arg = ARGS[1]
+
+observed_symbol_names = ARGS[2]
+GOI_arg = split(observed_symbol_names, ",")
+
+observed_symbol_phase = ARGS[3]
+GOI_Acrophases_arg = map(x -> parse(Float64, x), split(observed_symbol_phase, ","))
+
+ref_symbol_phase = ARGS[4]
+GOI_Ideal_arg = split(ref_symbol_phase, ",")
+
+Ideal_Acrophases = ARGS[5]
+Ideal_Acrophases_arg = map(x -> parse(Float64, x), split(Ideal_Acrophases, ","))
+
+BHQ = ARGS[6]
+signif_Values_arg = map(x -> parse(Float64, x), split(BHQ, ","))
+
+AR = ARGS[7]
+amp_ratio_arg = map(x -> parse(Float64, x), split(AR, ","))
+
+
 function Circular_Mean(phases::Array{T,1} where T <: Union{Float64, Float32})
 	if length(phases) < 1
 		return NaN
@@ -13,6 +40,7 @@ function ±(X, Y)
     X_minus_Y = X .- Y
     return X_plus_Y, X_minus_Y
 end
+
 
 function plot_clock_face(plotname, GOI,GOI_Acrophases, GOI_Ideal, Ideal_Acrophases, signif_Values, amp_ratio; space_factor=π/35.5, subplot_space_factor_ratio = 1.5, subplot_fontsize = 8)
 
@@ -167,3 +195,4 @@ function plot_clock_face(plotname, GOI,GOI_Acrophases, GOI_Ideal, Ideal_Acrophas
     close(fig)
 end
 
+plot_clock_face(plotname_arg, GOI_arg, GOI_Acrophases_arg, GOI_Ideal_arg,  Ideal_Acrophases_arg, signif_Values_arg, amp_ratio_arg)

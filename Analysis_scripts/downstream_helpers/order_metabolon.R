@@ -2,7 +2,7 @@
 library(tidyverse)
 library(doParallel)
 
-order_metabolon = function(metabolon_filename, metabolon_datakey, path_to_rosmap_clin, path_to_cyclops_ordering, BHQ_cutoff = 0.1, plot_mets = T){
+order_metabolon = function(metabolon_filename, metabolon_datakey, path_to_rosmap_clin, path_to_cyclops_ordering, BHQ_cutoff = 0.1, plot_mets = T, percentile = 0.){
   metabolon = read_csv(metabolon_filename, show_col_types = FALSE) #read in metabolon assay
   metabolon_data_key = read_csv(metabolon_datakey, show_col_types = FALSE) #read in metadata file with ID's for metabolites
   ros_clin = read_csv(path_to_rosmap_clin, show_col_types = FALSE)   #read rosmap clinical metadata
@@ -20,6 +20,8 @@ order_metabolon = function(metabolon_filename, metabolon_datakey, path_to_rosmap
   cyc_pred_file = list.files(path = paste0(path_to_cyclops_ordering, "/Fits/"), pattern = '*Fit_Output_*')
   cyc_pred = read_csv(paste(path_to_cyclops_ordering, "Fits", cyc_pred_file[1], sep = '/'), show_col_types = FALSE)
   cyc_pred = cyc_pred[na.exclude(match(colnames(emat), cyc_pred$ID)),] #keep the subjects in cyc_pred that I have ordering for
+  cyc_pred$pmi = ros_clin$pmi[match( cyc_pred$ID, ros_clin$projid)]
+  cyc_pred$sex = ros_clin$msex[match(cyc_pred$ID, ros_clin$projid)]
   keep_subs = c(1, which(colnames(emat) %in% cyc_pred$ID))
   emat= emat[, keep_subs]  #keep the emat samples I have ordering for
   all(colnames(emat)[-1] == cyc_pred$ID)
@@ -48,12 +50,15 @@ order_metabolon = function(metabolon_filename, metabolon_datakey, path_to_rosmap
   ratio9 = as.numeric(emat["1830",-1]) / as.numeric(emat["270",-1])
   ACoA_CoA <- c(GeneName = "ACoA/CoA", ratio9)
   
-  emat = rbind(c("Cond_D", cyc_pred$Covariate_D), emat, NAD_NADH, GSH_GSSG, KYN_TRY, PHE_TYR, SAM_SAH, BCAAs, AAAs, BCAAs_AAAs, BCAA_Ala,PYRUV_LAC,ACoA_CoA )
-  
+  emat = rbind(c("Cond_D", cyc_pred$Covariate_D),c("sex_D",   paste0("cond_", cyc_pred$sex)),
+               c("pmi_C", cyc_pred$pmi),
+               emat, NAD_NADH, GSH_GSSG, KYN_TRY, PHE_TYR, SAM_SAH,
+               BCAAs, AAAs, BCAAs_AAAs, BCAA_Ala,PYRUV_LAC,ACoA_CoA )
+
   #run regression on emat
-  cycling_in_CTL = is_cycling(cyc_pred, emat, "cond_0")
-  cycling_in_AD = is_cycling(cyc_pred, emat, "cond_1")
-  cycling_in_AD_CTL_mthd2 = is_cycling_method2(cyc_pred, emat, useBatch = F)
+  cycling_in_CTL = is_cycling(cyc_pred, emat, "cond_0", percentile = percentile)
+  cycling_in_AD = is_cycling(cyc_pred, emat, "cond_1", percentile = percentile)
+  cycling_in_AD_CTL_mthd2 = is_cycling_method2(cyc_pred, emat, useBatch = F, percentile = percentile)
   
   #select the metabolites with rhythm BHq-value < cutoff
   strong_cycling_in_CTL = dplyr::filter(cycling_in_CTL, as.numeric(BHQ) < BHQ_cutoff) %>% arrange(as.numeric(BHQ))
@@ -62,8 +67,8 @@ order_metabolon = function(metabolon_filename, metabolon_datakey, path_to_rosmap
   
   #test those genes for differential rhythms
   genelist = union(strong_cycling_in_CTL$Gene_Symbols, strong_cycling_in_AD$Gene_Symbols)
-  diff_rhythms = diff_rhyth(cyc_pred, emat, genelist)
-  diff_rhythms_mthd2 = diff_rhyth(cyc_pred, emat, strong_cyclers_method2$Gene_Symbols)
+  diff_rhythms = diff_rhyth(cyc_pred, emat, genelist, percentile = percentile)
+  diff_rhythms_mthd2 = diff_rhyth(cyc_pred, emat, strong_cyclers_method2$Gene_Symbols, percentile = percentile)
   
   # write out files 
   out_cycling_CTL = merge(dplyr::select(metabolon_data_key, CHEM_ID, SUPER_PATHWAY, SUB_PATHWAY, CHEMICAL_NAME, SHORT_NAME, CHEMSPIDER, HMDB, PUBCHEM, KEGG),
@@ -90,7 +95,7 @@ order_metabolon = function(metabolon_filename, metabolon_datakey, path_to_rosmap
     setwd(paste0(path_to_cyclops_ordering, "/metabolon"))
     seedlist = c(strong_cycling_in_CTL$Gene_Symbols[1:3], strong_cycling_in_AD$Gene_Symbols[1:3])
     rownames(emat) = NULL
-    print(plot_gene_trace(cyc_pred, emat, seedlist, savePlots = T))
+    print(plot_gene_trace(cyc_pred, emat, seedlist, savePlots = T, percentile = percentile))
   }
   
 }

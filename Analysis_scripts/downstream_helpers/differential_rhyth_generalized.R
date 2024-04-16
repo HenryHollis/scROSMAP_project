@@ -2,7 +2,7 @@ library(tidyverse)
 library(doParallel)
 library(progress)
 
-blunt_outliers = function(vec, percentile = 0.025){
+blunt_outliers = function(vec, percentile =0.){
   num =length(which(!is.na(vec)))
   blunt_n_points = round(percentile * num, 0)
   ord = sort(vec)
@@ -15,7 +15,7 @@ blunt_outliers = function(vec, percentile = 0.025){
 }
 
 #test which genes are cycling from cyclops subject phase prediction
-is_cycling = function(cyc_pred, tmm, cond_subset, pb = NULL, useBatch = F, percentile = 0.025){
+is_cycling = function(cyc_pred, tmm, cond_subset, pb = NULL, useBatch = F, percentile = 0.){
   cat(paste("\nRunning is_cycling() on cond_subset:", cond_subset))
   if(useBatch){cat("\nNOTE: Using batches in regression.")}
 
@@ -120,7 +120,7 @@ is_cycling = function(cyc_pred, tmm, cond_subset, pb = NULL, useBatch = F, perce
 
 }
 
-is_cycling_method2 = function(cyc_pred, tmm, pb = NULL, useBatch = F, percentile = 0.025){
+is_cycling_method2 = function(cyc_pred, tmm, pb = NULL, useBatch = F, percentile = 0.){
   cat("\nRunning is_cycling_method2() (analogue of compareRhythms) on all subjects")
   if(useBatch){cat("\nNOTE: Using batches in regression.")}
 
@@ -231,7 +231,7 @@ is_cycling_method2 = function(cyc_pred, tmm, pb = NULL, useBatch = F, percentile
 
 }
 
-diff_rhyth = function(cyc_pred, tmm, seedlist,  pb = NULL, useBatch = F, percentile = 0.025){
+diff_rhyth = function(cyc_pred, tmm, seedlist,  pb = NULL, useBatch = F, percentile = 0.){
   cat(paste("\nRunning diff_rhyth() on seedlist of size:", length(seedlist)))
   if(useBatch){cat("\nNOTE: Using batches in regression.")}
 
@@ -331,7 +331,7 @@ diff_rhyth = function(cyc_pred, tmm, seedlist,  pb = NULL, useBatch = F, percent
 
 }
 
-diff_rhyth_AD_severity = function(cyc_pred, tmm, seedlist, rosmap_clin_path,  pb = NULL, useBatch = F, percentile = 0.025){
+diff_rhyth_AD_severity = function(cyc_pred, tmm, seedlist, rosmap_clin_path,  pb = NULL, useBatch = F, percentile = 0.){
   cat("\nRunning diff_rhyth_AD_severity()")
   if(useBatch){cat("\nNOTE: Using batches in regression.")}
   ##### read in ROSMAP clin ####
@@ -471,7 +471,7 @@ diff_rhyth_AD_severity = function(cyc_pred, tmm, seedlist, rosmap_clin_path,  pb
 
 }
 
-mesor_differences = function(cyc_pred, tmm, DR_genes, pb = NULL, useBatch = F, percentile = 0.025){ ##
+mesor_differences = function(cyc_pred, tmm, DR_genes, pb = NULL, useBatch = F, percentile = 0.){ ##
   cat("\nRunning Mesor_differences()")
   if(useBatch){cat("\nNOTE: Using batches in regression.")}
 
@@ -560,7 +560,7 @@ mesor_differences = function(cyc_pred, tmm, DR_genes, pb = NULL, useBatch = F, p
 
 ##### main function #####
 
-run_cycling_and_dr_analysis = function(order_path, tmm_path, isCyclingSigCutoff = 0.05, useBatch = F, percentile = 0.025){
+run_cycling_and_dr_analysis = function(order_path, tmm_path, isCyclingSigCutoff = 0.05, useBatch = F, percentile = 0.){
   tmm = read_csv(tmm_path, show_col_types = FALSE)      #read expression data, unordered
   colnames(tmm)[1] = "gene_names" #set first column name bc sometimes they are different
 

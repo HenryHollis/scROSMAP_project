@@ -1,0 +1,3 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,Cytoplasmic Ribosomal Proteins WP477,0.0010762069565304648,25.337662337662337,173.16550235789444,"['RPL7A', 'RPS15A', 'RPL9']",0.0021524139130609295,0,0,3
+2,Mesodermal commitment pathway WP2857,0.040642699693612276,31.0,99.29101750193277,['ARL4A'],0.040642699693612276,0,0,1

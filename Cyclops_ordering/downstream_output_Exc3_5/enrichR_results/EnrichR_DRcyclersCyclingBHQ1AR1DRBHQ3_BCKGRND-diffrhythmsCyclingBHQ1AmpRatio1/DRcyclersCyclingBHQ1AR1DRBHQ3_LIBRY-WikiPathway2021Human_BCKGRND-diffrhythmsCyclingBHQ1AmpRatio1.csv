@@ -1,0 +1,4 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,Selenium Micronutrient Network WP15,0.011113987137430866,137.3846153846154,618.1690645045641,['SELENOH'],0.031184282322529643,0,0,1
+2,Electron Transport Chain (OXPHOS system in mitochondria) WP111,0.021870598208542636,68.4423076923077,261.62839297115113,['COX7A1'],0.031184282322529643,0,0,1
+3,Nonalcoholic fatty liver disease WP4396,0.031184282322529643,47.513392857142854,164.76889573398086,['COX7A1'],0.031184282322529643,0,0,1

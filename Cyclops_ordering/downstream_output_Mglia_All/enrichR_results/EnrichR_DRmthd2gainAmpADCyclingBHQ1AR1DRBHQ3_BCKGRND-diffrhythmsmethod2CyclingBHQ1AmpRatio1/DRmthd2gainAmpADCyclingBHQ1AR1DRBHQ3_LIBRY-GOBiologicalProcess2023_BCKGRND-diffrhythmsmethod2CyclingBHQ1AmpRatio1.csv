@@ -1,0 +1,26 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,Oxygen Transport (GO:0015671),0.00047392040856198244,inf,inf,['GTPBP4'],0.005924022177085452,0,0,1
+2,Negative Regulation Of DNA Replication (GO:0008156),0.0007108826612502542,inf,inf,['GTPBP4'],0.005924022177085452,0,0,1
+3,Gas Transport (GO:0015669),0.0007108826612502542,inf,inf,['GTPBP4'],0.005924022177085452,0,0,1
+4,Negative Regulation Of DNA Metabolic Process (GO:0051053),0.0018956990812230025,inf,inf,['GTPBP4'],0.008886110284910015,0,0,1
+5,Negative Regulation Of Cell-Cell Adhesion (GO:0022408),0.002369626956042862,inf,inf,['GTPBP4'],0.008886110284910015,0,0,1
+6,Regulation Of DNA Replication (GO:0006275),0.0028435552911712045,inf,inf,['GTPBP4'],0.008886110284910015,0,0,1
+7,Regulation Of Cell-Cell Adhesion (GO:0022407),0.0028435552911712045,inf,inf,['GTPBP4'],0.008886110284910015,0,0,1
+8,Regulation Of Cyclin-Dependent Protein Kinase Activity (GO:1904029),0.0028435552911712045,inf,inf,['GTPBP4'],0.008886110284910015,0,0,1
+9,Ribosomal Large Subunit Biogenesis (GO:0042273),0.0042653422718202955,inf,inf,['GTPBP4'],0.011001895253528461,0,0,1
+10,Negative Regulation Of Protein Modification By Small Protein Conjugation Or Removal (GO:1903321),0.005213201454314602,inf,inf,['GTPBP4'],0.011001895253528461,0,0,1
+11,Negative Regulation Of Protein Ubiquitination (GO:0031397),0.005213201454314602,inf,inf,['GTPBP4'],0.011001895253528461,0,0,1
+12,Regulation Of Cyclin-Dependent Protein Serine/Threonine Kinase Activity (GO:0000079),0.00545016636580012,inf,inf,['GTPBP4'],0.011001895253528461,0,0,1
+13,Negative Regulation Of Binding (GO:0051100),0.00592409631181399,inf,inf,['GTPBP4'],0.011001895253528461,0,0,1
+14,Negative Regulation Of Cell Adhesion (GO:0007162),0.006161061341975938,inf,inf,['GTPBP4'],0.011001895253528461,0,0,1
+15,Regulation Of Protein Serine/Threonine Kinase Activity (GO:0071900),0.00829374803839375,inf,inf,['GTPBP4'],0.013822913397322917,0,0,1
+16,Negative Regulation Of Cell Motility (GO:2000146),0.009715540325143327,inf,inf,['GTPBP4'],0.014481162151851735,0,0,1
+17,Ribonucleoprotein Complex Biogenesis (GO:0022613),0.01018947125609297,inf,inf,['GTPBP4'],0.014481162151851735,0,0,1
+18,Regulation Of Protein Ubiquitination (GO:0031396),0.010426436749333249,inf,inf,['GTPBP4'],0.014481162151851735,0,0,1
+19,Negative Regulation Of Cell Migration (GO:0030336),0.012085195690105808,inf,inf,['GTPBP4'],0.015106494612632259,0,0,1
+20,Ribosome Biogenesis (GO:0042254),0.012085195690105808,inf,inf,['GTPBP4'],0.015106494612632259,0,0,1
+21,Protein Stabilization (GO:0050821),0.014928784112806721,inf,inf,['GTPBP4'],0.01777236203905562,0,0,1
+22,Negative Regulation Of Cell Population Proliferation (GO:0008285),0.01872023787885831,inf,inf,['GTPBP4'],0.02127299758961172,0,0,1
+23,Regulation Of Cell Migration (GO:0030334),0.029146745715052484,inf,inf,['GTPBP4'],0.03168124534244835,0,0,1
+24,Negative Regulation Of Cellular Process (GO:0048523),0.0308055093075336,inf,inf,['GTPBP4'],0.032089072195347505,0,0,1
+25,Regulation Of Cell Population Proliferation (GO:0042127),0.04146899399966284,inf,inf,['GTPBP4'],0.04146899399966284,0,0,1

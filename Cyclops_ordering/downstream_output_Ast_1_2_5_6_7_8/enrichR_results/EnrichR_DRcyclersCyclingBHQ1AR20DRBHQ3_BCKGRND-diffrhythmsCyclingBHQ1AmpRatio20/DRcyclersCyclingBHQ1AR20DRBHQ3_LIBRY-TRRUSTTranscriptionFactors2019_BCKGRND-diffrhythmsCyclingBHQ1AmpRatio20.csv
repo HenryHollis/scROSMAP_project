@@ -1,0 +1,2 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,TRP73 mouse,0.020381351854971516,71.70370370370371,279.1521928507062,['GLS2'],0.020381351854971516,0,0,1

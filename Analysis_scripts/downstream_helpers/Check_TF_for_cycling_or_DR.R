@@ -4,7 +4,7 @@
 # and checking if they are found in DE, DE, DM, cycling files. 
 library(ggrepel)
 library(tidyverse)
-augment_tf_file = function(TF_filename, Diff_expr_filename, isCyclingBHQCutoff_str, abs_path_to_cyclops_ordering){
+augment_tf_file = function(TF_filename, Diff_expr_filename, isCyclingBHQCutoff_str, abs_path_to_cyclops_ordering, use_PRTNS = T){
   current_dir = getwd()
   TF_file = read.csv(TF_filename)
   if (colnames(TF_file)[1]== "Rank"){ #if file comes from enrichR, make it look like pscan
@@ -24,7 +24,7 @@ augment_tf_file = function(TF_filename, Diff_expr_filename, isCyclingBHQCutoff_s
   Diff_mesor = read.csv(paste0(abs_path_to_cyclops_ordering, "/downstream_output/", mesor_file))
   #Try to read in Protein cycling/DR results:
   use_PRTN_data = F
-  if(dir.exists(paste0(abs_path_to_cyclops_ordering, "/proteomics"))){
+  if(dir.exists(paste0(abs_path_to_cyclops_ordering, "/proteomics")) & use_PRTNS){
     use_PRTN_data = T
     
     cycling_PRTN_ctl_filename = list.files(path = paste0(abs_path_to_cyclops_ordering, "/proteomics/"),

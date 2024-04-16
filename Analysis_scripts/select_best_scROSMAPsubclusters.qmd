@@ -12,6 +12,7 @@ library(parallel)
 library(tidyverse)
 library(deltaccd)
 library(gridExtra)
+library(grid)
 load("../rosmap424_pseudobulk_by_cluster.rda")
 ```
 
@@ -161,7 +162,7 @@ loss = function(str){
 n = 10 #number of subclusters to consider
 l <- rep(list(0:1), n)
 df=expand.grid(l)
-colnames(df) = paste0("Ast\\.", 1:n,"$") #replace `Ast` for other subclusters, ie. Exc, Inh, Mic, etc.
+colnames(df) = paste0("Exc\\.", 1:n,"$") #replace `Ast` for other subclusters, ie. Exc, Inh, Mic, etc.
 
 strs = c()
 for (i in 2:nrow(df)){
@@ -196,7 +197,7 @@ get_subluster_data = function(str){
                              return.seurat = FALSE)
   cts = cts$RNA[,na.exclude(match(rosmap_meta$projid, colnames(cts$RNA)))]
 }
-cts = get_subluster_data(".*")
+cts = get_subluster_data("Inh.*")
 #"Inh\\.2$|Inh\\.8$|Inh\\.11$|Inh\\.12$|Inh\\.13$"
 #"Exc\\.5$|Exc\\.3$"
 # "Ast\\.1$|Ast\\.2$|Ast\\.5$|Ast\\.6$|Ast\\.7$|Ast\\.8$"
@@ -235,7 +236,7 @@ calcDeltaCCD(refCor, as.data.frame(my_tmm), groupVec = my_rosmap_meta$cond_cogdx
 
 ```
 
-The correlagrams of the Exc.3 and Exc.5 by themselves is bad. When you add them, the correlagram is great. Therefore the clusters could be in part based on the expression of a rhythmic gene. Below I will see that:
+The correlagrams of the Exc.3 and Exc.5 by themselves are bad. When you add them, the correlagram is great. Therefore the clusters could be in part based on the expression of a rhythmic gene. Below I will see that:
 
 ```{r}
 cts3 = get_subluster_data("Exc\\.3$")
@@ -275,7 +276,7 @@ covs5 = c("pmi_C", my_rosmap_meta$pmi)
 out = rbind(covs, covs1, covs2, covs3, covs4, covs5, out)
 colnames(out) = str_replace(colnames(out), "X", "")
 #Change filename depending on what cell type is selected
-write.table(out, "InhNeurons_2_8_11_12_13_FiltByExprDefault_TMM.csv", sep = ',', row.names = F)
+write.table(out, "ALL_Inh_FiltByExprDefault_TMM.csv", sep = ',', row.names = F)
 
 ```
 
@@ -366,17 +367,6 @@ pc_res = prcomp(t(my_tmm_combat), scale. = T)
 pc_res_seeds = prcomp(t(my_tmm_combat[CYCLOPS_seed_genes,]), scale. = T)
 
 
-plot_pcs = function(pc_res, colorvec, title, continuous = F){
- if(!continuous){colorvec = as.factor(colorvec)}
-  p1 = ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC2, color = colorvec))+geom_point() + {if(continuous)scale_color_gradient(low = "blue", high = "red")}
-  p2 = ggplot(as.data.frame(pc_res$x), aes(x = PC2, y = PC3, color = colorvec))+geom_point()+ {if(continuous)scale_color_gradient(low = "blue", high = "red")}
-  p3 = ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC3, color = colorvec))+geom_point()+ {if(continuous)scale_color_gradient(low = "blue", high = "red")}
-  p4 = ggplot(as.data.frame(pc_res$x), aes(x = PC1, y = PC4, color = colorvec))+geom_point()+ {if(continuous)scale_color_gradient(low = "blue", high = "red")}
-  p5 = ggplot(as.data.frame(pc_res$x), aes(x = PC2, y = PC4, color = colorvec))+geom_point()+ {if(continuous)scale_color_gradient(low = "blue", high = "red")}
-  p6 = ggplot(as.data.frame(pc_res$x), aes(x = PC3, y = PC4, color = colorvec))+geom_point()+ {if(continuous)scale_color_gradient(low = "blue", high = "red")}
-  grid.arrange(p1, p2, p3,p4,p5, p6, nrow = 3, top=textGrob(title,gp=gpar(fontsize=12,font=3)))
-}
-
 plot_pcs(pc_res, my_rosmap_meta$batch_bin, "PCA All Genes, Seq. Batch")
 plot_pcs(pc_res_seeds, my_rosmap_meta$batch_bin, "PCA CYCLOPS Seed Genes, Seq. Batch")
 plot_pcs(pc_res, my_rosmap_meta$msex, "PCA All Genes, Sex")
@@ -419,7 +409,7 @@ write.table(qlf.2vs1$table, "Inhib_2_8_11_12_13/ Inhib_2_8_11_12_13_filtByExpr_c
 
 ```
 
-Alternative - no combat, supply edgeR with batch information:
+### Alternative - no combat, supply edgeR with batch information:
 
 ```{r}
 all(colnames(cts) == (my_rosmap_meta$projid))
@@ -432,11 +422,25 @@ keep.genes = filterByExpr(y)
 y = y[keep.genes, , keep=FALSE]
 print(paste("keeping", dim(y)[1], "genes"))
 
-design = model.matrix(~my_rosmap_meta$cond_cogdx + my_rosmap_meta$batch_bin)
-colnames(design) = c("CTL","AD", "Batch10_64")
+#ROSMAP metadata has 1 missing pmi, fill in with median:
+my_rosmap_meta$pmi[which(is.na(my_rosmap_meta$pmi))] = median(my_rosmap_meta$pmi, na.rm = T)
+
+design = model.matrix(~cond_cogdx + batch_bin + pmi + msex, data = my_rosmap_meta)
+colnames(design) = c("CTL","AD", "Batch10_64", "pmi", "sex")
 
 y1 = estimateDisp(y, design)
 fit <- glmQLFit(y1, design)
 qlf <- glmQLFTest(fit, coef=2)
 topTags(qlf)
+```
+
+### Write out DE results
+
+```{r}
+setwd("../edgeR_diff_expression/")
+
+#write out qlf test
+qlf$table$FDR = p.adjust(qlf$table$PValue, method = "BH")
+
+write.table(qlf$table, "All_Inh/All_Inh_filtByExpr_edgeR_DE_QLFTest.csv", sep =',', row.names = T, col.names = NA )
 ```

@@ -70,19 +70,44 @@ def parse_csv_file(file_path):
     except pd.errors.ParserError:
         print("Error parsing the file.")
         return None
+    
+def plot_results(out, filename):
+    plt.figure(figsize=(8, 6))  # Create a single figure
+    cmap = mpl.cm.bwr_r
+    norm = mpl.colors.Normalize(vmin=0, vmax=0.2)
 
+    mapper = cm.ScalarMappable(norm=norm, cmap=cmap)
+
+    ax = sns.barplot(
+        data=out.head(20),
+        x='gene count',
+        y='Term name',
+        palette=mapper.to_rgba(out.head(20)["Adjusted p-value"])
+    )
+
+    # Adjust tick labels with textwrap.fill
+    ax.set_yticklabels([textwrap.fill(e, 100) for e in out.head(20)['Term name']])
+  
+    # Create colorbar using the mappable object
+    cbar = plt.colorbar(mapper, ax = ax)
+
+    cbar.set_label('Adjusted p val')  # Set label for the colorbar
+
+    plt.title("EnrichR Results: {}".format(filename))
+    plt.subplots_adjust(left=0.5, right=0.8, top=0.9, bottom=0.1)
+
+    plt.savefig((filename + "_barplot.png"))
 
 try:
     #call function to parse csv file containing gene list
     gene_list_df = parse_csv_file(gene_list_path)
-
     #call function to parse csv file containing background list
     background_df = parse_csv_file(background_path)
+
     if gene_list_df is not None or background_df is not None:
         # cast these into lists instead of pandas objects
         genes =list(gene_list_df['Gene_Symbols'])
         background = list(background_df['Gene_Symbols'])
-
         ####### get user and background response info ######
         base_url = "https://maayanlab.cloud/speedrichr"
         description = "sample gene set with background"
@@ -104,30 +129,7 @@ try:
         )
 
         if res.ok:
-                background_response = res.json()
-        ################################################
-        def plot_results(out, filename):
-            fig, ax = plt.subplots(figsize = (0.1, 2.75))
-            cmap = mpl.cm.bwr_r
-            norm = mpl.colors.Normalize(vmin = 0, vmax = .2)
-
-            mapper = cm.ScalarMappable(norm = norm, cmap = cm.bwr_r)
-
-            cbl = mpl.colorbar.ColorbarBase(ax, cmap = cmap, norm = norm, orientation = 'vertical')
-            cbl = cbl.ax.invert_xaxis()
-
-            plt.figure(figsize = (8,6))
-
-
-            ax = sns.barplot(data = out.head(20), x = 'gene count', y = 'Term name', palette = mapper.to_rgba(out.head(20)["Adjusted p-value"]))
-
-            ax.set_yticklabels([textwrap.fill(e, 100) for e in out.head(20)['Term name']])
-            ax.figure.colorbar(mapper)
-            plt.title("EnrichR Results: {}".format(filename))
-            plt.subplots_adjust(left=0.4, right=0.99, top=0.9, bottom=0.1)
-
-            plt.savefig((filename + "_barplot.png") )
-
+                background_response = res.json()        
 
         #Run through libraries and download enrichment results to outfiles
         dir_path = os.path.join(parent_folder_path, "EnrichR_results", ("EnrichR_" + file_name + "_BCKGRND-" + background_name ))
@@ -179,9 +181,14 @@ try:
                 ax.set_yticklabels([textwrap.shorten(e, 35, placeholder="...") for e in out.head(20)['Term name']])
                 axes[i].set_title(libs[i])
                 
-            axes[0].figure.colorbar(mapper)
-            plt.tight_layout(h_pad= 1, w_pad = .3)
-            plt.subplots_adjust(left=.2, right=0.98, top=0.9, bottom=0.1)
+            cbar_ax = fig.add_axes([0.90, 0.15, 0.01, 0.7])  # Adjust position and size as needed
+            cbar = fig.colorbar(mapper, cax=cbar_ax)
+            cbar.set_label('Adjusted p val')  # Set label for the colorbar
+
+            # Use constrained_layout instead of tight_layout
+            fig.set_constrained_layout_pads(w_pad=.1, h_pad=1)
+            plt.subplots_adjust(left=.2, right=0.85, top=0.9, bottom=0.1, wspace=0.9, 
+                    hspace=0.2)
             plt.savefig((file_name + "_barplot_AllLibs.png") )
         else:
             print(f'Directory "{dir_path}" already exists. Skipping.')

@@ -3,7 +3,7 @@ library(doParallel)
 library(gridExtra)
 library(progress)
 
-blunt_outliers = function(vec, percentile = 0.025){
+blunt_outliers = function(vec, percentile = 0.){
   num =length(which(!is.na(vec)))
   blunt_n_points = round(percentile * num, 0)
   ord = sort(vec)
@@ -17,7 +17,7 @@ blunt_outliers = function(vec, percentile = 0.025){
 
 
 plot_gene_trace = function(cyc_pred, tmm, seedlist,  useBatch = F,
-                           percentile = 0.025, savePlots = F, split_cond_plots = T){
+                           percentile = 0., savePlots = F, split_cond_plots = T){
   if(useBatch){print("NOTE: Using batches in plotting")}
   
   cond_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "cond_d")

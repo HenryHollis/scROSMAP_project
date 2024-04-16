@@ -1,0 +1,3 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,Nucleus (GO:0005634),0.06502261910659643,inf,inf,"['MIS12', 'NME1']",0.08700250214589335,0,0,2
+2,Intracellular Membrane-Bounded Organelle (GO:0043231),0.08700250214589335,inf,inf,"['MIS12', 'NME1']",0.08700250214589335,0,0,2

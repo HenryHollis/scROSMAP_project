@@ -1,0 +1,3 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,Ribosome,0.001721950887266695,21.333333333333332,135.7716777415332,"['RPL7A', 'RPS15A', 'RPL9']",0.0021431247022474106,0,0,3
+2,Coronavirus disease,0.0021431247022474106,19.670212765957448,120.88310320144745,"['RPL7A', 'RPS15A', 'RPL9']",0.0021431247022474106,0,0,3

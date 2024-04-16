@@ -1,0 +1,3 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,STAT3 human,0.02468135718457852,61.51470588235294,227.70942291538157,['NME1'],0.028173769711651975,0,0,1
+2,TP53 human,0.028173769711651975,53.56410256410256,191.18977327654122,['NME1'],0.028173769711651975,0,0,1
