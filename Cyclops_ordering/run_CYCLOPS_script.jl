@@ -5,12 +5,12 @@ data_path = joinpath(base_path, "normed_counts") # path for data folder in base 
 seed_path = joinpath(base_path, "Cyclops_ordering") # path for data folder in base folder
 output_path = joinpath(homedir(), "Desktop") # real training run output folder in base folder
 
-TMM = CSV.read(joinpath(data_path, "ExcSubtypes3and5_FiltByExprDefault_TMM.csv"))
+TMM = CSV.read(joinpath(data_path, "ExcSubtypes3and5_FiltByExprDefault_TMM.csv"), DataFrame)
 
 TMM = TMM[Not(3:6), :]
 nth_seed_cutoff =  size(TMM, 1)-2                    #FIXME to "-1" with no covariates, "-2" with covariates.
 nth_seed_cutoff = min(nth_seed_cutoff, 10000)
-seed_genes = unique(CSV.read(joinpath(seed_path, "seed_gene_list_nonUnique.csv"), header = false)).Column1
+seed_genes = unique(CSV.read(joinpath(seed_path, "seed_gene_list_nonUnique.csv"), DataFrame, header = false)).Column1
 
 # make changes to training parameters, if required. Below are the defaults for the current version of cyclops.
 training_parameters = Dict(:regex_cont => r".*_C",			# What is the regex match for continuous covariates in the data file

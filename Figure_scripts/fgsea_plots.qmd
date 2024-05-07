@@ -33,15 +33,16 @@ fgsea_dotplot = function(object, show = 15,
   #fixed_labels <- str_replace_all(data$pathway, "_", " ")
   data$fixed_labels = str_replace_all(data$pathway, "_", " ")
   ggplot(data, aes(x=reorder(fixed_labels,padj, decreasing = T), y= abs(NES), color = padj, size = size)) +
-    geom_point(alpha = 0.9, ) +
+    geom_segment(aes(x = reorder(fixed_labels,padj, decreasing = T), xend = reorder(fixed_labels,padj, decreasing = T), y = 0, yend = abs(NES)), linetype = "dashed", color = "#efefef", size = .5)+
+    geom_point(alpha = 0.7, ) +
     coord_flip()+
-    scale_color_continuous(low="red", high="blue", name = "BHQ",
-                           guide=guide_colorbar(reverse=T)) +
-    #scale_size_continuous( name = "Size", range  =c(3,8)) +
-    scale_x_discrete(name = "Pathway", labels = function(x) str_wrap(x, width = 30)) +
+    scale_color_continuous(high="#85caf6", low="#0b068c", name = "BHQ",
+                           guide=guide_colorbar(reverse=T))+
+    scale_size_continuous( name = "Gene Number") +
+    scale_x_discrete(name = "Pathway", labels = function(x) tools::toTitleCase(tolower(str_wrap(x, width = 30)))) +
     ylab("abs(NES)") +
-    labs(title = str_wrap(my_title, 20)) #  # theme_dose(12)
-  
+    labs(title = str_wrap(my_title, 50))+ 
+    theme_classic()
 }
 
 plot_all_results= function(path){
@@ -57,15 +58,15 @@ plot_all_results= function(path){
     print(p)
     p = fgsea_dotplot(log_ad_ctl_1, enrichment = "pos", my_title = "Pathways Enriched for Genes Gain Rhyth in AD (cyclingBHQ1AR1)", BHQ_cutoff = 0.2)
     print(p)
-    log_ad_ctl_25 = read_csv("fGSEA/fGSEA_results/DRgenesAmpRatio25_Log(AD-CTL)ranked.csv", show_col_types = F)
-    p = fgsea_dotplot(log_ad_ctl_25, enrichment = "neg", my_title = "Pathways Enriched for Genes Losing Rhyth in AD (cyclingBHQ1AR25)", BHQ_cutoff = 0.2)
+    log_ad_ctl_20 = read_csv("fGSEA/fGSEA_results/DRgenesAmpRatio20_Log(AD-CTL)ranked.csv", show_col_types = F)
+    p = fgsea_dotplot(log_ad_ctl_20, enrichment = "neg", my_title = "Pathways Enriched for Genes Losing Rhyth in AD (cyclingBHQ1AR20)", BHQ_cutoff = 0.2)
     print(p)
-    p = fgsea_dotplot(log_ad_ctl_25, enrichment = "pos", my_title = "Pathways Enriched for Genes Gain Rhyth in AD (cyclingBHQ1AR25)", BHQ_cutoff = 0.2)
+    p = fgsea_dotplot(log_ad_ctl_20, enrichment = "pos", my_title = "Pathways Enriched for Genes Gain Rhyth in AD (cyclingBHQ1AR20)", BHQ_cutoff = 0.2)
     print(p)
-    log_ad_ctl_25_mthd2 = read_csv("fGSEA/fGSEA_results/DRgenesAmpRatio25_Log(AD-CTL)ranked_method2.csv", show_col_types = F)
-    p =fgsea_dotplot(log_ad_ctl_25_mthd2, enrichment = "neg", my_title = "Pathways Enriched for Genes Losing Rhyth in AD method2 (cyclingBHQ1AR1)", BHQ_cutoff = 0.2)
+    log_ad_ctl_20_mthd2 = read_csv("fGSEA/fGSEA_results/DRgenesAmpRatio20_Log(AD-CTL)ranked_method2.csv", show_col_types = F)
+    p =fgsea_dotplot(log_ad_ctl_20_mthd2, enrichment = "neg", my_title = "Pathways Enriched for Genes Losing Rhyth in AD method2 (cyclingBHQ1AR1)", BHQ_cutoff = 0.2)
     print(p)
-    p = fgsea_dotplot(log_ad_ctl_25_mthd2, enrichment = "pos", my_title = "Pathways Enriched for Genes Gain Rhyth in AD method2 (cyclingBHQ1AR1)", BHQ_cutoff = 0.3)
+    p = fgsea_dotplot(log_ad_ctl_20_mthd2, enrichment = "pos", my_title = "Pathways Enriched for Genes Gain Rhyth in AD method2 (cyclingBHQ1AR1)", BHQ_cutoff = 0.3)
     print(p)
 }
 ```
@@ -81,17 +82,17 @@ plot_all_results("../Cyclops_ordering/downstream_output_Exc3_5/")
 ### Inhibitory Neurons:
 
 ```{r}
-plot_all_results("../Cyclops_ordering/downstream_output_Inh_2_8_11_12_13/")
+plot_all_results("../Cyclops_ordering/downstream_output_Inhib_All/")
 ```
 
 ### Astrocytes:
 
 ```{r}
-plot_all_results("../Cyclops_ordering/downstream_output_Ast_1_2_5_6_7_8/")
+plot_all_results("../Cyclops_ordering/downstream_output_Ast_All/")
 ```
 
 ### Mglia:
 
 ```{r}
-plot_all_results("../Cyclops_ordering/downstream_output_Mglia_4_5_6_7_8_10_11_13_15_16/")
+plot_all_results("../Cyclops_ordering/downstream_output_Mglia_All/")
 ```

@@ -52,17 +52,16 @@ find_best_forward_backward_alignment_grid_search <- function(l1, l2) {
 Read in Chen et al. ([**https://doi.org/10.1073/pnas.1508249112**](https://doi.org/10.1073/pnas.1508249112)**)** data
 
 ```{r}
+library(openxlsx)
+
 # URL of the file you want to download
 url <- "https://www.pnas.org/doi/suppl/10.1073/pnas.1508249112/suppl_file/pnas.1508249112.sd01.xlsx"
 
-# Temporary file path to save the downloaded file
-temp_file <- tempfile(fileext = ".xlsx")
-
-# Download the file
-download.file(url, destfile = temp_file, mode = "wb")
+# # Temporary file path to save the downloaded file
+url = "~/Downloads/pnas.1508249112.sd01 (1).xlsx"
 
 # Print the path to the downloaded file
-Chen_acrophases =  readxl::read_xlsx(temp_file)
+Chen_acrophases =  read.xlsx(url,sheet=1)
 #keep genes with significance < 0.2
 Chen_acrophases = dplyr::filter(Chen_acrophases, BA11.qval  < 0.2) %>% dplyr::select(Gene, BA11.Peak)
 #rename C1orf51 -> CIART
@@ -71,15 +70,36 @@ Chen_acrophases[1,1] = "CIART"
 Chen_acrophases$BA11.Peak_mod = ((Chen_acrophases$BA11.Peak) *pi / 12) %% (2*pi)
 ```
 
+Get Human Remapping dictionary:
+
+```{r}
+human_symb_remap = read.csv("https://data.broadinstitute.org/gsea-msigdb/msigdb/annotations/human/Human_Gene_Symbol_with_Remapping_MSigDB.v2023.2.Hs.chip",sep="\t")
+
+check_for_alias <- function(gene_list){
+  translation_dict = filter(human_symb_remap, Probe.Set.ID %in% gene_list)
+  
+  }
+trans_dict = check_for_alias(Chen_acrophases$Gene)
+Chen_acrophases$Gene_symbol_remapped = trans_dict$Gene.Symbol[match(Chen_acrophases$Gene, trans_dict$Probe.Set.ID)]
+```
+
 Read in predicted gene acrophases from my data:
 
 ```{r}
-pseudobulk_acros = read_csv("../Cyclops_ordering/downstream_output_PseudobulkAllCell/cosinor_results_CTL.csv", show_col_types = F)
+pseudobulk_acros = read_csv("../Cyclops_ordering/downstream_output_Pseudobulk_All/cosinor_results_CTL.csv", show_col_types = F)
+
+# Which genes are only found (in rosmap expression data) with remapping?
+genes_found_remapping_only_idx = which(Chen_acrophases$Gene_symbol_remapped %in% pseudobulk_acros$Gene_Symbols & !(Chen_acrophases$Gene %in% pseudobulk_acros$Gene_Symbols))
+
+Chen_acrophases$Symbol_final = Chen_acrophases$Gene
+Chen_acrophases$Symbol_final[genes_found_remapping_only_idx] = Chen_acrophases$Gene_symbol_remapped[genes_found_remapping_only_idx]
 
 #filter out genes in my data that are significantly cycling and also in Chen list:
-tmp = dplyr::filter(pseudobulk_acros, Gene_Symbols %in% Chen_acrophases$Gene & as.numeric(BHQ) < 0.1 & as.numeric(amp_ratio) > 0.1) %>% dplyr::select(Gene_Symbols, acrophase, BHQ)
+tmp = dplyr::filter(pseudobulk_acros, (Gene_Symbols %in% Chen_acrophases$Symbol_final) & as.numeric(BHQ) < 0.1 & as.numeric(amp_ratio) > 0.1) %>% dplyr::select(Gene_Symbols, acrophase, BHQ)
+
+
 #merge the Chen info with my info
-df = merge(Chen_acrophases, tmp, by.x = "Gene", by.y = "Gene_Symbols" )
+df = merge(Chen_acrophases, tmp, by.x = "Symbol_final", by.y = "Gene_Symbols" )
 
 df$shifted_phase = find_best_forward_backward_alignment_grid_search(df$BA11.Peak_mod, as.numeric(df$acrophase))
 

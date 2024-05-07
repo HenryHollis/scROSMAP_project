@@ -1,0 +1,2 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,YBX1 human,0.007496131061230996,172.12962962962962,842.2936645213214,['RAD9A'],0.007496131061230996,0,0,1

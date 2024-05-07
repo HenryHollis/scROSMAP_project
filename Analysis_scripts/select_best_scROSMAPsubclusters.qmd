@@ -197,7 +197,7 @@ get_subluster_data = function(str){
                              return.seurat = FALSE)
   cts = cts$RNA[,na.exclude(match(rosmap_meta$projid, colnames(cts$RNA)))]
 }
-cts = get_subluster_data("Inh.*")
+cts = get_subluster_data("Exc\\.5$|Exc\\.3$")
 #"Inh\\.2$|Inh\\.8$|Inh\\.11$|Inh\\.12$|Inh\\.13$"
 #"Exc\\.5$|Exc\\.3$"
 # "Ast\\.1$|Ast\\.2$|Ast\\.5$|Ast\\.6$|Ast\\.7$|Ast\\.8$"
@@ -288,6 +288,7 @@ CYCLOPS_seed_genes = CYCLOPS_seed_genes[which(CYCLOPS_seed_genes %in% rownames(m
 pc_res = prcomp(t(my_tmm), scale. = T)
 pc_res_seeds = prcomp(t(my_tmm[CYCLOPS_seed_genes,]), scale. = T)
 
+pc_res_rp = prcomp(t(my_tmm[grep("^RP[SL]", rownames(my_tmm)),]), scale. = T)
 
 plot_pcs = function(pc_res, colorvec, title, continuous = F){
  if(!continuous){colorvec = as.factor(colorvec)}
@@ -301,11 +302,20 @@ plot_pcs = function(pc_res, colorvec, title, continuous = F){
 }
 
 plot_pcs(pc_res, my_rosmap_meta$batch_bin, "PCA All Genes, Seq. Batch")
+plot_pcs(pc_res_rp, my_rosmap_meta$batch_bin, "PCA Ribo Genes, Seq. Batch")
 plot_pcs(pc_res_seeds, my_rosmap_meta$batch_bin, "PCA CYCLOPS Seed Genes, Seq. Batch")
+
 plot_pcs(pc_res, my_rosmap_meta$msex, "PCA All Genes, Sex")
 plot_pcs(pc_res_seeds, my_rosmap_meta$msex, "PCA CYCLOPS Seed Genes, Sex")
+plot_pcs(pc_res_rp, my_rosmap_meta$msex, "PCA Ribo Genes, Sex")
+
 plot_pcs(pc_res, my_rosmap_meta$pmi, "PCA All Genes, PMI", continuous = T)
 plot_pcs(pc_res_seeds, my_rosmap_meta$pmi, "PCA CYCLOPS Seed Genes, PMI", continuous = T)
+plot_pcs(pc_res_rp, my_rosmap_meta$pmi, "PCA Ribo Genes, PMI", T)
+
+plot_pcs(pc_res, my_rosmap_meta$Study, "PCA All Genes, Study")
+plot_pcs(pc_res_seeds, my_rosmap_meta$Study, "PCA CYCLOPS Seed Genes, Study")
+plot_pcs(pc_res_rp, my_rosmap_meta$Study, "PCA Ribo Genes, Study")
 ```
 
 ### COMBAT the TMM
