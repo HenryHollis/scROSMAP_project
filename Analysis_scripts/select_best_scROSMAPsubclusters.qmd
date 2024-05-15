@@ -100,12 +100,12 @@ seurat_obj = AddMetaData(
   metadata = counts.RPS,
   col.name = "cnts_ribo"
 )
-VlnPlot(seurat_obj, group.by = "cond_cogdx", features = c("cnts_ribo", "pmi"), pt.size = 0.1, ncol = 1, alpha = 0)
+# VlnPlot(seurat_obj, group.by = "cond_cogdx", features = c("cnts_ribo", "pmi"), pt.size = 0.1, ncol = 1, alpha = 0)
 
 #plot QC mertrics
-feats <- c("nFeature_RNA", "nCount_RNA", "percent_ribo")
-VlnPlot(seurat_obj, group.by = "broadclass", features = feats, pt.size = 0.1, ncol = 2, alpha = 0.05) +
-  NoLegend()
+# feats <- c("nFeature_RNA", "nCount_RNA", "percent_ribo")
+# VlnPlot(seurat_obj, group.by = "broadclass", features = feats, pt.size = 0.1, ncol = 2, alpha = 0.05) +
+  # NoLegend()
 
 #creates a reference correlation matrix
 refCor = getRefCor(species = "human", tissue = "pan", useEntrezGeneId = F)

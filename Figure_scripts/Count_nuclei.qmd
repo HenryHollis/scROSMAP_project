@@ -1,0 +1,54 @@
+---
+title: "Get Nuclei Counts"
+format: html
+editor: visual
+---
+
+Libraries:
+
+```{r}
+library(tidyverse)
+
+```
+
+Read in cell counts:
+
+```{r}
+cells = read_csv("cells_per_cluster_per_donor.csv", show_col_types = F)
+
+```
+
+Read in Metadata:
+
+```{r}
+#read in subject metadata
+rosmap_subject_metadata = read.csv("../ROSMAP_metadata/cleaned_rosmap_meta_cogdxConds.csv")
+
+#Keep only the 404 subjects that I order:
+cyc_pred = read_csv("../Cyclops_ordering/Fits/Fit_Output_2024-02-05T14_13_00.csv", show_col_types = F)
+rosmap_meta = rosmap_subject_metadata[match(cyc_pred$ID, rosmap_subject_metadata$projid),]
+
+all(rosmap_meta$projid == cyc_pred$ID)
+
+```
+
+Restrict cells to only those that I use:
+
+```{r}
+cells  = cells %>% column_to_rownames(var = "...1")
+cells_to_use = cells[,which(colnames(cells) %in% rosmap_meta$projid)]
+cells_to_use
+```
+
+```{r}
+sum(cells_to_use)
+```
+
+```{r}
+Exc_cells = cells_to_use[grep("Exc", rownames(cells_to_use)),]
+Exc_cells[1:16,1:10]
+```
+
+```{r}
+sum(Exc_cells)
+```

@@ -1,0 +1,100 @@
+```{r}
+library(Seurat)
+library(edgeR)
+library(NMOF)
+library(parallel)
+library(tidyverse)
+library(deltaccd)
+library(gridExtra)
+library(grid)
+load("../rosmap424_pseudobulk_by_cluster.rda")
+```
+
+### Read in ROSMAP metadata
+
+```{r}
+
+#clean up column (subcluster names)
+colnames(counts) = str_replace(colnames(counts), "_donor", "")
+colnames(counts) = str_replace(colnames(counts), ".rds", "")
+rownames(pseudobulk_meta) = colnames(counts)
+
+#read in subject metadata
+rosmap_subject_metadata = read.csv("../ROSMAP_metadata/cleaned_rosmap_meta_cogdxConds.csv")
+
+#read in another file with sequencing info for all scRNAseq done for ROSMAP
+rosmap_scassay_meta = read_csv("../ROSMAP_metadata/ROSMAP_assay_scrnaSeq_metadata.csv", show_col_types = F)
+
+#Keep only the 404 subjects that I order:
+cyc_pred = read_csv("../Cyclops_ordering/Fits/Fit_Output_2024-02-05T14_13_00.csv")
+rosmap_meta = rosmap_subject_metadata[match(cyc_pred$ID, rosmap_subject_metadata$projid),]
+
+all(rosmap_meta$projid == cyc_pred$ID)
+
+#merge large meta_data file with sequencing info
+rosmap_scassay_meta = rosmap_scassay_meta %>% separate_wider_delim(cols = 2, delim = "_", names = c("col1", "individualID"), too_many = "drop", too_few = "align_start")
+# full_meta = merge(rosmap_meta, rosmap_scassay_meta, by = "individualID", all.x = T)
+rosmap_meta$batch = rosmap_scassay_meta$rnaBatch[match(rosmap_meta$individualID, rosmap_scassay_meta$individualID)]
+rosmap_meta$batch = str_extract(rosmap_meta$batch, "(?<=-B)[0-9]*") %>% as.numeric
+rosmap_meta = rosmap_meta %>%
+  mutate(batch_bin = cut(batch, c(4, 10, 64), right = F))
+
+#adds cogdx score for each subcluster
+pseudobulk_meta$cogdx = rosmap_meta$cogdx[match(pseudobulk_meta$project_id, rosmap_meta$projid)]
+
+pseudobulk_meta$cond_cogdx = rosmap_meta$cond_cogdx[match(pseudobulk_meta$project_id, rosmap_meta$projid)]
+
+pseudobulk_meta$pmi = rosmap_meta$pmi[match(pseudobulk_meta$project_id, rosmap_meta$projid)]
+
+pseudobulk_meta$sex = rosmap_meta$msex[match(pseudobulk_meta$project_id, rosmap_meta$projid)]
+
+rosmap_meta$projid = paste0("g", rosmap_meta$projid)
+```
+
+### Create Seurat object
+
+notes: "NA" on these plots means the projectid from the 424 .rda file is not found in my rosmap_meta. These are the cogdx 3,6 subjects I exclude.
+
+```{r}
+#creates a seurat object
+seurat_obj = CreateSeuratObject( counts,
+                                 project = "scRNA ROSMAP",
+                                 assay = "RNA",
+                                 names.field = 3,
+                                 names.delim = "_",
+                                 meta.data = pseudobulk_meta)
+
+#get Ribo Protein percent 
+seurat_obj <- PercentageFeatureSet(seurat_obj, "^RP[SL]", col.name = "percent_ribo")
+#Percentage hemoglobin genes - includes all genes starting with HB except HBP.
+seurat_obj <- PercentageFeatureSet(seurat_obj, "^HB[^(P)]", col.name = "percent_hb")
+
+#Does number of ribosoal features (%ribo * n_features) change with cogdx
+RPSL.genes <- grep(pattern = "^RP[SL]", x = rownames(x = seurat_obj@assays$RNA$counts), value = TRUE)
+
+counts.RPS <- Matrix::colSums(seurat_obj@assays$RNA$counts[RPSL.genes, ])
+
+seurat_obj = AddMetaData( object = seurat_obj, metadata = counts.RPS, col.name = "cnts_ribo" )
+
+
+
+seurat_obj_subs = AggregateExpression(seurat_obj,
+                                      group.by = c("project_id", "broadclass"),
+                                      return.seurat = T
+                                      )
+
+```
+
+```{r}
+#limit the subjects to only those in the rosmap_meta df:
+seurat_obj_subs2 <- subset(seurat_obj_subs, subset = (project_id %in% rosmap_meta$projid) ) 
+
+#Remake nFeatures and nCount metadata
+seurat_obj_subs2$nCount = colSums(x = seurat_obj_subs2, slot = "counts")  # nCount_RNA
+seurat_obj_subs2$nFeature = colSums(x = GetAssayData(object = seurat_obj_subs2, layer = "counts") > 0)  # nFeatureRNA
+```
+
+```{r}
+VlnPlot(seurat_obj_subs2, group.by = "broadclass", features = c("nFeature", "nCount"), pt.size = 0.1, ncol = 2, alpha = .3) + NoLegend()
+
+```
