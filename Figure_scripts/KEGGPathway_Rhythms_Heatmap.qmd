@@ -8,21 +8,17 @@ Read in TMM and cyclops prediction:
 
 ```{r}
 library(tidyverse)
+library(gridExtra)
 #path to cyclops ordering
 cyclops_fit= "../Cyclops_ordering/Fits/Fit_Output_2024-02-05T14_13_00.csv"
 
 #I want to arrange the heatmaps by acrophase so I need this
-CTL_cycling_file = "../Cyclops_ordering/downstream_output_Mglia_4_5_6_7_8_10_11_13_15_16/cosinor_results_CTL.csv"
+CTL_cycling_file = "../Cyclops_ordering/downstream_output_Exc3_5/cosinor_results_CTL.csv"
+# CTL_cycling_file = "../Cyclops_ordering/downstream_output_Inhib_All/cosinor_results_CTL.csv"
 
 #path to normalized counts
-path_to_tmm_file = "../normed_counts/Microglia_4_5_6_7_8_10_11_13_15_16_FiltByExprDefault_TMM_CombatAdjusted.csv"
+path_to_tmm_file = "../normed_counts/ExcSubtypes3and5_FiltByExprDefault_TMM_CombatAdjusted.csv"
 
-condition = "cond_1"
-if(condition == "cond_0"){
-  plot_title = "CTL"
-}else{
-  plot_title = "AD"
-}
 
 cyc_pred = read_csv(cyclops_fit, show_col_types = F) %>% arrange(Phase)
 tmm = read_csv(path_to_tmm_file, show_col_types = F)
@@ -35,71 +31,92 @@ Get Kegg Ribosome pathway:
 ```{r}
 setwd("../Analysis_scripts/MsigDB_gmts_for_GSEA/")
 Kegg = read.delim("c2.cp.kegg.v2023.1.Hs.symbols.gmt", sep = '\t', header= F)
-ribo = Kegg[grep("RIBOSOME", Kegg$V1), -c(1,2)] %>% unname %>% unlist
+pathway_name = "OxPhos"
+# pathway_terms = Kegg[grep("RIBOSOME", Kegg$V1), -c(1,2)] %>% unname %>% unlist
+pathway_terms = Kegg[grep("KEGG_OXIDATIVE_PHOSPHORYLATION", Kegg$V1), -c(1,2)] %>% unname %>% unlist
+
+```
+
+We want the genes to be z-normed including both conditions so that differences in amplitude can be seen:
+
+```{r}
+znorm = function(x){
+  x = as.numeric(x)
+  m = mean(x)
+  s = sd(x)
+  return((x-m)/s)
+}
 ```
 
 ```{r}
 #create breaks of (0, 2pi]
 cyc_pred$interval = cut(cyc_pred$Phase,breaks = seq(0, 2*pi, by = pi/2) )
 
-#select genes from tmm in ribo, convert to numeric, transpose to subsXgenes
-ribo_tmm = tmm[tmm$Gene_Symbols %in% ribo, ]  %>% column_to_rownames(var = "Gene_Symbols") %>% mutate_if(is.character,as.numeric) %>% t
+#select genes from tmm in pathway, convert to numeric, transpose to subsXgenes
+pathway_tmm = tmm[tmm$Gene_Symbols %in% pathway_terms, ]  %>% column_to_rownames(var = "Gene_Symbols") %>% mutate_if(is.character,as.numeric) %>% t %>% as.data.frame %>% rownames_to_column(var = "ID")
 
+# Apply z_normalize to each column of my_tibble
+norm_pathway_tmm <- pathway_tmm %>%
+  mutate_at(vars(-1), znorm)
 
-#merge ribo_tmm with cyclops preds
-ribo_tmm = merge(select(cyc_pred, ID, interval, Phase, Covariate_D), ribo_tmm, by.x = "ID", by.y = 0) %>% arrange(Phase) %>% filter(Covariate_D == condition)
-print(paste("Using condition:", condition))
+#merge pathway_tmm with cyclops preds
+norm_pathway_tmm_df = merge(select(cyc_pred, ID, interval, Phase, Covariate_D), norm_pathway_tmm, by = "ID") %>% arrange(Phase) #%>% filter(Covariate_D == condition)
 
 #remove Phase and only keep the binned phase called "interval"
-ribo_tmm = ribo_tmm %>% column_to_rownames(var = "ID") %>% select(!c(Phase, Covariate_D))
+norm_pathway_tmm_CTL = norm_pathway_tmm_df %>% column_to_rownames(var = "ID") %>% filter(Covariate_D == "cond_0") %>% select(!c(Phase, Covariate_D))
+
+norm_pathway_tmm_AD = norm_pathway_tmm_df %>% column_to_rownames(var = "ID") %>% filter(Covariate_D == "cond_1") %>% select(!c(Phase, Covariate_D))
+
 #For each gene, for each time interval, get the median expression for the interval
-heatmap_data = ribo_tmm %>% group_by(interval) %>%
+heatmap_data_CTL = norm_pathway_tmm_CTL %>% group_by(interval) %>%
   summarise_all(median) %>% column_to_rownames(var = "interval")
-heatmap_data = t(heatmap_data)
+heatmap_data_CTL = t(heatmap_data_CTL)
+
+heatmap_data_AD = norm_pathway_tmm_AD %>% group_by(interval) %>%
+  summarise_all(median) %>% column_to_rownames(var = "interval")
+heatmap_data_AD = t(heatmap_data_AD)
 
 #arrange rows of heatmap_data to be in order of acrophase
-row_order = order(CTL_cycling_res$acrophase[ match(rownames(heatmap_data), CTL_cycling_res$Gene_Symbols)])
+row_order = order(CTL_cycling_res$acrophase[ match(rownames(heatmap_data_CTL), CTL_cycling_res$Gene_Symbols)])
 
-heatmap_data = heatmap_data[row_order, ]
+heatmap_data_CTL = heatmap_data_CTL[row_order, ]
+heatmap_data_AD = heatmap_data_AD[row_order, ]
+norm_pathway_tmm_AD %>% group_by(interval) %>%summarise(n = n())
+norm_pathway_tmm_CTL %>% group_by(interval) %>%summarise(n = n())
+
 ```
 
 ```{r}
 library(gplots)
+
+library(circlize)
+col_fun = colorRamp2(c(-1, 0, 1), c("blue", "black", "yellow"))
+
+
 # times = as.character(seq(0, 24, by = 6))
 times = c(expression(pi/2), expression(pi), expression(3*pi/2), expression(2*pi))
-heatmap.2(as.matrix(heatmap_data), col = cm.colors, tracecol = "black", trace = "none", dendrogram = "none", scale ="row", Rowv = NA, Colv = NA, labCol = times, main = paste("KEGG Ribosome Pathway", plot_title))
-```
+# p1 = heatmap.2(as.matrix(heatmap_data_CTL), col = col_fun, tracecol = "black", trace = "none", dendrogram = "none", scale ="none", Rowv = NA, Colv = NA, labCol = times, main = "KEGG Ribosome Pathway CTL")
+# 
+# p2 = heatmap.2(as.matrix(heatmap_data_AD), col = cm.colors, tracecol = "black", trace = "none", dendrogram = "none", scale ="none", Rowv = NA, Colv = NA, labCol = times, main = "KEGG Ribosome Pathway AD")
 
-NOTES: using Combated data, plotting the MEDIANS of the bins
+library(ComplexHeatmap)
 
-```{r}
-oxphos = Kegg[grep("KEGG_OXIDATIVE_PHOSPHORYLATION", Kegg$V1), -c(1,2)] %>% unname %>% unlist
-```
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(nr = 1, nc = 3)))
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
+draw(Heatmap(as.matrix(heatmap_data_CTL), col = col_fun, column_title = paste("KEGG", pathway_name, "CTL"), show_heatmap_legend = FALSE, cluster_columns = F, cluster_rows = F, column_labels = times, row_names_side = "left"), newpage = FALSE)
+upViewport()
 
-```{r}
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
+draw(Heatmap(as.matrix(heatmap_data_AD), col = col_fun, column_title = paste("KEGG", pathway_name, "AD"), show_heatmap_legend = FALSE, cluster_columns = F, cluster_rows = F, column_labels = times, row_names_side = "left"), newpage = FALSE)
+upViewport()
 
-#select genes from tmm in ribo, convert to numeric, transpose to subsXgenes
-oxphos_tmm = tmm[tmm$Gene_Symbols %in% oxphos, ]  %>% column_to_rownames(var = "Gene_Symbols") %>% mutate_if(is.character,as.numeric) %>% t
 
-#merge oxphos_tmm with cyclops preds
-oxphos_tmm = merge(select(cyc_pred, ID, interval, Phase, Covariate_D), oxphos_tmm, by.x = "ID", by.y = 0) %>% arrange(Phase) %>% filter(Covariate_D == condition)
-print(paste("Using condition:", condition))
+lgd = Legend(at = c( -1, 0, 1), col_fun = col_fun, title = "Z-Normed\nExpression", title_position = "topleft")
 
-#remove Phase and only keep the binned phase called "interval"
-oxphos_tmm = oxphos_tmm %>% column_to_rownames(var = "ID") %>% select(!c(Phase, Covariate_D))
-#For each gene, for each time interval, get the median expression for the interval
-heatmap_data_oxphos = oxphos_tmm %>% group_by(interval) %>%
-  summarise_all(median) %>% column_to_rownames(var = "interval")
-heatmap_data_oxphos = t(heatmap_data_oxphos)
+pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 3))
+grid.draw(lgd)
+upViewport()
 
-#arrange rows of heatmap_data to be in order of acrophase
-row_order = order(CTL_cycling_res$acrophase[ match(rownames(heatmap_data_oxphos), CTL_cycling_res$Gene_Symbols)])
-
-heatmap_data_oxphos = heatmap_data_oxphos[row_order, ]
-```
-
-```{r}
-# times = as.character(seq(0, 24, by = 6))
-times = c(expression(pi/2), expression(pi), expression(3*pi/2), expression(2*pi))
-heatmap.2(as.matrix(heatmap_data_oxphos), col = cm.colors, tracecol = "black", trace = "none", dendrogram = "none", scale ="row", Rowv = NA, Colv = NA, labCol = times, main = paste("KEGG OxPhos Pathway", plot_title))
+upViewport()
 ```

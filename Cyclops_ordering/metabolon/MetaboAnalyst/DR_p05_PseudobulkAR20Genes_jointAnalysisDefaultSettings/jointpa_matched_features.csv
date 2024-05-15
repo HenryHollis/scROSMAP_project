@@ -1,0 +1,41 @@
+"",matched_features
+Purine metabolism,hsa:4830; hsa:4831; hsa:115024; hsa:30833; hsa:353; hsa:51292; hsa:2987; hsa:374659
+Phenylalanine metabolism,cpd:C00079; cpd:C00082; hsa:221
+Glycolysis or Gluconeogenesis,cpd:C00024; hsa:221; hsa:3948; hsa:669
+Pyrimidine metabolism,hsa:4830; hsa:4831; hsa:115024; hsa:30833; hsa:79077
+"Phenylalanine, tyrosine and tryptophan biosynthesis",cpd:C00079; cpd:C00082
+Biosynthesis of unsaturated fatty acids,cpd:C00219; cpd:C06429; cpd:C06428
+Nicotinate and nicotinamide metabolism,hsa:115024; hsa:30833
+Citrate cycle (TCA cycle),cpd:C00024; hsa:3420
+beta-Alanine metabolism,cpd:C00024; hsa:221
+Pyruvate metabolism,cpd:C00024; hsa:3948
+Propanoate metabolism,cpd:C00024; hsa:3948
+Synthesis and degradation of ketone bodies,cpd:C00024
+Glutathione metabolism,cpd:C00024; hsa:2879
+Glyoxylate and dicarboxylate metabolism,cpd:C00024; hsa:2653
+Ubiquinone and other terpenoid-quinone biosynthesis,cpd:C00082
+Drug metabolism - other enzymes,hsa:4830; hsa:4831
+Aminoacyl-tRNA biosynthesis,cpd:C00079; cpd:C00082
+Fatty acid elongation,cpd:C00024; hsa:5538
+Arachidonic acid metabolism,cpd:C00219; hsa:240
+Glycerophospholipid metabolism,hsa:139189; hsa:162466
+Tyrosine metabolism,cpd:C00082; hsa:221
+Butanoate metabolism,cpd:C00024
+Histidine metabolism,hsa:221
+Glycerolipid metabolism,hsa:139189
+Terpenoid backbone biosynthesis,cpd:C00024
+Fructose and mannose metabolism,hsa:5372
+Lysine degradation,cpd:C00024
+"Glycine, serine and threonine metabolism",hsa:669
+Inositol phosphate metabolism,cpd:C00024
+Cysteine and methionine metabolism,hsa:3948
+Phosphatidylinositol signaling system,hsa:139189
+N-Glycan biosynthesis,hsa:54344
+Amino sugar and nucleotide sugar metabolism,hsa:5372
+Tryptophan metabolism,cpd:C00024
+"Valine, leucine and isoleucine degradation",cpd:C00024
+Drug metabolism - cytochrome P450,hsa:221
+Fatty acid degradation,cpd:C00024
+Fatty acid biosynthesis,cpd:C00024
+Metabolism of xenobiotics by cytochrome P450,hsa:221
+Steroid hormone biosynthesis,hsa:3291

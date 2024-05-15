@@ -11,11 +11,11 @@ This file is for taking the MetaboAnalyst results and making pretty plots from t
 ```{r}
 library(tidyverse)
 library(ggrepel)
-pathway_res_CTL = read_csv("../Cyclops_ordering/metabolon/MetaboAnalyst/Cycling_in_CTL_Exc35genes_defaultOptions/MetaboAnalyst_result_pathway.csv", show_col_types = F)
+pathway_res_CTL = read_csv("../Cyclops_ordering/metabolon/MetaboAnalyst/Cycling_in_CTL_PseudobulkAR20Genes_jointAnalysisDefaultSettings/MetaboAnalyst_result_pathway.csv", show_col_types = F)
 
-pathway_res_AD = read_csv("../Cyclops_ordering/metabolon/MetaboAnalyst/Cycling_in_AD_Exc35genes_defaultOptions/MetaboAnalyst_result_pathway.csv", show_col_types = F)
+pathway_res_AD = read_csv("../Cyclops_ordering/metabolon/MetaboAnalyst/Cycling_in_AD_PseudoBulkAR20Genes_jointAnalysisDefaultSettings/MetaboAnalyst_result_pathway.csv", show_col_types = F)
 
-pathway_res_Diff_Rhyth = read_csv("../Cyclops_ordering/metabolon/MetaboAnalyst/Diff_cycling_p05_Exc35genes_defaultOptions/MetaboAnalyst_result_pathway.csv", show_col_types = F)
+pathway_res_Diff_Rhyth = read_csv("../Cyclops_ordering/metabolon/MetaboAnalyst/DR_p05_PseudobulkAR20Genes_jointAnalysisDefaultSettings/MetaboAnalyst_result_pathway.csv", show_col_types = F)
 ```
 
 Make the Plots:
@@ -30,13 +30,13 @@ ggplot(pathway_res_CTL, aes(x= Impact, y = `-log10(p)`, label =str_wrap(`...1`, 
 ```{r}
 ggplot(pathway_res_AD, aes(x= Impact, y = `-log10(p)`, label =str_wrap(`...1`, 25)))+
   geom_point(size = 5, color = "red", alpha = 0.7)+
-  ggrepel::geom_text_repel(max.overlaps = 10)+
+  ggrepel::geom_text_repel(max.overlaps = 8)+
    theme_minimal()
 ```
 
 ```{r}
 ggplot(pathway_res_Diff_Rhyth, aes(x= Impact, y = `-log10(p)`, label =str_wrap(`...1`, 25)))+
   geom_point(size = 5, color = "orange", alpha = 0.7)+
-  ggrepel::geom_text_repel(max.overlaps = 10)+
+  ggrepel::geom_text_repel(max.overlaps = 8)+
    theme_minimal()
 ```
