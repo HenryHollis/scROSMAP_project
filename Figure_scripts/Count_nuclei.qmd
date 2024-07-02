@@ -52,3 +52,7 @@ Exc_cells[1:16,1:10]
 ```{r}
 sum(Exc_cells)
 ```
+
+```{r}
+cells_to_use[c("Exc.3", "Exc.5"),] %>% sum
+```

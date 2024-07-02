@@ -75,7 +75,7 @@ Ensembl_dict = readxl::read_xlsx("downstream_helpers/scROSMAP_ENSEMBL_dict.xlsx"
 
 #run custom cycling and differential rhythmicity analysis
 print("***Running cosinor and differential rhythms analysis***")
-run_cycling_and_dr_analysis(path_to_cyclops_ordering, path_to_tmm_file, isCyclingSigCutoff = isCyclingBHQCutoff, percentile = percentile, useBatch = useBatch)
+run_cycling_and_dr_analysis(path_to_cyclops_ordering, path_to_tmm_file, path_to_rosmap_clin, isCyclingSigCutoff = isCyclingBHQCutoff, percentile = percentile, useBatch = useBatch)
 ```
 
 ### Plotting

@@ -341,10 +341,10 @@ diff_rhyth_AD_severity = function(cyc_pred, tmm, seedlist, rosmap_clin_path,  pb
     mutate(braaksc_bin = cut(braaksc, c(0, 3, 5, 7), right = F))
   rosmap_clin = rosmap_clin %>%
     mutate(ceradsc_bin = cut(ceradsc, c(1, 3, 5), right = F))
-  rosmap_clin$apoe_ordinal  = 1
-  rosmap_clin$apoe_ordinal[rosmap_clin$apoe_genotype == 34 | rosmap_clin$apoe_genotype == 24] = 2
-  rosmap_clin$apoe_ordinal[rosmap_clin$apoe_genotype == 44 ] = 3
-  rosmap_clin$apoe_ordinal[is.na(rosmap_clin$apoe_genotype) ] = NA
+  # rosmap_clin$apoe_ordinal  = 1
+  # rosmap_clin$apoe_ordinal[rosmap_clin$apoe_genotype == 34 | rosmap_clin$apoe_genotype == 24] = 2
+  # rosmap_clin$apoe_ordinal[rosmap_clin$apoe_genotype == 44 ] = 3
+  # rosmap_clin$apoe_ordinal[is.na(rosmap_clin$apoe_genotype) ] = NA
   ###############
 
   cond_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "cond_d")
@@ -560,7 +560,7 @@ mesor_differences = function(cyc_pred, tmm, DR_genes, pb = NULL, useBatch = F, p
 
 ##### main function #####
 
-run_cycling_and_dr_analysis = function(order_path, tmm_path, isCyclingSigCutoff = 0.05, useBatch = F, percentile = 0.){
+run_cycling_and_dr_analysis = function(order_path, tmm_path, rosmap_clin_path, isCyclingSigCutoff = 0.05, useBatch = F, percentile = 0.){
   tmm = read_csv(tmm_path, show_col_types = FALSE)      #read expression data, unordered
   colnames(tmm)[1] = "gene_names" #set first column name bc sometimes they are different
 
@@ -619,7 +619,7 @@ run_cycling_and_dr_analysis = function(order_path, tmm_path, isCyclingSigCutoff 
   ####### differential rhtyhms with continuous cerad covs####
   diff_rhythms_AD_severity = diff_rhyth_AD_severity(cyc_pred, tmm,
                                                     unname(unlist(strong_cyclers_AD_AR20$Gene_Symbols)),
-                                                    rosmap_clin_path = "~/Box Sync/Henry_stuff/AD_project/scROSMAP/Meta_data/cleaned_rosmap_meta_cogdxConds.csv",
+                                                    rosmap_clin_path = rosmap_clin_path,
                                                     percentile = percentile, useBatch = useBatch)
 
   ####### differential rhythms #####
