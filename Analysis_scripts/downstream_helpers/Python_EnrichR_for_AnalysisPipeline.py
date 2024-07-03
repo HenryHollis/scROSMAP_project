@@ -77,15 +77,18 @@ def plot_results(out, filename):
     norm = mpl.colors.Normalize(vmin=0, vmax=0.2)
 
     mapper = cm.ScalarMappable(norm=norm, cmap=cmap)
+    color_values = out.head(20)["Adjusted p-value"].tolist()
 
     ax = sns.barplot(
         data=out.head(20),
         x='gene count',
         y='Term name',
-        palette=mapper.to_rgba(out.head(20)["Adjusted p-value"])
+        hue = 'Term name',
+        palette=[mapper.to_rgba(val) for val in color_values],
+        legend = False
     )
-
-    # Adjust tick labels with textwrap.fill
+   # Adjust tick labels with textwrap.fill
+    ax.set_yticks(range(len(out.head(20)['Term name'])))
     ax.set_yticklabels([textwrap.fill(e, 100) for e in out.head(20)['Term name']])
   
     # Create colorbar using the mappable object
@@ -168,6 +171,7 @@ try:
             norm = mpl.colors.Normalize(vmin = 0, vmax = .2)
 
             mapper = cm.ScalarMappable(norm = norm, cmap = cm.bwr_r)
+            
 
             # Create a new figure and axes for the combined plot
             fig, axes = plt.subplots(2, 2, figsize=(15, 10))
@@ -177,7 +181,16 @@ try:
                 out_data = out_data[0:4]
 
             for i, out in enumerate(out_data):
-                ax = sns.barplot(data = out.head(20), x = 'gene count', y = 'Term name', palette = mapper.to_rgba(out.head(20)["Adjusted p-value"]), ax=axes[i])
+                color_values = out.head(20)["Adjusted p-value"].tolist()
+                ax = sns.barplot(data = out.head(20),
+                                x = 'gene count',
+                                y = 'Term name',
+                                hue = 'Term name',
+                                dodge=False,
+                                palette=[mapper.to_rgba(val) for val in color_values],
+                                legend=False,
+                                ax=axes[i])
+                ax.set_yticks(range(len(out.head(20)['Term name'])))
                 ax.set_yticklabels([textwrap.shorten(e, 35, placeholder="...") for e in out.head(20)['Term name']])
                 axes[i].set_title(libs[i])
                 
