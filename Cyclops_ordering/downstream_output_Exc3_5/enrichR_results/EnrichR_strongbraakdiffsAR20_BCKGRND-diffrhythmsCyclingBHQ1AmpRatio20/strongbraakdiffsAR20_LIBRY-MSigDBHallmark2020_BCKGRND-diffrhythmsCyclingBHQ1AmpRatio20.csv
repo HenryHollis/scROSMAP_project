@@ -1,0 +1,3 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,Coagulation,0.01961607493931949,77.25,303.70110569153843,['S100A1'],0.03314874306064714,0,0,1
+2,IL-2/STAT5 Signaling,0.03314874306064714,44.854166666666664,152.80695381232275,['S100A1'],0.03314874306064714,0,0,1
