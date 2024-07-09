@@ -1,0 +1,8 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,Alpha 6 Beta 4 signaling pathway WP244,0.001980161435498018,inf,inf,['LAMA2'],0.012128569912544278,0,0,1
+2,Small cell lung cancer WP4658,0.003960338259432191,inf,inf,['LAMA2'],0.012128569912544278,0,0,1
+3,Arrhythmogenic Right Ventricular Cardiomyopathy WP2118,0.005940519629547764,inf,inf,['LAMA2'],0.012128569912544278,0,0,1
+4,Acute viral myocarditis WP4298,0.006930611378596731,inf,inf,['LAMA2'],0.012128569912544278,0,0,1
+5,Focal Adhesion WP306,0.009900889541523282,inf,inf,['LAMA2'],0.013861245358132594,0,0,1
+6,Focal Adhesion-PI3K-Akt-mTOR-signaling pathway WP3932,0.02574240986195062,inf,inf,['LAMA2'],0.026732506052414624,0,0,1
+7,PI3K-Akt signaling pathway WP4172,0.026732506052414624,inf,inf,['LAMA2'],0.026732506052414624,0,0,1

@@ -1,0 +1,34 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,Antigen Processing And Presentation Of Peptide Antigen Via MHC Class II (GO:0002495),0.00041527038600214754,inf,inf,['HLA-DRA'],0.0015226580820078743,0,0,1
+2,"Regulation Of CD4-positive, Alpha-Beta T Cell Activation (GO:2000514)",0.00041527038600214754,inf,inf,['HLA-DRA'],0.0015226580820078743,0,0,1
+3,Immunoglobulin Production Involved In Immunoglobulin-Mediated Immune Response (GO:0002381),0.00041527038600214754,inf,inf,['HLA-DRA'],0.0015226580820078743,0,0,1
+4,Positive Regulation Of Memory T Cell Differentiation (GO:0043382),0.00041527038600214754,inf,inf,['HLA-DRA'],0.0015226580820078743,0,0,1
+5,Regulation Of Memory T Cell Differentiation (GO:0043380),0.00041527038600214754,inf,inf,['HLA-DRA'],0.0015226580820078743,0,0,1
+6,"Positive Regulation Of CD4-positive, Alpha-Beta T Cell Differentiation (GO:0043372)",0.00041527038600214754,inf,inf,['HLA-DRA'],0.0015226580820078743,0,0,1
+7,MHC Class II Protein Complex Assembly (GO:0002399),0.00041527038600214754,inf,inf,['HLA-DRA'],0.0015226580820078743,0,0,1
+8,Peptide Antigen Assembly With MHC Class II Protein Complex (GO:0002503),0.00041527038600214754,inf,inf,['HLA-DRA'],0.0015226580820078743,0,0,1
+9,Antigen Processing And Presentation Of Exogenous Peptide Antigen Via MHC Class II (GO:0019886),0.00041527038600214754,inf,inf,['HLA-DRA'],0.0015226580820078743,0,0,1
+10,"Regulation Of CD4-positive, Alpha-Beta T Cell Differentiation (GO:0043370)",0.0008305448566723054,inf,inf,['HLA-DRA'],0.0022839983558488397,0,0,1
+11,"Positive Regulation Of CD4-positive, CD25-positive, Alpha-Beta Regulatory T Cell Differentiation (GO:0032831)",0.0008305448566723054,inf,inf,['HLA-DRA'],0.0022839983558488397,0,0,1
+12,Peptide Antigen Assembly With MHC Protein Complex (GO:0002501),0.0008305448566723054,inf,inf,['HLA-DRA'],0.0022839983558488397,0,0,1
+13,Immunoglobulin Mediated Immune Response (GO:0016064),0.00124582060448225,inf,inf,['HLA-DRA'],0.002610295477041915,0,0,1
+14,Regulation Of Immune Effector Process (GO:0002697),0.00124582060448225,inf,inf,['HLA-DRA'],0.002610295477041915,0,0,1
+15,Regulation Of T-helper Cell Differentiation (GO:0045622),0.00124582060448225,inf,inf,['HLA-DRA'],0.002610295477041915,0,0,1
+16,"Positive Regulation Of CD4-positive, Alpha-Beta T Cell Activation (GO:2000516)",0.001661097121753946,inf,inf,['HLA-DRA'],0.002610295477041915,0,0,1
+17,Positive Regulation Of Regulatory T Cell Differentiation (GO:0045591),0.001661097121753946,inf,inf,['HLA-DRA'],0.002610295477041915,0,0,1
+18,Positive Regulation Of Leukocyte Cell-Cell Adhesion (GO:1903039),0.001661097121753946,inf,inf,['HLA-DRA'],0.002610295477041915,0,0,1
+19,Positive Regulation Of Alpha-Beta T Cell Activation (GO:0046635),0.001661097121753946,inf,inf,['HLA-DRA'],0.002610295477041915,0,0,1
+20,Positive Regulation Of Lymphocyte Activation (GO:0051251),0.001661097121753946,inf,inf,['HLA-DRA'],0.002610295477041915,0,0,1
+21,Antigen Processing And Presentation Of Exogenous Peptide Antigen (GO:0002478),0.001661097121753946,inf,inf,['HLA-DRA'],0.002610295477041915,0,0,1
+22,Positive Regulation Of Immune Effector Process (GO:0002699),0.002491651653789434,inf,inf,['HLA-DRA'],0.0037374774806841512,0,0,1
+23,Antigen Processing And Presentation Of Endogenous Peptide Antigen (GO:0002483),0.0029069294583715763,inf,inf,['HLA-DRA'],0.003780443060419128,0,0,1
+24,Regulation Of T Cell Activation (GO:0050863),0.0033222075379440823,inf,inf,['HLA-DRA'],0.003780443060419128,0,0,1
+25,Positive Regulation Of T Cell Mediated Cytotoxicity (GO:0001916),0.0033222075379440823,inf,inf,['HLA-DRA'],0.003780443060419128,0,0,1
+26,Positive Regulation Of T Cell Mediated Immunity (GO:0002711),0.0033222075379440823,inf,inf,['HLA-DRA'],0.003780443060419128,0,0,1
+27,Regulation Of Immune Response (GO:0050776),0.0033222075379440823,inf,inf,['HLA-DRA'],0.003780443060419128,0,0,1
+28,Positive Regulation Of Leukocyte Mediated Cytotoxicity (GO:0001912),0.0033222075379440823,inf,inf,['HLA-DRA'],0.003780443060419128,0,0,1
+29,Cognition (GO:0050890),0.0033222075379440823,inf,inf,['HLA-DRA'],0.003780443060419128,0,0,1
+30,Regulation Of T Cell Mediated Cytotoxicity (GO:0001914),0.003737485851677909,inf,inf,['HLA-DRA'],0.003978613971141,0,0,1
+31,Positive Regulation Of Immune Response (GO:0050778),0.003737485851677909,inf,inf,['HLA-DRA'],0.003978613971141,0,0,1
+32,Positive Regulation Of T Cell Activation (GO:0050870),0.004568043061307989,inf,inf,['HLA-DRA'],0.004568043061307989,0,0,1
+33,Positive Regulation Of T Cell Differentiation (GO:0045582),0.004568043061307989,inf,inf,['HLA-DRA'],0.004568043061307989,0,0,1

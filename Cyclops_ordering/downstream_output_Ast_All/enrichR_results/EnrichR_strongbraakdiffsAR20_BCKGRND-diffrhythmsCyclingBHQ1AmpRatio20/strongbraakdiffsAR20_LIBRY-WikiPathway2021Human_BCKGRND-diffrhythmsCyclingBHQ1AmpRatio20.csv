@@ -1,0 +1,4 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,15q13.3 copy number variation syndrome WP4942,0.0029303553944272976,inf,inf,['CHRNA7'],0.008791066183281893,0,0,1
+2,Phosphodiesterases in neuronal function WP4222,0.011682866536446103,150.88888888888889,671.4000147214518,['CHRNA7'],0.017524299804669154,0,0,1
+3,Sudden Infant Death Syndrome (SIDS) Susceptibility Pathways WP706,0.0629942857816104,21.26984126984127,58.804969627013456,['CHRNA7'],0.0629942857816104,0,0,1

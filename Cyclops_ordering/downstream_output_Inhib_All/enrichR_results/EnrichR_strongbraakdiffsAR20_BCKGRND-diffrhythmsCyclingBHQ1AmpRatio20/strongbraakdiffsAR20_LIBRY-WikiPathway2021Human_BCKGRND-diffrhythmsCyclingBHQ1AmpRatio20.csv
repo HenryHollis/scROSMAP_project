@@ -1,0 +1,7 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,PI3K/AKT/mTOR - VitD3 signaling WP4141,0.0008305448566723054,inf,inf,['HLA-DRA'],0.004152748361815686,0,0,1
+2,Pathogenesis of SARS-CoV-2 Mediated by nsp9-nsp10 Complex WP4884,0.001661097121753946,inf,inf,['HLA-DRA'],0.004152748361815686,0,0,1
+3,Cytokines and Inflammatory Response WP530,0.002076374180907843,inf,inf,['HLA-DRA'],0.004152748361815686,0,0,1
+4,Male infertility WP4673,0.004983321913545917,inf,inf,['HLA-DRA'],0.007474982870318875,0,0,1
+5,Ebola Virus Pathway on Host WP4217,0.0066444386205830935,inf,inf,['HLA-DRA'],0.007474997608416854,0,0,1
+6,Allograft Rejection WP2328,0.007474997608416854,inf,inf,['HLA-DRA'],0.007474997608416854,0,0,1

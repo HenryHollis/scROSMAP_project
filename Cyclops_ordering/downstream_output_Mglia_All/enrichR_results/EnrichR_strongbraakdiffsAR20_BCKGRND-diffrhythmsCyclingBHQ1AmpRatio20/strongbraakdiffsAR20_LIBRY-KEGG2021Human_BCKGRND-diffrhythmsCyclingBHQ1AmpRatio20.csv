@@ -1,0 +1,13 @@
+Rank,Term name,P-value,Z-score,Combined score,Overlapping genes,Adjusted p-value,Old p-value,Old adjusted p-value,gene count
+1,ECM-receptor interaction,0.001980161435498018,inf,inf,['LAMA2'],0.013366194612180174,0,0,1
+2,Viral myocarditis,0.003960338259432191,inf,inf,['LAMA2'],0.013366194612180174,0,0,1
+3,Small cell lung cancer,0.003960338259432191,inf,inf,['LAMA2'],0.013366194612180174,0,0,1
+4,Amoebiasis,0.005940519629547764,inf,inf,['LAMA2'],0.013366194612180174,0,0,1
+5,Arrhythmogenic right ventricular cardiomyopathy,0.005940519629547764,inf,inf,['LAMA2'],0.013366194612180174,0,0,1
+6,Hypertrophic cardiomyopathy,0.006930611378596731,inf,inf,['LAMA2'],0.013366194612180174,0,0,1
+7,Dilated cardiomyopathy,0.007920703666420548,inf,inf,['LAMA2'],0.013366194612180174,0,0,1
+8,Focal adhesion,0.008910796408120116,inf,inf,['LAMA2'],0.013366194612180174,0,0,1
+9,Toxoplasmosis,0.010890983017821676,inf,inf,['LAMA2'],0.0145213106904289,0,0,1
+10,Human papillomavirus infection,0.016831549270112475,inf,inf,['LAMA2'],0.020197859124134968,0,0,1
+11,PI3K-Akt signaling pathway,0.026732506052414624,inf,inf,['LAMA2'],0.029162733875361405,0,0,1
+12,Pathways in cancer,0.046534444664139085,inf,inf,['LAMA2'],0.046534444664139085,0,0,1

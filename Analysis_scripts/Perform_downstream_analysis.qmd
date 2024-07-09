@@ -47,14 +47,14 @@ Select the CYCLOPS ordering path and path to data file and path to EdgeR differe
 path_to_cyclops_ordering = "../Cyclops_ordering/"
 
 #path to normalized counts
-path_to_tmm_file = "../normed_counts/ExcSubtypes3and5_FiltByExprDefault_TMM.csv"
+path_to_tmm_file = "../normed_counts/ALL_Ast_FiltByExprDefault_TMM.csv"
 
 # optional path to file containing differential expression results
-edgeR_de_filename = "../edgeR_diff_expression/Exc3_5/Exc3_5_filtByExpr_edgeR_DE_QLFTest.csv"
+#edgeR_de_filename = "../edgeR_diff_expression/Exc3_5/Exc3_5_filtByExpr_edgeR_DE_QLFTest.csv"
 
 path_to_rosmap_clin = "../ROSMAP_metadata/cleaned_rosmap_meta_cogdxConds.csv"
-metabolon_filename = "../metabolic_data/ROSMAP_Metabolon_HD4_Brain514_assay_data.csv"
-metabolon_datakey = "../metabolic_data/ROSMAP_Metabolon_HD4_Data_Dictionary.csv"
+#metabolon_filename = "../metabolic_data/ROSMAP_Metabolon_HD4_Brain514_assay_data.csv"
+#metabolon_datakey = "../metabolic_data/ROSMAP_Metabolon_HD4_Data_Dictionary.csv"
 
 #BHQ corrected p cutoff to be considered cycling in analysis:
 isCyclingBHQCutoff = 0.1
