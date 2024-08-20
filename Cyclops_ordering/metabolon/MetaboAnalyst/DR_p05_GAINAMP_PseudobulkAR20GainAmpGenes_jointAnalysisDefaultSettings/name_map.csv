@@ -1,0 +1,7 @@
+"Query","Match","HMDB","PubChem","KEGG","SMILES","Comment"
+"Lignoceroylcarnitine","NA","NA","NA","NA","NA","0"
+"1-Carboxyethylphenylalanine","NA","NA","NA","NA","NA","0"
+"Phenylalanine","Phenylalanine","HMDB0000159","6140","C00079","N[C@@H](CC1=CC=CC=C1)C(O)=O","1"
+"1-Carboxyethyltyrosine","NA","NA","NA","NA","NA","0"
+"1-Carboxyethylvaline","NA","NA","NA","NA","NA","0"
+"N-Acetylhistidine","N-Acetylhistidine","HMDB0032055","75619","C02997","CC(=O)N[C@@H](CC1=CNC=N1)C(O)=O","1"

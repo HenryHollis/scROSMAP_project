@@ -1,0 +1,30 @@
+"",matched_features
+Purine metabolism,hsa:4830; hsa:4831; hsa:115024; hsa:30833; hsa:353; hsa:51292; hsa:2987; hsa:374659
+Glutathione metabolism,cpd:C00024; cpd:C00315; cpd:C00750; hsa:2879
+Pyrimidine metabolism,hsa:4830; hsa:4831; hsa:115024; hsa:30833; hsa:79077
+beta-Alanine metabolism,cpd:C00750; cpd:C00024; cpd:C00315
+Nicotinate and nicotinamide metabolism,hsa:115024; hsa:30833
+Citrate cycle (TCA cycle),cpd:C00024; hsa:3420
+Glyoxylate and dicarboxylate metabolism,cpd:C00024; hsa:2653
+Synthesis and degradation of ketone bodies,cpd:C00024
+Glycolysis or Gluconeogenesis,cpd:C00024; hsa:669
+Drug metabolism - other enzymes,hsa:4830; hsa:4831
+Fatty acid elongation,cpd:C00024; hsa:5538
+Arginine and proline metabolism,cpd:C00315; cpd:C00750
+Glycerophospholipid metabolism,hsa:139189; hsa:162466
+Butanoate metabolism,cpd:C00024
+Glycerolipid metabolism,hsa:139189
+Terpenoid backbone biosynthesis,cpd:C00024
+Fructose and mannose metabolism,hsa:5372
+Pyruvate metabolism,cpd:C00024
+Propanoate metabolism,cpd:C00024
+Lysine degradation,cpd:C00024
+"Glycine, serine and threonine metabolism",hsa:669
+Inositol phosphate metabolism,cpd:C00024
+Phosphatidylinositol signaling system,hsa:139189
+N-Glycan biosynthesis,hsa:54344
+Amino sugar and nucleotide sugar metabolism,hsa:5372
+Tryptophan metabolism,cpd:C00024
+"Valine, leucine and isoleucine degradation",cpd:C00024
+Fatty acid degradation,cpd:C00024
+Fatty acid biosynthesis,cpd:C00024

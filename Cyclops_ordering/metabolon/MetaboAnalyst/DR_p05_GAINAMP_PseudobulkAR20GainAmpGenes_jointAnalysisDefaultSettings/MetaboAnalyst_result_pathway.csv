@@ -1,0 +1,15 @@
+"","Total","Expected","Hits","Raw p","-log10(p)","Holm adjust","FDR","Impact"
+"Phenylalanine metabolism",21,0.043033,2,0.00069481,3.1581,0.058364,0.058364,0.55
+"Glycolysis or Gluconeogenesis",61,0.125,2,0.0058577,2.2323,0.48619,0.24602,0.13333
+"Phenylalanine, tyrosine and tryptophan biosynthesis",11,0.022541,1,0.022357,1.6506,1,0.62599,0.6
+"Histidine metabolism",32,0.065574,1,0.063927,1.1943,1,1,0.064516
+"beta-Alanine metabolism",44,0.090164,1,0.087039,1.0603,1,1,0.046512
+"Pyruvate metabolism",45,0.092213,1,0.088944,1.0509,1,1,0.090909
+"Propanoate metabolism",48,0.098361,1,0.094641,1.0239,1,1,0.085106
+"Cysteine and methionine metabolism",71,0.14549,1,0.13737,0.8621,1,1,0.028571
+"Aminoacyl-tRNA biosynthesis",74,0.15164,1,0.14283,0.84519,1,1,0.013699
+"Arachidonic acid metabolism",81,0.16598,1,0.15544,0.80843,1,1,0.05
+"Tyrosine metabolism",88,0.18033,1,0.16791,0.77493,1,1,0.18391
+"Drug metabolism - cytochrome P450",98,0.20082,1,0.18546,0.73174,1,1,0.041237
+"Metabolism of xenobiotics by cytochrome P450",145,0.29713,1,0.26404,0.57832,1,1,0.013889
+"Steroid hormone biosynthesis",199,0.40779,1,0.34672,0.46003,1,1,0.020202

@@ -1,0 +1,30 @@
+"","Total","Expected","Hits","Raw p","-log10(p)","Holm adjust","FDR","Impact"
+"Purine metabolism",166,1.4287,8,3.6809e-05,4.434,0.003092,0.003092,0.4
+"Glutathione metabolism",56,0.48197,4,0.0011144,2.953,0.092494,0.033733,0.10909
+"Pyrimidine metabolism",99,0.85205,5,0.0012047,2.9191,0.098789,0.033733,0.36735
+"beta-Alanine metabolism",44,0.37869,3,0.0058021,2.2364,0.46997,0.12184,0.093023
+"Nicotinate and nicotinamide metabolism",42,0.36148,2,0.049409,1.3062,1,0.69172,0.097561
+"Citrate cycle (TCA cycle)",42,0.36148,2,0.049409,1.3062,1,0.69172,0.2439
+"Glyoxylate and dicarboxylate metabolism",56,0.48197,2,0.082264,1.0848,1,0.87103,0.072727
+"Synthesis and degradation of ketone bodies",10,0.086066,1,0.082955,1.0812,1,0.87103,0.44444
+"Glycolysis or Gluconeogenesis",61,0.525,2,0.095296,1.0209,1,0.88943,0.25
+"Drug metabolism - other enzymes",70,0.60246,2,0.12014,0.92032,1,1,0.057971
+"Fatty acid elongation",75,0.64549,2,0.1346,0.87097,1,1,0.14865
+"Arginine and proline metabolism",78,0.67131,2,0.14346,0.84326,1,1,0.064935
+"Glycerophospholipid metabolism",86,0.74016,2,0.16771,0.77544,1,1,0.070588
+"Butanoate metabolism",29,0.24959,1,0.22285,0.65198,1,1,0.14286
+"Glycerolipid metabolism",35,0.30123,1,0.26263,0.58065,1,1,0.058824
+"Terpenoid backbone biosynthesis",36,0.30984,1,0.26907,0.57013,1,1,0.085714
+"Fructose and mannose metabolism",40,0.34426,1,0.29429,0.53122,1,1,0.10256
+"Pyruvate metabolism",45,0.3873,1,0.32466,0.48857,1,1,0.15909
+"Propanoate metabolism",48,0.41311,1,0.34228,0.46562,1,1,0.10638
+"Lysine degradation",49,0.42172,1,0.34805,0.45836,1,1,0.020833
+"Glycine, serine and threonine metabolism",68,0.58525,1,0.44901,0.34774,1,1,0.029851
+"Inositol phosphate metabolism",69,0.59385,1,0.45389,0.34305,1,1,0.014706
+"Phosphatidylinositol signaling system",74,0.63689,1,0.47767,0.32087,1,1,0.027397
+"N-Glycan biosynthesis",77,0.6627,1,0.49146,0.30851,1,1,0.039474
+"Amino sugar and nucleotide sugar metabolism",79,0.67992,1,0.50046,0.30063,1,1,0.051282
+"Tryptophan metabolism",84,0.72295,1,0.5223,0.28208,1,1,0.012048
+"Valine, leucine and isoleucine degradation",88,0.75738,1,0.53912,0.26832,1,1,0.057471
+"Fatty acid degradation",102,0.87787,1,0.59364,0.22647,1,1,0.18812
+"Fatty acid biosynthesis",129,1.1102,1,0.68194,0.16626,1,1,0.078125

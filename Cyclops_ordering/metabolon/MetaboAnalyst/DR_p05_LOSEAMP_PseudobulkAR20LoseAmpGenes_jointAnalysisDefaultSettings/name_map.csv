@@ -1,0 +1,8 @@
+"Query","Match","HMDB","PubChem","KEGG","SMILES","Comment"
+"PE(18:0/18:1(9Z))","NA","NA","NA","NA","NA","0"
+"Acetyl-CoA","Acetyl-CoA","HMDB0001206","444493","C00024","CC(=O)SCCNC(=O)CCNC(=O)[C@H](O)C(C)(C)COP(O)(=O)OP(O)(=O)OC[C@H]1O[C@H]([C@H](O)[C@@H]1OP(O)(O)=O)N1C=NC2=C1N=CN=C2N","1"
+"alpha-Tocopherol","alpha-Tocopherol","HMDB0001893","14985","C02477","CC(C)CCC[C@@H](C)CCC[C@@H](C)CCC[C@]1(C)CCC2=C(C)C(O)=C(C)C(C)=C2O1","1"
+"Fructose 1,6-bisphosphate","Fructose 1,6-bisphosphate","HMDB0001058","10267","C00354","O[C@H]1[C@H](O)[C@@](O)(COP(O)(O)=O)O[C@@H]1COP(O)(O)=O","1"
+"Salicylic acid","Salicylic acid","HMDB0001895","338","C00805","OC(=O)C1=C(O)C=CC=C1","1"
+"Spermidine","Spermidine","HMDB0001257","1102","C00315","NCCCCNCCCN","1"
+"Spermine","Spermine","HMDB0001256","1103","C00750","NCCCNCCCCNCCCN","1"
