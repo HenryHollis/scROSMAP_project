@@ -1,0 +1,18 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	ALDOA	aldolase, fructose-bisphosphate A [Source:HGNC Symbol;Acc:HGNC:414]	111	1.3764654397964478	0.13698407	Yes	
+row_1	PHPT1	phosphohistidine phosphatase 1 [Source:HGNC Symbol;Acc:HGNC:30033]	171	1.2170804738998413	0.26412526	Yes	
+row_2	PFKM	phosphofructokinase, muscle [Source:HGNC Symbol;Acc:HGNC:8877]	430	0.9097328782081604	0.32627234	Yes	
+row_3	ALDOB	aldolase, fructose-bisphosphate B [Source:HGNC Symbol;Acc:HGNC:417]	572	0.8048400282859802	0.394669	Yes	
+row_4	TPI1	triosephosphate isomerase 1 [Source:HGNC Symbol;Acc:HGNC:12009]	630	0.7686558961868286	0.47193116	Yes	
+row_5	ALDOC	aldolase, fructose-bisphosphate C [Source:HGNC Symbol;Acc:HGNC:418]	690	0.736115038394928	0.5452439	Yes	
+row_6	KHK	ketohexokinase [Source:HGNC Symbol;Acc:HGNC:6315]	849	0.6484367847442627	0.59352255	Yes	
+row_7	PFKFB4	6-phosphofructo-2-kinase/fructose-2,6-biphosphatase 4 [Source:HGNC Symbol;Acc:HGNC:8875]	885	0.635685384273529	0.65928555	Yes	
+row_8	PMM1	phosphomannomutase 1 [Source:HGNC Symbol;Acc:HGNC:9114]	1136	0.5563986301422119	0.6831184	Yes	
+row_9	GFUS	GDP-L-fucose synthase [Source:HGNC Symbol;Acc:HGNC:12390]	1669	0.42533358931541443	0.6489248	No	
+row_10	GMPPB	GDP-mannose pyrophosphorylase B [Source:HGNC Symbol;Acc:HGNC:22932]	3162	0.22039319574832916	0.44419336	No	
+row_11	HK1	hexokinase 1 [Source:HGNC Symbol;Acc:HGNC:4922]	3314	0.20668840408325195	0.44410893	No	
+row_12	MPI	mannose phosphate isomerase [Source:HGNC Symbol;Acc:HGNC:7216]	3547	0.1855061948299408	0.42919993	No	
+row_13	PMM2	phosphomannomutase 2 [Source:HGNC Symbol;Acc:HGNC:9115]	4286	0.12631800770759583	0.3298685	No	
+row_14	PFKL	phosphofructokinase, liver type [Source:HGNC Symbol;Acc:HGNC:8876]	5402	0.05542596057057381	0.16463867	No	
+row_15	GMDS	GDP-mannose 4,6-dehydratase [Source:HGNC Symbol;Acc:HGNC:4369]	5862	0.03134271502494812	0.09757452	No	
+row_16	AKR1B1	aldo-keto reductase family 1 member B [Source:HGNC Symbol;Acc:HGNC:381]	5878	0.03073914721608162	0.09870849	No	

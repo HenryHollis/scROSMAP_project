@@ -1,0 +1,12 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	DHCR24	24-dehydrocholesterol reductase [Source:HGNC Symbol;Acc:HGNC:2859]	2879	0.39247599244117737	-0.16192602	Yes	
+row_1	FDFT1	farnesyl-diphosphate farnesyltransferase 1 [Source:HGNC Symbol;Acc:HGNC:3629]	2991	0.3751976191997528	0.08899931	Yes	
+row_2	SC5D	sterol-C5-desaturase [Source:HGNC Symbol;Acc:HGNC:10547]	4205	0.21062511205673218	0.05310459	Yes	
+row_3	EBP	EBP cholestenol delta-isomerase [Source:HGNC Symbol;Acc:HGNC:3133]	5429	0.08692731708288193	-0.07267445	Yes	
+row_4	NSDHL	NAD(P) dependent steroid dehydrogenase-like [Source:HGNC Symbol;Acc:HGNC:13398]	5633	0.07018394768238068	-0.053730022	Yes	
+row_5	MSMO1	methylsterol monooxygenase 1 [Source:HGNC Symbol;Acc:HGNC:10545]	5759	0.058386560529470444	-0.031230034	Yes	
+row_6	DHCR7	7-dehydrocholesterol reductase [Source:HGNC Symbol;Acc:HGNC:2860]	5760	0.058374423533678055	0.010462513	Yes	
+row_7	CYP51A1	cytochrome P450 family 51 subfamily A member 1 [Source:HGNC Symbol;Acc:HGNC:2649]	5814	0.05461563542485237	0.041329116	Yes	
+row_8	TM7SF2	transmembrane 7 superfamily member 2 [Source:HGNC Symbol;Acc:HGNC:11863]	5823	0.05375204607844353	0.07849136	Yes	
+row_9	CEL	carboxyl ester lipase [Source:HGNC Symbol;Acc:HGNC:1848]	6164	0.030343597754836082	0.047936216	Yes	
+row_10	SQLE	squalene epoxidase [Source:HGNC Symbol;Acc:HGNC:11279]	6417	0.009234185330569744	0.015821839	Yes	

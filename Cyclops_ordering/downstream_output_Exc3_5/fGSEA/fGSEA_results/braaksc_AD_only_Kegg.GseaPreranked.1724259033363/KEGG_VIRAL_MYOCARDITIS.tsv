@@ -1,0 +1,26 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	CYCS	cytochrome c, somatic [Source:HGNC Symbol;Acc:HGNC:19986]	140	1.713552713394165	0.08650256	Yes	
+row_1	RAC1	Rac family small GTPase 1 [Source:HGNC Symbol;Acc:HGNC:9801]	148	1.6921346187591553	0.19212866	Yes	
+row_2	EIF4G2	eukaryotic translation initiation factor 4 gamma 2 [Source:HGNC Symbol;Acc:HGNC:3297]	382	1.3188763856887817	0.23942696	Yes	
+row_3	DMD	dystrophin [Source:HGNC Symbol;Acc:HGNC:2928]	414	1.2817254066467285	0.31547865	Yes	
+row_4	HLA-F	major histocompatibility complex, class I, F [Source:HGNC Symbol;Acc:HGNC:4963]	494	1.2016006708145142	0.3790886	Yes	
+row_5	ACTG1	actin gamma 1 [Source:HGNC Symbol;Acc:HGNC:144]	539	1.1658010482788086	0.445829	Yes	
+row_6	EIF4G3	eukaryotic translation initiation factor 4 gamma 3 [Source:HGNC Symbol;Acc:HGNC:3298]	661	1.0827497243881226	0.49547887	Yes	
+row_7	ABL1	ABL proto-oncogene 1, non-receptor tyrosine kinase [Source:HGNC Symbol;Acc:HGNC:76]	876	0.958130955696106	0.5229539	Yes	
+row_8	MYH7	myosin heavy chain 7 [Source:HGNC Symbol;Acc:HGNC:7577]	1014	0.8948853015899658	0.5582943	Yes	
+row_9	ACTB	actin beta [Source:HGNC Symbol;Acc:HGNC:132]	1607	0.6682955026626587	0.5093031	No	
+row_10	HLA-DQB1	major histocompatibility complex, class II, DQ beta 1 [Source:HGNC Symbol;Acc:HGNC:4944]	2018	0.5626308917999268	0.48166606	No	
+row_11	RAC3	Rac family small GTPase 3 [Source:HGNC Symbol;Acc:HGNC:9803]	2607	0.4393729269504547	0.41885507	No	
+row_12	EIF4G1	eukaryotic translation initiation factor 4 gamma 1 [Source:HGNC Symbol;Acc:HGNC:3296]	2679	0.42951884865760803	0.43501014	No	
+row_13	HLA-DRB1	major histocompatibility complex, class II, DR beta 1 [Source:HGNC Symbol;Acc:HGNC:4948]	2707	0.42444586753845215	0.4576187	No	
+row_14	LAMA2	laminin subunit alpha 2 [Source:HGNC Symbol;Acc:HGNC:6482]	2741	0.41805437207221985	0.47890058	No	
+row_15	SGCG	sarcoglycan gamma [Source:HGNC Symbol;Acc:HGNC:10809]	2919	0.3847288489341736	0.47591352	No	
+row_16	MYH7B	myosin heavy chain 7B [Source:HGNC Symbol;Acc:HGNC:15906]	3308	0.3305013179779053	0.43702543	No	
+row_17	HLA-B	major histocompatibility complex, class I, B [Source:HGNC Symbol;Acc:HGNC:4932]	4191	0.21161262691020966	0.31459355	No	
+row_18	SGCB	sarcoglycan beta [Source:HGNC Symbol;Acc:HGNC:10806]	4729	0.1544770747423172	0.24166842	No	
+row_19	CASP8	caspase 8 [Source:HGNC Symbol;Acc:HGNC:1509]	4898	0.13453315198421478	0.22428983	No	
+row_20	HLA-DPB1	major histocompatibility complex, class II, DP beta 1 [Source:HGNC Symbol;Acc:HGNC:4940]	4937	0.1310548633337021	0.22670421	No	
+row_21	HLA-A	major histocompatibility complex, class I, A [Source:HGNC Symbol;Acc:HGNC:4931]	5380	0.0906563252210617	0.16437902	No	
+row_22	HLA-C	major histocompatibility complex, class I, C [Source:HGNC Symbol;Acc:HGNC:4933]	5543	0.07808934152126312	0.14436479	No	
+row_23	SGCD	sarcoglycan delta [Source:HGNC Symbol;Acc:HGNC:10807]	5782	0.05677410960197449	0.11130696	No	
+row_24	BID	BH3 interacting domain death agonist [Source:HGNC Symbol;Acc:HGNC:1050]	6112	0.03405556455254555	0.0628079	No	

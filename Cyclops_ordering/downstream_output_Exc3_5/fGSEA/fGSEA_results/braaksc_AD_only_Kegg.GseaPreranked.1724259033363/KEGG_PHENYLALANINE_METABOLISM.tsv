@@ -1,0 +1,9 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	GOT1	glutamic-oxaloacetic transaminase 1 [Source:HGNC Symbol;Acc:HGNC:4432]	455	1.242835283279419	0.18985868	Yes	
+row_1	GOT2	glutamic-oxaloacetic transaminase 2 [Source:HGNC Symbol;Acc:HGNC:4433]	507	1.1881359815597534	0.43031645	Yes	
+row_2	ALDH1A3	aldehyde dehydrogenase 1 family member A3 [Source:HGNC Symbol;Acc:HGNC:409]	811	0.9915816783905029	0.5910079	Yes	
+row_3	MAOA	monoamine oxidase A [Source:HGNC Symbol;Acc:HGNC:6833]	1282	0.7751969695091248	0.6808397	Yes	
+row_4	PRDX6	peroxiredoxin 6 [Source:HGNC Symbol;Acc:HGNC:16753]	3739	0.2692112922668457	0.3600056	No	
+row_5	AOC2	amine oxidase copper containing 2 [Source:HGNC Symbol;Acc:HGNC:549]	4799	0.14754509925842285	0.22824065	No	
+row_6	MIF	macrophage migration inhibitory factor [Source:HGNC Symbol;Acc:HGNC:7097]	5113	0.11549974232912064	0.20431924	No	
+row_7	NAA80	N-alpha-acetyltransferase 80, NatH catalytic subunit [Source:HGNC Symbol;Acc:HGNC:30252]	5801	0.055302273482084274	0.11039458	No	

@@ -1,0 +1,20 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	PLA2G15	phospholipase A2 group XV [Source:HGNC Symbol;Acc:HGNC:17163]	1719	0.41695746779441833	-0.124806434	Yes	
+row_1	LYPLA2	lysophospholipase 2 [Source:HGNC Symbol;Acc:HGNC:6738]	1955	0.3768133521080017	-0.034813374	Yes	
+row_2	DGKD	diacylglycerol kinase delta [Source:HGNC Symbol;Acc:HGNC:2851]	2297	0.3208686411380768	0.020149881	Yes	
+row_3	CDIPT	CDP-diacylglycerol--inositol 3-phosphatidyltransferase [Source:HGNC Symbol;Acc:HGNC:1769]	2500	0.2925218939781189	0.087002285	Yes	
+row_4	DGKB	diacylglycerol kinase beta [Source:HGNC Symbol;Acc:HGNC:2850]	3043	0.23196446895599365	0.08129189	Yes	
+row_5	ACHE	acetylcholinesterase (Cartwright blood group) [Source:HGNC Symbol;Acc:HGNC:108]	3579	0.18279097974300385	0.0601976	Yes	
+row_6	AGPAT1	1-acylglycerol-3-phosphate O-acyltransferase 1 [Source:HGNC Symbol;Acc:HGNC:324]	3731	0.16950024664402008	0.09371306	Yes	
+row_7	ETNK2	ethanolamine kinase 2 [Source:HGNC Symbol;Acc:HGNC:25575]	3794	0.16435843706130981	0.13919544	Yes	
+row_8	PLA2G6	phospholipase A2 group VI [Source:HGNC Symbol;Acc:HGNC:9039]	4003	0.14781270921230316	0.1566846	Yes	
+row_9	MBOAT7	membrane bound O-acyltransferase domain containing 7 [Source:HGNC Symbol;Acc:HGNC:15505]	4145	0.1363006979227066	0.18062474	Yes	
+row_10	PLD2	phospholipase D2 [Source:HGNC Symbol;Acc:HGNC:9068]	4605	0.1044461727142334	0.14499374	Yes	
+row_11	DGKG	diacylglycerol kinase gamma [Source:HGNC Symbol;Acc:HGNC:2853]	4694	0.09865686297416687	0.16448417	Yes	
+row_12	PLA2G4A	phospholipase A2 group IVA [Source:HGNC Symbol;Acc:HGNC:9035]	4836	0.08925704658031464	0.17267674	Yes	
+row_13	LPCAT2	lysophosphatidylcholine acyltransferase 2 [Source:HGNC Symbol;Acc:HGNC:26032]	4868	0.08731091022491455	0.19713573	Yes	
+row_14	PCYT2	phosphate cytidylyltransferase 2, ethanolamine [Source:HGNC Symbol;Acc:HGNC:8756]	5670	0.04089946299791336	0.08763369	No	
+row_15	PLD1	phospholipase D1 [Source:HGNC Symbol;Acc:HGNC:9067]	5697	0.03937937691807747	0.09681691	No	
+row_16	AGPAT2	1-acylglycerol-3-phosphate O-acyltransferase 2 [Source:HGNC Symbol;Acc:HGNC:325]	5736	0.037221770733594894	0.1034323	No	
+row_17	GPAT2	glycerol-3-phosphate acyltransferase 2, mitochondrial [Source:HGNC Symbol;Acc:HGNC:27168]	5930	0.028013385832309723	0.08312642	No	
+row_18	GPAT3	glycerol-3-phosphate acyltransferase 3 [Source:HGNC Symbol;Acc:HGNC:28157]	6047	0.022288812324404716	0.07274679	No	

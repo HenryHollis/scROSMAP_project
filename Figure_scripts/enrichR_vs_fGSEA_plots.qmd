@@ -18,7 +18,7 @@ library(RColorBrewer)
 ### Define the functions:
 
 ```{r}
-plot_fgsea_vs_enrichr = function(enrichR_path, fgsea_path, title,  marker_color = "#000000", libname = "KEGG", fgsea_enrichment = "all", max.overlaps = 10){
+plot_fgsea_vs_enrichr = function(enrichR_path, fgsea_path, title,  marker_color = "#000000", libname = "KEGG", fgsea_enrichment = "all", max.overlaps = 10, point_padding = 0.25, label_padding = 0.25, box_padding = 0.25){
   tryCatch({
     fgsea_res = read_csv(fgsea_path, show_col_types = F)
     enrichR_res = read_csv(enrichR_path, show_col_types = F)
@@ -57,10 +57,10 @@ plot_fgsea_vs_enrichr = function(enrichR_path, fgsea_path, title,  marker_color 
 
       p = ggplot(plot_df, aes(NES, -log10(`Adjusted p-value`), color = -log10(padj), label = str_to_title(pathway.x)))+
         geom_point(shape = 16, size = 5, alpha = .7)+
-        ggrepel::geom_text_repel(max.overlaps = max.overlaps, color = "black")+
+        ggrepel::geom_text_repel(max.overlaps = max.overlaps, color = "black", point.padding = point_padding, label.padding = label_padding, box.padding = box_padding )+
         xlab("fGSEA NES")+
         ylab("-Log(enrichR BH.q)")+
-        ggtitle(str_wrap(title, 20))+
+        ggtitle(str_wrap(title, 25))+
         theme_minimal()+
         scale_color_gradientn(colors = color_palette, name = "-Log(fGSEA BH.q)")+
         geom_vline(xintercept = 0, linetype = "dashed", color = "grey")
@@ -81,7 +81,7 @@ plot_fgsea_vs_enrichr = function(enrichR_path, fgsea_path, title,  marker_color 
         ggrepel::geom_text_repel(max.overlaps = max.overlaps)+
         xlab("-Log(fGSEA BH.q)")+
         ylab("-Log(enrichR BH.q)")+
-        ggtitle(str_wrap(title, 20))+
+        ggtitle(str_wrap(title, 25))+
         theme_minimal()
       print(p)
       return(plot_df)
@@ -174,24 +174,40 @@ list.files("../Cyclops_ordering/", pattern = "downstream_output*")
 ### Excitatory Neurons
 
 ```{r}
-plot_cycling_and_dr_cycling("downstream_output_Exc_3_5")
+# plot_cycling_and_dr_cycling("downstream_output_Exc3_5")
+downstream_str = "downstream_output_Exc3_5"
+setwd(paste0("../Cyclops_ordering/",downstream_str ))
+enrichR_DRCycling_BHQ1AR33 = "enrichR_results/EnrichR_DRcyclersCyclingBHQ1AR33DRBHQ3_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio33/DRcyclersCyclingBHQ1AR33DRBHQ3_LIBRY-KEGG2021Human_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio33.csv"
+check_file(enrichR_DRCycling_BHQ1AR33)
+fgsea_log_ad_ctl_amp = "fGSEA/fGSEA_results/DRgenesAmpRatio20_Log(AD-CTL)ranked.csv"
+check_file(fgsea_log_ad_ctl_amp)
+plot_fgsea_vs_enrichr(enrichR_DRCycling_BHQ1AR33, fgsea_log_ad_ctl_amp, "Excitatory Neurons 3&5", fgsea_enrichment = "all", max.overlaps = 4)
+
 ```
 
 ### Inhib Neurons
 
 ```{r}
-plot_cycling_and_dr_cycling("downstream_output_Inhib_2_8_11_12_13")
+plot_cycling_and_dr_cycling("downstream_output_Inhib_All")
 ```
 
 ### Astrocytes
 
 ```{r}
-plot_cycling_and_dr_cycling("downstream_output_Ast_1_2_5_6_7_8")
+plot_cycling_and_dr_cycling("downstream_output_Ast_All")
 #I set max overlaps to 50 to get the pathways cycling in CTL to show other pathways beside ribo
 ```
 
 ### Microglia
 
 ```{r}
-plot_cycling_and_dr_cycling("downstream_output_Mglia_4_5_6_7_8_10_11_13_15_16")
+# plot_cycling_and_dr_cycling("downstream_output_Mglia_All")
+downstream_str = "downstream_output_Mglia_All"
+setwd(paste0("../Cyclops_ordering/",downstream_str ))
+#Both AD gain and lose on same plot
+  enrichR_DRCycling_BHQ1AR20 = "enrichR_results/EnrichR_DRcyclersCyclingBHQ1AR20DRBHQ3_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio20/DRcyclersCyclingBHQ1AR20DRBHQ3_LIBRY-KEGG2021Human_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio20.csv"
+  check_file(enrichR_DRCycling_BHQ1AR20)
+  fgsea_log_ad_ctl_amp = "fGSEA/fGSEA_results/DRgenesAmpRatio20_Log(AD-CTL)ranked.csv"
+  check_file(fgsea_log_ad_ctl_amp)
+    plot_fgsea_vs_enrichr(enrichR_DRCycling_BHQ1AR20, fgsea_log_ad_ctl_amp, "Differentially Rhythmic Pathways in AD (Cycling BHQ1 AR20)", fgsea_enrichment = "all", max.overlaps = 10, point_padding = .25, label_padding = 0.5, box_padding  = 0.7)
 ```

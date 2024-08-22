@@ -31,9 +31,10 @@ Get Kegg Ribosome pathway:
 ```{r}
 setwd("../Analysis_scripts/MsigDB_gmts_for_GSEA/")
 Kegg = read.delim("c2.cp.kegg.v2023.1.Hs.symbols.gmt", sep = '\t', header= F)
-pathway_name = "OxPhos"
-# pathway_terms = Kegg[grep("RIBOSOME", Kegg$V1), -c(1,2)] %>% unname %>% unlist
-pathway_terms = Kegg[grep("KEGG_OXIDATIVE_PHOSPHORYLATION", Kegg$V1), -c(1,2)] %>% unname %>% unlist
+# pathway_name = "OxPhos"
+pathway_name = "Ribosome"
+pathway_terms = Kegg[grep("RIBOSOME", Kegg$V1), -c(1,2)] %>% unname %>% unlist
+# pathway_terms = Kegg[grep("KEGG_OXIDATIVE_PHOSPHORYLATION", Kegg$V1), -c(1,2)] %>% unname %>% unlist
 
 ```
 
@@ -100,19 +101,19 @@ times = c(expression(pi/2), expression(pi), expression(3*pi/2), expression(2*pi)
 # p2 = heatmap.2(as.matrix(heatmap_data_AD), col = cm.colors, tracecol = "black", trace = "none", dendrogram = "none", scale ="none", Rowv = NA, Colv = NA, labCol = times, main = "KEGG Ribosome Pathway AD")
 
 library(ComplexHeatmap)
-
+row_names_fontzise = gpar(fontsize = 10)
 grid.newpage()
 pushViewport(viewport(layout = grid.layout(nr = 1, nc = 3)))
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 1))
-draw(Heatmap(as.matrix(heatmap_data_CTL), col = col_fun, column_title = paste("KEGG", pathway_name, "CTL"), show_heatmap_legend = FALSE, cluster_columns = F, cluster_rows = F, column_labels = times, row_names_side = "left"), newpage = FALSE)
+draw(Heatmap(as.matrix(heatmap_data_CTL), col = col_fun, column_title = paste("KEGG", pathway_name, "CTL"), show_heatmap_legend = FALSE, cluster_columns = F, cluster_rows = F, column_labels = times, row_names_side = "left", row_names_gp = row_names_fontzise), newpage = FALSE)
 upViewport()
 
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 2))
-draw(Heatmap(as.matrix(heatmap_data_AD), col = col_fun, column_title = paste("KEGG", pathway_name, "AD"), show_heatmap_legend = FALSE, cluster_columns = F, cluster_rows = F, column_labels = times, row_names_side = "left"), newpage = FALSE)
+draw(Heatmap(as.matrix(heatmap_data_AD), col = col_fun, column_title = paste("KEGG", pathway_name, "AD"), show_heatmap_legend = FALSE, cluster_columns = F, cluster_rows = F, column_labels = times, row_names_side = "left", row_names_gp = row_names_fontzise), newpage = FALSE)
 upViewport()
 
 
-lgd = Legend(at = c( -1, 0, 1), col_fun = col_fun, title = "Z-Normed\nExpression", title_position = "topleft")
+lgd = Legend(at = c( -1, 0, 1), col_fun = col_fun, title = "Z-Normed\nExpression", title_position = "topleft", legend_height = unit(50, "mm"),size = unit(12, "mm"))
 
 pushViewport(viewport(layout.pos.row = 1, layout.pos.col = 3))
 grid.draw(lgd)

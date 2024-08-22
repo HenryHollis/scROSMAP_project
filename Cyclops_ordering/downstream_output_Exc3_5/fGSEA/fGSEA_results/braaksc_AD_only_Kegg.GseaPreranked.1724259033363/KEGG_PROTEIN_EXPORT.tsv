@@ -1,0 +1,17 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	SRP72	signal recognition particle 72 [Source:HGNC Symbol;Acc:HGNC:11303]	13	2.9678666591644287	0.18420435	Yes	
+row_1	SRP9	signal recognition particle 9 [Source:HGNC Symbol;Acc:HGNC:11304]	29	2.449984550476074	0.33560953	Yes	
+row_2	SRPRA	SRP receptor subunit alpha [Source:HGNC Symbol;Acc:HGNC:11307]	82	1.919146180152893	0.4480222	Yes	
+row_3	SPCS1	signal peptidase complex subunit 1 [Source:HGNC Symbol;Acc:HGNC:23401]	135	1.7281314134597778	0.54845065	Yes	
+row_4	SRP68	signal recognition particle 68 [Source:HGNC Symbol;Acc:HGNC:11302]	310	1.398831844329834	0.60946417	Yes	
+row_5	SRP14	signal recognition particle 14 [Source:HGNC Symbol;Acc:HGNC:11299]	705	1.0555131435394287	0.61511785	Yes	
+row_6	SRPRB	SRP receptor subunit beta [Source:HGNC Symbol;Acc:HGNC:24085]	958	0.9217616319656372	0.6342094	Yes	
+row_7	HSPA5	heat shock protein family A (Hsp70) member 5 [Source:HGNC Symbol;Acc:HGNC:5238]	1157	0.8240672945976257	0.65547293	Yes	
+row_8	SEC62	SEC62 homolog, preprotein translocation factor [Source:HGNC Symbol;Acc:HGNC:11846]	1562	0.6798868775367737	0.6360227	Yes	
+row_9	SPCS3	signal peptidase complex subunit 3 [Source:HGNC Symbol;Acc:HGNC:26212]	1647	0.6569705605506897	0.6643276	Yes	
+row_10	SPCS2	signal peptidase complex subunit 2 [Source:HGNC Symbol;Acc:HGNC:28962]	2600	0.44017404317855835	0.545595	No	
+row_11	SEC61B	SEC61 translocon subunit beta [Source:HGNC Symbol;Acc:HGNC:16993]	2760	0.41465508937835693	0.5471676	No	
+row_12	SEC11C	SEC11 homolog C, signal peptidase complex subunit [Source:HGNC Symbol;Acc:HGNC:23400]	4055	0.2298620045185089	0.36266515	No	
+row_13	IMMP2L	inner mitochondrial membrane peptidase subunit 2 [Source:HGNC Symbol;Acc:HGNC:14598]	4995	0.1259414404630661	0.22621615	No	
+row_14	SRP19	signal recognition particle 19 [Source:HGNC Symbol;Acc:HGNC:11300]	5552	0.07729577273130417	0.14559294	No	
+row_15	SEC61G	SEC61 translocon subunit gamma [Source:HGNC Symbol;Acc:HGNC:18277]	5896	0.048803556710481644	0.09592619	No	

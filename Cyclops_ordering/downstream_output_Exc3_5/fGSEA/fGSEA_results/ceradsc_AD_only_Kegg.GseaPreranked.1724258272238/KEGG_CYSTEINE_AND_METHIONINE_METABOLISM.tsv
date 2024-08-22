@@ -1,0 +1,14 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	GOT1	glutamic-oxaloacetic transaminase 1 [Source:HGNC Symbol;Acc:HGNC:4432]	341	0.9852928519248962	0.13458025	Yes	
+row_1	GOT2	glutamic-oxaloacetic transaminase 2 [Source:HGNC Symbol;Acc:HGNC:4433]	591	0.7926157116889954	0.24673294	Yes	
+row_2	DNMT3B	DNA methyltransferase 3 beta [Source:HGNC Symbol;Acc:HGNC:2979]	620	0.7779326438903809	0.39005744	Yes	
+row_3	ENOPH1	enolase-phosphatase 1 [Source:HGNC Symbol;Acc:HGNC:24599]	687	0.7382696270942688	0.5200162	Yes	
+row_4	LDHB	lactate dehydrogenase B [Source:HGNC Symbol;Acc:HGNC:6541]	705	0.7322254776954651	0.65635717	Yes	
+row_5	LDHA	lactate dehydrogenase A [Source:HGNC Symbol;Acc:HGNC:6535]	1287	0.5135888457298279	0.6645453	Yes	
+row_6	MAT2B	methionine adenosyltransferase 2 non-catalytic beta subunit [Source:HGNC Symbol;Acc:HGNC:6905]	3127	0.22434982657432556	0.4245445	No	
+row_7	AHCY	adenosylhomocysteinase [Source:HGNC Symbol;Acc:HGNC:343]	4179	0.13432617485523224	0.2885418	No	
+row_8	AMD1	adenosylmethionine decarboxylase 1 [Source:HGNC Symbol;Acc:HGNC:457]	4565	0.10659195482730865	0.24961162	No	
+row_9	AHCYL2	adenosylhomocysteinase like 2 [Source:HGNC Symbol;Acc:HGNC:22204]	4850	0.08852270245552063	0.22277181	No	
+row_10	DNMT3A	DNA methyltransferase 3 alpha [Source:HGNC Symbol;Acc:HGNC:2978]	5002	0.07884690910577774	0.21453224	No	
+row_11	SRM	spermidine synthase [Source:HGNC Symbol;Acc:HGNC:11296]	5060	0.07526501268148422	0.2200567	No	
+row_12	TRDMT1	tRNA aspartic acid methyltransferase 1 [Source:HGNC Symbol;Acc:HGNC:2977]	6058	0.021757477894425392	0.07098951	No	

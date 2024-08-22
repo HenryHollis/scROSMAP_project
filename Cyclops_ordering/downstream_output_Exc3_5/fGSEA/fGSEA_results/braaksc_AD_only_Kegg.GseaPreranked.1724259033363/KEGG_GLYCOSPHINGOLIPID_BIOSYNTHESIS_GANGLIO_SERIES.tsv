@@ -1,0 +1,8 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	ST8SIA1	ST8 alpha-N-acetyl-neuraminide alpha-2,8-sialyltransferase 1 [Source:HGNC Symbol;Acc:HGNC:10869]	2067	0.5491571426391602	-0.049799364	Yes	
+row_1	B4GALNT1	beta-1,4-N-acetyl-galactosaminyltransferase 1 [Source:HGNC Symbol;Acc:HGNC:4117]	2309	0.49538832902908325	0.15452756	Yes	
+row_2	ST6GALNAC5	ST6 N-acetylgalactosaminide alpha-2,6-sialyltransferase 5 [Source:HGNC Symbol;Acc:HGNC:19342]	3507	0.299886554479599	0.11685666	Yes	
+row_3	ST6GALNAC6	ST6 N-acetylgalactosaminide alpha-2,6-sialyltransferase 6 [Source:HGNC Symbol;Acc:HGNC:23364]	4353	0.19175903499126434	0.08054982	Yes	
+row_4	ST6GALNAC3	ST6 N-acetylgalactosaminide alpha-2,6-sialyltransferase 3 [Source:HGNC Symbol;Acc:HGNC:19343]	4404	0.185821533203125	0.1633954	Yes	
+row_5	ST8SIA5	ST8 alpha-N-acetyl-neuraminide alpha-2,8-sialyltransferase 5 [Source:HGNC Symbol;Acc:HGNC:17827]	4544	0.1716298907995224	0.22566476	Yes	
+row_6	B3GALT4	beta-1,3-galactosyltransferase 4 [Source:HGNC Symbol;Acc:HGNC:919]	4676	0.1591496616601944	0.28308263	Yes	

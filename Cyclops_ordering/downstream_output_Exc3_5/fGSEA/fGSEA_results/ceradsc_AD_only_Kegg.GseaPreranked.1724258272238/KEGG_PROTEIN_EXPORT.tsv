@@ -1,0 +1,17 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	SPCS1	signal peptidase complex subunit 1 [Source:HGNC Symbol;Acc:HGNC:23401]	13	2.1171772480010986	0.23018868	Yes	
+row_1	SEC11C	SEC11 homolog C, signal peptidase complex subunit [Source:HGNC Symbol;Acc:HGNC:23400]	58	1.6146217584609985	0.40049744	Yes	
+row_2	SRP14	signal recognition particle 14 [Source:HGNC Symbol;Acc:HGNC:11299]	340	0.9854620695114136	0.46537378	Yes	
+row_3	SEC61G	SEC61 translocon subunit gamma [Source:HGNC Symbol;Acc:HGNC:18277]	589	0.7946368455886841	0.5143957	Yes	
+row_4	SRP68	signal recognition particle 68 [Source:HGNC Symbol;Acc:HGNC:11302]	678	0.7420885562896729	0.58225125	Yes	
+row_5	SEC61B	SEC61 translocon subunit beta [Source:HGNC Symbol;Acc:HGNC:16993]	853	0.6460824012756348	0.6263573	Yes	
+row_6	SEC62	SEC62 homolog, preprotein translocation factor [Source:HGNC Symbol;Acc:HGNC:11846]	1243	0.5257676839828491	0.6242172	Yes	
+row_7	SRP72	signal recognition particle 72 [Source:HGNC Symbol;Acc:HGNC:11303]	1276	0.5158229470252991	0.6758673	Yes	
+row_8	SRPRB	SRP receptor subunit beta [Source:HGNC Symbol;Acc:HGNC:24085]	1488	0.46271049976348877	0.69417536	Yes	
+row_9	SPCS2	signal peptidase complex subunit 2 [Source:HGNC Symbol;Acc:HGNC:28962]	2432	0.30033543705940247	0.58214724	No	
+row_10	HSPA5	heat shock protein family A (Hsp70) member 5 [Source:HGNC Symbol;Acc:HGNC:5238]	3921	0.15486562252044678	0.37038395	No	
+row_11	SRP19	signal recognition particle 19 [Source:HGNC Symbol;Acc:HGNC:11300]	4638	0.10207559913396835	0.27150923	No	
+row_12	SRPRA	SRP receptor subunit alpha [Source:HGNC Symbol;Acc:HGNC:11307]	5099	0.07252822816371918	0.20874844	No	
+row_13	SPCS3	signal peptidase complex subunit 3 [Source:HGNC Symbol;Acc:HGNC:26212]	5544	0.04738202318549156	0.14568956	No	
+row_14	IMMP2L	inner mitochondrial membrane peptidase subunit 2 [Source:HGNC Symbol;Acc:HGNC:14598]	5881	0.030551966279745102	0.09738756	No	
+row_15	SRP9	signal recognition particle 9 [Source:HGNC Symbol;Acc:HGNC:11304]	6385	0.006299389060586691	0.02075327	No	

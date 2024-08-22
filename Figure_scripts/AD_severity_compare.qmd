@@ -1,0 +1,78 @@
+---
+title: "enrichR_vs_fGSEA_plots"
+format: html
+editor: visual
+---
+
+This file takes fgsea results from AD_severity files (braak vs ceradsc) and plots them against each other for different cell types.
+
+```{r}
+library(tidyverse)
+library(stringr) 
+library(RColorBrewer)
+```
+
+### Define the functions:
+
+```{r}
+helper_func = function(braak_path, cerad_path, title,  marker_color = "#0091ff", max.overlaps = 6, point_padding = 0.25, label_padding = 0.25, box_padding = 0.5){
+  tryCatch({
+    braak_res = read_csv(braak_path, show_col_types = F)
+    cerad_res = read_csv(cerad_path, show_col_types = F)
+    
+    plot_df = merge(braak_res, cerad_res, by ="pathway", suffixes = c("_braak", "_cerad"))
+  
+      print("making plot")
+      p = ggplot(plot_df, aes(-log10(padj_braak), -log10(padj_cerad), label = str_to_title(pathway)))+
+        geom_point(shape = 16, size = 5, alpha = .4, color = marker_color)+
+        ggrepel::geom_text_repel(max.overlaps = max.overlaps, color = "black", point.padding = point_padding, label.padding = label_padding, box.padding = box_padding )+
+        xlab("-Log(fGSEA BH.q) Ranked by DR by Braaksc")+
+        ylab("-Log(fGSEA BH.q) Ranked by DR by Ceradsc")+
+        ggtitle(str_wrap(title, 50))+
+        theme_minimal()
+      print(p)
+      return(plot_df)
+    
+  },
+  error = function(e){message(e)}
+  )  
+}
+
+
+plot_function = function(downstream_str, title){
+  setwd(paste0("../Cyclops_ordering/",downstream_str ))
+    fgsea_braak = "fGSEA/fGSEA_results/AD_severity_braak_AR20_minusLogPRanked.csv"
+  fgsea_cerad = "fGSEA/fGSEA_results/AD_severity_ceradsc_AR20_minusLogPRanked.csv"
+
+  helper_func(braak_path = fgsea_braak, cerad_path = fgsea_cerad, title = title)
+
+}
+
+list.files("../Cyclops_ordering/", pattern = "downstream_output*")
+```
+
+### Excitatory Neurons
+
+```{r}
+plot_function("downstream_output_Exc3_5", "DR by Pathology Comparison, Exc 3&5")
+
+```
+
+### Inhib Neurons
+
+```{r}
+plot_function("downstream_output_Inhib_All", "DR by Pathology Comparison, Inhibitory")
+
+```
+
+### Astrocytes
+
+```{r}
+plot_function("downstream_output_Ast_All", "DR by Pathology Comparison, Astrocytes")
+```
+
+### Microglia
+
+```{r}
+plot_function("downstream_output_Mglia_All", "DR by Pathology Comparison, Microglia")
+```

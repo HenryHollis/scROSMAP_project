@@ -1,0 +1,8 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	PHPT1	phosphohistidine phosphatase 1 [Source:HGNC Symbol;Acc:HGNC:30033]	171	1.2170804738998413	0.22557433	Yes	
+row_1	ACP2	acid phosphatase 2, lysosomal [Source:HGNC Symbol;Acc:HGNC:123]	314	1.0174849033355713	0.41430238	Yes	
+row_2	TYR	tyrosinase [Source:HGNC Symbol;Acc:HGNC:12442]	338	0.9898136854171753	0.61557335	Yes	
+row_3	ACP6	acid phosphatase 6, lysophosphatidic [Source:HGNC Symbol;Acc:HGNC:29609]	616	0.779058039188385	0.73424405	Yes	
+row_4	ACP1	acid phosphatase 1 [Source:HGNC Symbol;Acc:HGNC:122]	1993	0.3707011640071869	0.5997083	No	
+row_5	RFK	riboflavin kinase [Source:HGNC Symbol;Acc:HGNC:30324]	2112	0.3490414023399353	0.6538134	No	
+row_6	ENPP1	ectonucleotide pyrophosphatase/phosphodiesterase 1 [Source:HGNC Symbol;Acc:HGNC:3356]	4521	0.10985185205936432	0.3068775	No	

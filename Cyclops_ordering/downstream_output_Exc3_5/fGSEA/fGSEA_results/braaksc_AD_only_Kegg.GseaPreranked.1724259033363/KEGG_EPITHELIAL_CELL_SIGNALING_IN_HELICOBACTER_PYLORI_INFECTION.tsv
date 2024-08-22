@@ -1,0 +1,26 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	ATP6V1G1	ATPase H+ transporting V1 subunit G1 [Source:HGNC Symbol;Acc:HGNC:864]	91	1.8963898420333862	0.09515326	Yes	
+row_1	RAC1	Rac family small GTPase 1 [Source:HGNC Symbol;Acc:HGNC:9801]	148	1.6921346187591553	0.1839369	Yes	
+row_2	ATP6V1D	ATPase H+ transporting V1 subunit D [Source:HGNC Symbol;Acc:HGNC:13527]	305	1.4032222032546997	0.24069579	Yes	
+row_3	ATP6V1B2	ATPase H+ transporting V1 subunit B2 [Source:HGNC Symbol;Acc:HGNC:854]	435	1.2574819326400757	0.29322183	Yes	
+row_4	ATP6V1G2	ATPase H+ transporting V1 subunit G2 [Source:HGNC Symbol;Acc:HGNC:862]	605	1.1137198209762573	0.33131486	Yes	
+row_5	JUN	Jun proto-oncogene, AP-1 transcription factor subunit [Source:HGNC Symbol;Acc:HGNC:6204]	657	1.0844725370407104	0.38588938	Yes	
+row_6	JAM3	junctional adhesion molecule 3 [Source:HGNC Symbol;Acc:HGNC:15532]	969	0.9181345105171204	0.39086434	Yes	
+row_7	ATP6V0C	ATPase H+ transporting V0 subunit c [Source:HGNC Symbol;Acc:HGNC:855]	1054	0.8740981221199036	0.428249	Yes	
+row_8	IKBKB	inhibitor of nuclear factor kappa B kinase subunit beta [Source:HGNC Symbol;Acc:HGNC:5960]	1337	0.7550545334815979	0.4283009	Yes	
+row_9	ATP6AP1	ATPase H+ transporting accessory protein 1 [Source:HGNC Symbol;Acc:HGNC:868]	1392	0.737798810005188	0.46245798	Yes	
+row_10	ATP6V1E1	ATPase H+ transporting V1 subunit E1 [Source:HGNC Symbol;Acc:HGNC:857]	1465	0.712942898273468	0.49241337	Yes	
+row_11	ATP6V0B	ATPase H+ transporting V0 subunit b [Source:HGNC Symbol;Acc:HGNC:861]	1595	0.6711309552192688	0.5111873	Yes	
+row_12	ATP6V1A	ATPase H+ transporting V1 subunit A [Source:HGNC Symbol;Acc:HGNC:851]	1775	0.6202431321144104	0.5193349	Yes	
+row_13	NFKB1	nuclear factor kappa B subunit 1 [Source:HGNC Symbol;Acc:HGNC:7794]	1917	0.5861985683441162	0.5313726	Yes	
+row_14	ATP6V0D1	ATPase H+ transporting V0 subunit d1 [Source:HGNC Symbol;Acc:HGNC:13724]	2429	0.4711345434188843	0.47982872	No	
+row_15	NFKBIA	NFKB inhibitor alpha [Source:HGNC Symbol;Acc:HGNC:7797]	2515	0.45664703845977783	0.4930297	No	
+row_16	MAP3K14	mitogen-activated protein kinase kinase kinase 14 [Source:HGNC Symbol;Acc:HGNC:6853]	2974	0.3775867819786072	0.44425982	No	
+row_17	ATP6V1F	ATPase H+ transporting V1 subunit F [Source:HGNC Symbol;Acc:HGNC:16832]	3106	0.3574390113353729	0.44466883	No	
+row_18	TJP1	tight junction protein 1 [Source:HGNC Symbol;Acc:HGNC:11827]	3477	0.3049473166465759	0.40526438	No	
+row_19	ATP6V1C1	ATPase H+ transporting V1 subunit C1 [Source:HGNC Symbol;Acc:HGNC:856]	3675	0.27690190076828003	0.39087734	No	
+row_20	MAPK8	mitogen-activated protein kinase 8 [Source:HGNC Symbol;Acc:HGNC:6881]	3823	0.25902223587036133	0.38315812	No	
+row_21	ATP6V0E2	ATPase H+ transporting V0 subunit e2 [Source:HGNC Symbol;Acc:HGNC:21723]	4180	0.21364493668079376	0.3406532	No	
+row_22	IKBKG	inhibitor of nuclear factor kappa B kinase regulatory subunit gamma [Source:HGNC Symbol;Acc:HGNC:5961]	4407	0.18541811406612396	0.31653577	No	
+row_23	GIT1	GIT ArfGAP 1 [Source:HGNC Symbol;Acc:HGNC:4272]	5440	0.086329385638237	0.16263817	No	
+row_24	EGFR	epidermal growth factor receptor [Source:HGNC Symbol;Acc:HGNC:3236]	5739	0.060178957879543304	0.120227866	No	

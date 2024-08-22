@@ -1,0 +1,10 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	HK1	hexokinase 1 [Source:HGNC Symbol;Acc:HGNC:4922]	3314	0.20668840408325195	-0.3027008	Yes	
+row_1	GYS1	glycogen synthase 1 [Source:HGNC Symbol;Acc:HGNC:4706]	3435	0.19482482969760895	-0.12675832	Yes	
+row_2	PGM2L1	phosphoglucomutase 2 like 1 [Source:HGNC Symbol;Acc:HGNC:20898]	4277	0.12678703665733337	-0.12941349	Yes	
+row_3	ENPP1	ectonucleotide pyrophosphatase/phosphodiesterase 1 [Source:HGNC Symbol;Acc:HGNC:3356]	4521	0.10985185205936432	-0.057133835	Yes	
+row_4	GBE1	1,4-alpha-glucan branching enzyme 1 [Source:HGNC Symbol;Acc:HGNC:4180]	4575	0.10602843016386032	0.04050823	Yes	
+row_5	GANC	glucosidase alpha, neutral C [Source:HGNC Symbol;Acc:HGNC:4139]	4914	0.08432666957378387	0.07273384	Yes	
+row_6	MGAM	maltase-glucoamylase [Source:HGNC Symbol;Acc:HGNC:7043]	5000	0.07888182997703552	0.13837868	Yes	
+row_7	GCK	glucokinase [Source:HGNC Symbol;Acc:HGNC:4195]	5387	0.056250449270009995	0.13522261	Yes	
+row_8	GYS2	glycogen synthase 2 [Source:HGNC Symbol;Acc:HGNC:4707]	5707	0.03870067000389099	0.124846436	Yes	

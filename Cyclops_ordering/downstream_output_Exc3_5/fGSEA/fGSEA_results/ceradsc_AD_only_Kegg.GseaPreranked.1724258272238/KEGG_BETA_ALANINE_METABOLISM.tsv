@@ -1,0 +1,9 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	DPYD	dihydropyrimidine dehydrogenase [Source:HGNC Symbol;Acc:HGNC:3012]	520	0.8426289558410645	0.24087994	Yes	
+row_1	ECHS1	enoyl-CoA hydratase, short chain 1 [Source:HGNC Symbol;Acc:HGNC:3151]	560	0.8120245933532715	0.54396355	Yes	
+row_2	ALDH1B1	aldehyde dehydrogenase 1 family member B1 [Source:HGNC Symbol;Acc:HGNC:407]	944	0.6151751279830933	0.7193052	Yes	
+row_3	CNDP1	carnosine dipeptidase 1 [Source:HGNC Symbol;Acc:HGNC:20675]	4129	0.1376572847366333	0.2828317	No	
+row_4	AOC2	amine oxidase copper containing 2 [Source:HGNC Symbol;Acc:HGNC:549]	4578	0.10587523877620697	0.25434428	No	
+row_5	SRM	spermidine synthase [Source:HGNC Symbol;Acc:HGNC:11296]	5060	0.07526501268148422	0.20913926	No	
+row_6	DPYS	dihydropyrimidinase [Source:HGNC Symbol;Acc:HGNC:3013]	5776	0.03534923866391182	0.1128134	No	
+row_7	HIBCH	3-hydroxyisobutyryl-CoA hydrolase [Source:HGNC Symbol;Acc:HGNC:4908]	6451	0.003326418111100793	0.010594155	No	

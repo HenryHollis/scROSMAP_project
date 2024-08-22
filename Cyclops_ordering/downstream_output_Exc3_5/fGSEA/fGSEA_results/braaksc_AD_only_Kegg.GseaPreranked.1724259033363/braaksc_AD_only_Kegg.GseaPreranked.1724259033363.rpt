@@ -1,0 +1,24 @@
+producer_class	xtools.gsea.GseaPreranked
+producer_timestamp	1724259033363
+param	rnd_seed	timestamp
+param	rpt_label	braaksc_AD_only_Kegg
+param	set_min	5
+param	chip	ftp.broadinstitute.org://pub/gsea/msigdb/human/annotations/Human_Gene_Symbol_with_Remapping_MSigDB.v2024.1.Hs.chip
+param	zip_report	false
+param	create_svgs	false
+param	scoring_scheme	weighted
+param	rnk	/Users/henryhollis/Desktop/braak_p_ranked_Exc35_ADonly.rnk
+param	norm	meandiv
+param	out	/Users/henryhollis/Box Sync/Henry_stuff/AD_project/scROSMAP/scrosmap_covariate_fork/scROSMAP_project/Cyclops_ordering/downstream_output_Exc3_5/fGSEA/fGSEA_results
+param	mode	Abs_max_of_probes
+param	include_only_symbols	true
+param	help	false
+param	set_max	500
+param	gmx	/Users/henryhollis/Box Sync/Henry_stuff/AD_project/scROSMAP/scrosmap_covariate_fork/scROSMAP_project/Analysis_scripts/MsigDB_gmts_for_GSEA/c2.cp.kegg.v2023.1.Hs.symbols.gmt
+param	make_sets	true
+param	plot_top_x	20
+param	gui	false
+param	nperm	10000
+param	collapse	Collapse
+
+file	/Users/henryhollis/Box Sync/Henry_stuff/AD_project/scROSMAP/scrosmap_covariate_fork/scROSMAP_project/Cyclops_ordering/downstream_output_Exc3_5/fGSEA/fGSEA_results/braaksc_AD_only_Kegg.GseaPreranked.1724259033363/index.html

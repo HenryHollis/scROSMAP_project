@@ -1,0 +1,12 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	ASAH1	N-acylsphingosine amidohydrolase 1 [Source:HGNC Symbol;Acc:HGNC:735]	95	1.8728097677230835	0.19633608	Yes	
+row_1	UGCG	UDP-glucose ceramide glucosyltransferase [Source:HGNC Symbol;Acc:HGNC:12524]	325	1.3845871686935425	0.31710136	Yes	
+row_2	DEGS1	delta 4-desaturase, sphingolipid 1 [Source:HGNC Symbol;Acc:HGNC:13709]	472	1.2212400436401367	0.43221894	Yes	
+row_3	NEU1	neuraminidase 1 [Source:HGNC Symbol;Acc:HGNC:7758]	506	1.1884691715240479	0.56100357	Yes	
+row_4	DEGS2	delta 4-desaturase, sphingolipid 2 [Source:HGNC Symbol;Acc:HGNC:20113]	737	1.0315446853637695	0.64185315	Yes	
+row_5	SMPD2	sphingomyelin phosphodiesterase 2 [Source:HGNC Symbol;Acc:HGNC:11121]	1486	0.7064108848571777	0.6065139	No	
+row_6	SGMS1	sphingomyelin synthase 1 [Source:HGNC Symbol;Acc:HGNC:29799]	2038	0.5573962330818176	0.5846528	No	
+row_7	GAL3ST1	galactose-3-O-sulfotransferase 1 [Source:HGNC Symbol;Acc:HGNC:24240]	3470	0.30652740597724915	0.39936042	No	
+row_8	GLA	galactosidase alpha [Source:HGNC Symbol;Acc:HGNC:4296]	3898	0.24917888641357422	0.3618333	No	
+row_9	SMPD1	sphingomyelin phosphodiesterase 1 [Source:HGNC Symbol;Acc:HGNC:11120]	3972	0.2392749935388565	0.3775686	No	
+row_10	ACER2	alkaline ceramidase 2 [Source:HGNC Symbol;Acc:HGNC:23675]	5048	0.12142423540353775	0.22611369	No	

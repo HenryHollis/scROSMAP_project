@@ -1,0 +1,14 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	TRMT11	tRNA methyltransferase 11 homolog [Source:HGNC Symbol;Acc:HGNC:21080]	307	1.0229055881500244	0.09311466	Yes	
+row_1	MIF	macrophage migration inhibitory factor [Source:HGNC Symbol;Acc:HGNC:7097]	331	0.9949323534965515	0.2260315	Yes	
+row_2	TYR	tyrosinase [Source:HGNC Symbol;Acc:HGNC:12442]	338	0.9898136854171753	0.3608585	Yes	
+row_3	GOT1	glutamic-oxaloacetic transaminase 1 [Source:HGNC Symbol;Acc:HGNC:4432]	341	0.9852928519248962	0.4956801	Yes	
+row_4	ADH5	alcohol dehydrogenase 5 (class III), chi polypeptide [Source:HGNC Symbol;Acc:HGNC:253]	432	0.9057743549346924	0.6060743	Yes	
+row_5	GOT2	glutamic-oxaloacetic transaminase 2 [Source:HGNC Symbol;Acc:HGNC:4433]	591	0.7926157116889954	0.6905005	Yes	
+row_6	PNMT	phenylethanolamine N-methyltransferase [Source:HGNC Symbol;Acc:HGNC:9160]	607	0.781708300113678	0.7954038	Yes	
+row_7	TPO	thyroid peroxidase [Source:HGNC Symbol;Acc:HGNC:12015]	2501	0.2925073206424713	0.5446472	No	
+row_8	ALDH1A3	aldehyde dehydrogenase 1 family member A3 [Source:HGNC Symbol;Acc:HGNC:409]	3955	0.1523408442735672	0.34227645	No	
+row_9	MAOA	monoamine oxidase A [Source:HGNC Symbol;Acc:HGNC:6833]	4090	0.14001506567001343	0.34088892	No	
+row_10	AOC2	amine oxidase copper containing 2 [Source:HGNC Symbol;Acc:HGNC:549]	4578	0.10587523877620697	0.28057832	No	
+row_11	LCMT2	leucine carboxyl methyltransferase 2 [Source:HGNC Symbol;Acc:HGNC:17558]	4925	0.08366812020540237	0.23888771	No	
+row_12	NAA80	N-alpha-acetyltransferase 80, NatH catalytic subunit [Source:HGNC Symbol;Acc:HGNC:30252]	5609	0.04405292496085167	0.13998164	No	

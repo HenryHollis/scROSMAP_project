@@ -516,7 +516,175 @@ diff_rhyth_AD_severity = function(cyc_pred, tmm, seedlist, rosmap_clin_path,  pb
   return(all_genes)
 
 }
+diff_rhyth_AD_severity_AD_only = function(cyc_pred, tmm, seedlist, rosmap_clin_path,  pb = NULL, useBatch = F, percentile = 0.){
+  cat("\nRunning diff_rhyth_AD_severity() on just the cogdx > 3")
+  if(useBatch){cat("\nNOTE: Using batches in regression.")}
+  ##### read in ROSMAP clin ####
+  rosmap_clin = read_csv(rosmap_clin_path, show_col_types = FALSE)
+  rosmap_clin = rosmap_clin[ na.exclude(match(cyc_pred$ID, rosmap_clin$projid)),]
+  rosmap_clin = rosmap_clin %>%
+    mutate(braaksc_bin = cut(braaksc, c(0, 3, 5, 7), right = F))
+  rosmap_clin = rosmap_clin %>%
+    mutate(ceradsc_bin = cut(ceradsc, c(1, 3, 5), right = F))
+  
+  cond_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "cond_d")
+  cyc_pred$Covariate_D = tmm[cond_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+  sex_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "sex_d")
+  cyc_pred$sex = tmm[sex_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+  pmi_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "pmi_c")
+  cyc_pred$pmi = tmm[pmi_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+  
+  if (useBatch){
+    batch_row_of_tmm = which(tolower(unlist(tmm[, 1])) == "batch_d")
+    cyc_pred$batch = tmm[batch_row_of_tmm, na.exclude(match(cyc_pred$ID, colnames(tmm)))] %>% unname %>% unlist
+    cyc_pred_merged = merge(cyc_pred, dplyr::select(rosmap_clin, !pmi), by.x = "ID", by.y = "projid", y.keep = F)
+    preds = cyc_pred_merged %>% dplyr::filter(Covariate_D == "cond_1") %>% dplyr::select(ID, Phase, cogdx, ceradsc_bin, braaksc, braaksc_bin, batch, pmi, sex) %>% arrange(Phase)
 
+  }else{
+    cyc_pred_merged = merge(cyc_pred, dplyr::select(rosmap_clin, !pmi), by.x = "ID", by.y = "projid", y.keep = F)
+    preds = cyc_pred_merged %>% dplyr::filter(Covariate_D == "cond_1") %>% dplyr::select(ID, Phase, cogdx, ceradsc_bin, braaksc, braaksc_bin, pmi, sex) %>% arrange(Phase)
+
+  }
+  
+  gene = tmm[which(unlist(unname(tmm[,1])) %in% seedlist), -1] # "gene" is tmm with only seedlist subset
+  gene1 = t(gene[,na.exclude(match(preds$ID, colnames(gene)))])  #the transpose, subjects x genes for tidyverse purposes
+  colnames(gene1) =  unname(unlist(tmm[which(unlist(unname(tmm[,1])) %in% seedlist), 1]))  #add the gene names to the columns of gene1
+  
+  cog = as.factor(preds$cogdx[match(rownames(gene1), preds$ID)])      # cogdx score 1, 2, 4 or 5
+  cerad = as.factor(preds$ceradsc_bin[match(rownames(gene1), preds$ID)]) #cerad score 2 bins
+  braak = as.factor(preds$braaksc_bin[match(rownames(gene1), preds$ID)]) #Tau score 3 bins
+  times = as.numeric(preds$Phase[match(rownames(gene1), preds$ID)]) #in the case that I have CYCLOPS preds for subs not in tmm...
+  s = as.factor(preds$sex[match(rownames(gene1), preds$ID)]) #sex of each subject
+  p = as.numeric(preds$pmi[match(rownames(gene1), preds$ID)]) #pmi of each subject
+  
+  if (useBatch){b = as.factor(preds$batch[match(rownames(gene1), preds$ID)]) }
+  
+  all_genes = foreach (gene_i = 1:ncol(gene1), .combine = rbind) %do%{
+    gexp1 = as.numeric(unlist(gene1[,gene_i]))
+    times1 = times
+    I_local_cog = cog
+    I_local_cerad = cerad
+    I_local_braak = braak
+    s1 = s
+    p1 = p
+    if(useBatch){b1 = b}
+    
+    rm_NA = which(is.na(gexp1))
+    if (length(rm_NA) <= floor(.7*nrow(gene1))){ #only proceed if >70% of data are not NA
+      if(!is_empty(rm_NA)){
+        gexp1 = gexp1[-rm_NA]
+        times1 = times1[-rm_NA]
+        I_local_cog = cog[-rm_NA]
+        I_local_cerad = cerad[-rm_NA]
+        I_local_braak = braak[-rm_NA]
+        s1 = s1[-rm_NA]
+        p1 = p1[-rm_NA]
+        if(useBatch){b1 = b1[-rm_NA]}
+      }
+      
+      gexp1 = blunt_outliers(gexp1, percentile = percentile)
+      
+      ##below is code for testing the cognitive variable##
+      
+      if(useBatch){
+        partial_model = lm(gexp1 ~ sin(times1) + cos(times1) + I_local_cog + b1 + p1 +s1)
+        full_model = lm(gexp1 ~ I_local_cog*sin(times1) + I_local_cog*cos(times1) + I_local_cog + b1 + p1 + s1)
+        # design_matrix <- model.matrix(gexp1 ~ I_local_cog*sin(times1) + I_local_cog*cos(times1) + I_local_cog + b1 + p1 + s1)
+        
+      }else{
+        partial_model = lm(gexp1 ~ sin(times1) + cos(times1) + I_local_cog + p1 + s1)
+        full_model = lm(gexp1 ~ I_local_cog*sin(times1) + I_local_cog*cos(times1) + I_local_cog + p1 + s1)
+        # design_matrix <- model.matrix(gexp1 ~ I_local_cog*sin(times1) + I_local_cog*cos(times1) + I_local_cog + p1 + s1)
+        
+      }
+      
+      anova_results = anova(partial_model, full_model)
+      p_cog = anova_results$`Pr(>F)`[2]
+      Gene_Symbols = colnames(gene1)[gene_i]
+      
+      sin_coeff = full_model[["coefficients"]][["sin(times1)"]]
+      cos_coeff = full_model[["coefficients"]][["cos(times1)"]]
+      sin_coeff2 = full_model[["coefficients"]][["I_local_cog5:sin(times1)"]] + sin_coeff
+      cos_coeff2 = full_model[["coefficients"]][["I_local_cog5:cos(times1)"]] + cos_coeff
+      acrophase_cog4 = atan2(sin_coeff, cos_coeff) %% (2*pi)
+      amplitude_cog4= sqrt((sin_coeff^2) + (cos_coeff^2))
+      acrophase_cog5 = atan2(sin_coeff2, cos_coeff2) %% (2*pi)
+      amplitude_cog5= sqrt((sin_coeff2^2) + (cos_coeff2^2))
+      ####### ceradsc_binned #########
+      if(useBatch){
+        partial_model_cerad = lm(gexp1 ~ sin(times1) + cos(times1) + I_local_cerad + b1 + p1 + s1)
+        full_model_cerad = lm(gexp1 ~ I_local_cerad*sin(times1) + I_local_cerad*cos(times1) + I_local_cerad + b1 + p1 + s1)
+      }else{
+        partial_model_cerad = lm(gexp1 ~ sin(times1) + cos(times1) + I_local_cerad + p1 + s1)
+        full_model_cerad = lm(gexp1 ~ I_local_cerad*sin(times1) + I_local_cerad*cos(times1) + I_local_cerad + p1 + s1)
+      }
+      anova_results_cerad = anova(partial_model_cerad, full_model_cerad)
+      p_cerad = anova_results_cerad$`Pr(>F)`[2]
+      
+      sin_coeff_cerad = full_model_cerad[["coefficients"]][["sin(times1)"]]
+      cos_coeff_cerad = full_model_cerad[["coefficients"]][["cos(times1)"]]
+      sin_coeff2_cerad = full_model_cerad[["coefficients"]][["I_local_cerad[3,5):sin(times1)"]] + sin_coeff_cerad
+      cos_coeff2_cerad = full_model_cerad[["coefficients"]][["I_local_cerad[3,5):cos(times1)"]] + cos_coeff_cerad
+      acrophase_cerad1to2 = atan2(sin_coeff_cerad, cos_coeff_cerad) %% (2*pi)
+      amplitude_cerad1to2 = sqrt((sin_coeff_cerad^2) + (cos_coeff_cerad^2))
+      acrophase_cerad3to5 = atan2(sin_coeff2_cerad, cos_coeff2_cerad) %% (2*pi)
+      amplitude_cerad3to5= sqrt((sin_coeff2_cerad^2) + (cos_coeff2_cerad^2))
+      
+      ######Braaksc binned #####
+      if(useBatch){
+        partial_model_braak = lm(gexp1 ~ sin(times1) + cos(times1) + I_local_braak + b1 + p1 + s1)
+        full_model_braak = lm(gexp1 ~ I_local_braak*sin(times1) + I_local_braak*cos(times1) + I_local_braak + b1 + p1 + s1)
+      }else{
+        partial_model_braak = lm(gexp1 ~ sin(times1) + cos(times1) + I_local_braak + p1 + s1)
+        full_model_braak = lm(gexp1 ~ I_local_braak*sin(times1) + I_local_braak*cos(times1) + I_local_braak + p1 + s1)
+      }
+      anova_results_braak = anova(partial_model_braak, full_model_braak)
+      p_braak = anova_results_braak$`Pr(>F)`[2]
+      
+      sin_coeff_braak = full_model_braak[["coefficients"]][["sin(times1)"]] #the base class is [0,3)
+      cos_coeff_braak = full_model_braak[["coefficients"]][["cos(times1)"]]
+      sin_coeff2_braak = full_model_braak[["coefficients"]][["I_local_braak[3,5):sin(times1)"]] + sin_coeff_braak # [3,5) class
+      cos_coeff2_braak = full_model_braak[["coefficients"]][["I_local_braak[3,5):cos(times1)"]] + cos_coeff_braak
+      sin_coeff3_braak = full_model_braak[["coefficients"]][["I_local_braak[5,7):sin(times1)"]] + sin_coeff_braak # [5,7) class
+      cos_coeff3_braak = full_model_braak[["coefficients"]][["I_local_braak[5,7):cos(times1)"]] + cos_coeff_braak
+      
+      acrophase_braak0to3 = atan2(sin_coeff_braak, cos_coeff_braak) %% (2*pi)
+      amp_braak0to3 = sqrt((sin_coeff_braak^2) + (cos_coeff_braak^2))
+      acrophase_braak3to5 = atan2(sin_coeff2_braak, cos_coeff2_braak) %% (2*pi)
+      amp_braak3to5 = sqrt((sin_coeff2_braak^2) + (cos_coeff2_braak^2))
+      acrophase_braak5to7 = atan2(sin_coeff3_braak, cos_coeff3_braak) %% (2*pi)
+      amp_braak5to7 = sqrt((sin_coeff3_braak^2) + (cos_coeff3_braak^2))
+      
+      if (!is.null(pb)){
+        if(!pb$finished){
+          pb$tick()
+        }
+      }
+      
+      info = c( Gene_Symbols, p_cog, p_cerad, p_braak, acrophase_cog4, acrophase_cog5,
+                acrophase_cerad1to2, acrophase_cerad3to5, acrophase_braak0to3, acrophase_braak3to5, acrophase_braak5to7, 
+                amplitude_cog4,amplitude_cog5, amplitude_cerad1to2, amplitude_cerad3to5, amp_braak0to3, amp_braak3to5, amp_braak5to7)
+      return(info)
+    }
+    return(cbind( colnames(gene1)[gene_i], NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA))
+  }
+  
+  
+  all_genes = as_tibble(all_genes)
+  colnames(all_genes) = c("Gene_Symbols", "p_cogdx","p_ceradsc","p_braak","acrophase_cog1", "acrophase_cog2", "acrophase_cog4", "acrophase_cog5",
+                          "acrophase_cerad1to2", "acrophase_cerad3to5", "acrophase_braak0to3", "acrophase_braak3to5", "acrophase_braak5to7" ,
+                          "amplitude_cog1", "amplitude_cog2" ,"amplitude_cog4",
+                          "amplitude_cog5", "amplitude_cerad1to2", "amplitude_cerad3to5", "amplitude_braak0to3", "amplitude_braak3to5", "amplitude_braak5to7")
+  all_genes$BHQ_cogdx = p.adjust(as.numeric(all_genes$p_cogdx), "BH")
+  all_genes$Bonf_cogdx = p.adjust(as.numeric(all_genes$p_cogdx), "bonferroni")
+  all_genes$BHQ_cerad = p.adjust(as.numeric(all_genes$p_ceradsc), "BH")
+  all_genes$Bonf_cerad = p.adjust(as.numeric(all_genes$p_ceradsc), "bonferroni")
+  all_genes$BHQ_braak = p.adjust(as.numeric(all_genes$p_braak), "BH")
+  all_genes$Bonf_braak = p.adjust(as.numeric(all_genes$p_braak), "bonferroni")
+  #all_genes$Log_AD_CTL_ampRatio = log(as.numeric(all_genes$amplitude_AD) / as.numeric(all_genes$amplitude_CTL))
+  return(all_genes)
+  
+}
 mesor_differences = function(cyc_pred, tmm, DR_genes, pb = NULL, useBatch = F, percentile = 0.){ ##
   cat("\nRunning Mesor_differences()")
   if(useBatch){cat("\nNOTE: Using batches in regression.")}
@@ -668,7 +836,12 @@ run_cycling_and_dr_analysis = function(order_path, tmm_path, rosmap_clin_path, i
                                                     seedlist_AR20,
                                                     rosmap_clin_path = rosmap_clin_path,
                                                     percentile = percentile, useBatch = useBatch)
-
+  diff_rhythms_AD_severity_AD_only = diff_rhyth_AD_severity_AD_only(cyc_pred,
+                                 tmm,
+                                 seedlist_AR20,
+                                 rosmap_clin_path = rosmap_clin_path,
+                                 percentile = percentile,
+                                 useBatch = useBatch)
   ####### differential rhythms #####
   DR_results = list()
   for(genelist in DR_genelist_list){
@@ -776,6 +949,8 @@ run_cycling_and_dr_analysis = function(order_path, tmm_path, rosmap_clin_path, i
   write.table(sig_diff_mesor, paste(order_path, "downstream_output","enrichR_files","diff_mesor_all_genes_BHQ05.csv", sep = "/"), sep = ',', row.names = F, col.names = T)
 
   #Continuous AD differences
+  write.table(diff_rhythms_AD_severity_AD_only,paste(order_path, "downstream_output", "diff_rhythms_AD_severity_AR20_AD_only.csv", sep = "/"), sep = ',', row.names = F, col.names = T)
+  
   write.table(diff_rhythms_AD_severity, paste(order_path, "downstream_output", "diff_rhythms_AD_severity_AR20.csv", sep = "/"), sep = ',', row.names = F, col.names = T)
   strong_cogdx_diffs = filter(diff_rhythms_AD_severity, BHQ_cogdx< 0.1) %>% dplyr::select(Gene_Symbols)
   Ensembl = Ensembl_dict$ENSEMBL[match(strong_cogdx_diffs$Gene_Symbols, Ensembl_dict$Gene_Symbol)]

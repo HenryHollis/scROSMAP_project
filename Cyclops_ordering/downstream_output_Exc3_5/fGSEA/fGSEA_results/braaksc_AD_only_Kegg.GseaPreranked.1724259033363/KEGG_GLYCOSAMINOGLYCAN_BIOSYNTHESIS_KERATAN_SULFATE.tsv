@@ -1,0 +1,8 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	CHST2	carbohydrate sulfotransferase 2 [Source:HGNC Symbol;Acc:HGNC:1970]	79	1.9364972114562988	0.31052017	Yes	
+row_1	CHST1	carbohydrate sulfotransferase 1 [Source:HGNC Symbol;Acc:HGNC:1969]	361	1.3408262729644775	0.49078298	Yes	
+row_2	B4GAT1	beta-1,4-glucuronyltransferase 1 [Source:HGNC Symbol;Acc:HGNC:15685]	519	1.1782350540161133	0.6629917	Yes	
+row_3	B3GNT2	UDP-GlcNAc:betaGal beta-1,3-N-acetylglucosaminyltransferase 2 [Source:HGNC Symbol;Acc:HGNC:15629]	1915	0.5871338844299316	0.54666245	No	
+row_4	FUT8	fucosyltransferase 8 [Source:HGNC Symbol;Acc:HGNC:4019]	2719	0.4217071831226349	0.49365187	No	
+row_5	B4GALT2	beta-1,4-galactosyltransferase 2 [Source:HGNC Symbol;Acc:HGNC:925]	3049	0.36594849824905396	0.5041175	No	
+row_6	B4GALT3	beta-1,4-galactosyltransferase 3 [Source:HGNC Symbol;Acc:HGNC:926]	4547	0.17154206335544586	0.3028861	No	

@@ -1,0 +1,26 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	ALDOA	aldolase, fructose-bisphosphate A [Source:HGNC Symbol;Acc:HGNC:414]	111	1.3764654397964478	0.07799551	Yes	
+row_1	GAPDH	glyceraldehyde-3-phosphate dehydrogenase [Source:HGNC Symbol;Acc:HGNC:4141]	217	1.1494636535644531	0.14123392	Yes	
+row_2	PFKM	phosphofructokinase, muscle [Source:HGNC Symbol;Acc:HGNC:8877]	430	0.9097328782081604	0.17144063	Yes	
+row_3	ADH5	alcohol dehydrogenase 5 (class III), chi polypeptide [Source:HGNC Symbol;Acc:HGNC:253]	432	0.9057743549346924	0.23385543	Yes	
+row_4	ENO1	enolase 1 [Source:HGNC Symbol;Acc:HGNC:3350]	498	0.8572207689285278	0.28306404	Yes	
+row_5	PGK1	phosphoglycerate kinase 1 [Source:HGNC Symbol;Acc:HGNC:8896]	538	0.8306170701980591	0.33443737	Yes	
+row_6	ALDOB	aldolase, fructose-bisphosphate B [Source:HGNC Symbol;Acc:HGNC:417]	572	0.8048400282859802	0.38495377	Yes	
+row_7	TPI1	triosephosphate isomerase 1 [Source:HGNC Symbol;Acc:HGNC:12009]	630	0.7686558961868286	0.42927605	Yes	
+row_8	ALDOC	aldolase, fructose-bisphosphate C [Source:HGNC Symbol;Acc:HGNC:418]	690	0.736115038394928	0.4710426	Yes	
+row_9	PKM	pyruvate kinase M1/2 [Source:HGNC Symbol;Acc:HGNC:9021]	694	0.7354455590248108	0.5213836	Yes	
+row_10	LDHB	lactate dehydrogenase B [Source:HGNC Symbol;Acc:HGNC:6541]	705	0.7322254776954651	0.57042456	Yes	
+row_11	PDHB	pyruvate dehydrogenase E1 subunit beta [Source:HGNC Symbol;Acc:HGNC:8808]	888	0.635079562664032	0.5862771	Yes	
+row_12	ALDH1B1	aldehyde dehydrogenase 1 family member B1 [Source:HGNC Symbol;Acc:HGNC:407]	944	0.6151751279830933	0.6203052	Yes	
+row_13	PGAM1	phosphoglycerate mutase 1 [Source:HGNC Symbol;Acc:HGNC:8888]	1151	0.5524840354919434	0.6267577	Yes	
+row_14	LDHA	lactate dehydrogenase A [Source:HGNC Symbol;Acc:HGNC:6535]	1287	0.5135888457298279	0.64145315	Yes	
+row_15	BPGM	bisphosphoglycerate mutase [Source:HGNC Symbol;Acc:HGNC:1093]	1303	0.5106856822967529	0.67442095	Yes	
+row_16	ENO2	enolase 2 [Source:HGNC Symbol;Acc:HGNC:3353]	1583	0.4427415728569031	0.662055	No	
+row_17	DLD	dihydrolipoamide dehydrogenase [Source:HGNC Symbol;Acc:HGNC:2898]	1841	0.3985728323459625	0.65002465	No	
+row_18	PDHA1	pyruvate dehydrogenase E1 subunit alpha 1 [Source:HGNC Symbol;Acc:HGNC:8806]	2009	0.36646568775177	0.6496311	No	
+row_19	HK1	hexokinase 1 [Source:HGNC Symbol;Acc:HGNC:4922]	3314	0.20668840408325195	0.46316972	No	
+row_20	ALDH1A3	aldehyde dehydrogenase 1 family member A3 [Source:HGNC Symbol;Acc:HGNC:409]	3955	0.1523408442735672	0.37517092	No	
+row_21	ACSS2	acyl-CoA synthetase short chain family member 2 [Source:HGNC Symbol;Acc:HGNC:15814]	4587	0.1054590567946434	0.28531906	No	
+row_22	ACSS1	acyl-CoA synthetase short chain family member 1 [Source:HGNC Symbol;Acc:HGNC:16091]	5328	0.05895600840449333	0.17547534	No	
+row_23	GCK	glucokinase [Source:HGNC Symbol;Acc:HGNC:4195]	5387	0.056250449270009995	0.17043243	No	
+row_24	PFKL	phosphofructokinase, liver type [Source:HGNC Symbol;Acc:HGNC:8876]	5402	0.05542596057057381	0.17210595	No	

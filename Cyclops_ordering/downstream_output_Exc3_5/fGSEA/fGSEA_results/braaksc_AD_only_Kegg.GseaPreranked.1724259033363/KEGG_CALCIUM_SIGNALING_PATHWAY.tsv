@@ -1,0 +1,67 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	PDGFRA	platelet derived growth factor receptor alpha [Source:HGNC Symbol;Acc:HGNC:8803]	22	2.5949063301086426	0.07080605	Yes	
+row_1	PDE1C	phosphodiesterase 1C [Source:HGNC Symbol;Acc:HGNC:8776]	133	1.7316008806228638	0.10328873	Yes	
+row_2	ATP2A2	ATPase sarcoplasmic/endoplasmic reticulum Ca2+ transporting 2 [Source:HGNC Symbol;Acc:HGNC:812]	160	1.6549677848815918	0.14659289	Yes	
+row_3	PHKA2	phosphorylase kinase regulatory subunit alpha 2 [Source:HGNC Symbol;Acc:HGNC:8926]	406	1.289205551147461	0.14550906	Yes	
+row_4	CALM1	calmodulin 1 [Source:HGNC Symbol;Acc:HGNC:1442]	456	1.2415778636932373	0.17342713	Yes	
+row_5	VDAC1	voltage dependent anion channel 1 [Source:HGNC Symbol;Acc:HGNC:12669]	465	1.225843071937561	0.20724687	Yes	
+row_6	CALM2	calmodulin 2 [Source:HGNC Symbol;Acc:HGNC:1445]	491	1.2036662101745605	0.23779872	Yes	
+row_7	PLCD4	phospholipase C delta 4 [Source:HGNC Symbol;Acc:HGNC:9062]	567	1.1394298076629639	0.2587675	Yes	
+row_8	CALM3	calmodulin 3 [Source:HGNC Symbol;Acc:HGNC:1449]	681	1.0706905126571655	0.2718834	Yes	
+row_9	PLN	phospholamban [Source:HGNC Symbol;Acc:HGNC:9080]	695	1.0603575706481934	0.30019566	Yes	
+row_10	ATP2B3	ATPase plasma membrane Ca2+ transporting 3 [Source:HGNC Symbol;Acc:HGNC:816]	797	0.9950685501098633	0.3130078	Yes	
+row_11	SLC8A3	solute carrier family 8 member A3 [Source:HGNC Symbol;Acc:HGNC:11070]	846	0.9709686040878296	0.3333414	Yes	
+row_12	SLC8A2	solute carrier family 8 member A2 [Source:HGNC Symbol;Acc:HGNC:11069]	877	0.9575939178466797	0.356081	Yes	
+row_13	GNAS	GNAS complex locus [Source:HGNC Symbol;Acc:HGNC:4392]	975	0.9145596027374268	0.36721027	Yes	
+row_14	DRD1	dopamine receptor D1 [Source:HGNC Symbol;Acc:HGNC:3020]	1006	0.8992609977722168	0.38828155	Yes	
+row_15	PLCB4	phospholipase C beta 4 [Source:HGNC Symbol;Acc:HGNC:9059]	1107	0.8451206684112549	0.3969601	Yes	
+row_16	HTR5A	5-hydroxytryptamine receptor 5A [Source:HGNC Symbol;Acc:HGNC:5300]	1217	0.8032217025756836	0.4030461	Yes	
+row_17	GRIN2D	glutamate ionotropic receptor NMDA type subunit 2D [Source:HGNC Symbol;Acc:HGNC:4588]	1276	0.7765659689903259	0.41627058	Yes	
+row_18	SLC25A6	solute carrier family 25 member 6 [Source:HGNC Symbol;Acc:HGNC:10992]	1360	0.7477025389671326	0.4247966	Yes	
+row_19	SLC25A4	solute carrier family 25 member 4 [Source:HGNC Symbol;Acc:HGNC:10990]	1365	0.7462748885154724	0.44552037	Yes	
+row_20	CCKBR	cholecystokinin B receptor [Source:HGNC Symbol;Acc:HGNC:1571]	1456	0.7192263007164001	0.45214754	Yes	
+row_21	CACNA1D	calcium voltage-gated channel subunit alpha1 D [Source:HGNC Symbol;Acc:HGNC:1391]	1459	0.7176087498664856	0.4723613	Yes	
+row_22	ITPKA	inositol-trisphosphate 3-kinase A [Source:HGNC Symbol;Acc:HGNC:6178]	1461	0.7170830965042114	0.49271494	Yes	
+row_23	PHKA1	phosphorylase kinase regulatory subunit alpha 1 [Source:HGNC Symbol;Acc:HGNC:8925]	1977	0.5739017128944397	0.4293454	No	
+row_24	TACR1	tachykinin receptor 1 [Source:HGNC Symbol;Acc:HGNC:11526]	2214	0.5128100514411926	0.40745094	No	
+row_25	PLCB1	phospholipase C beta 1 [Source:HGNC Symbol;Acc:HGNC:15917]	2333	0.49010252952575684	0.40318748	No	
+row_26	NOS1	nitric oxide synthase 1 [Source:HGNC Symbol;Acc:HGNC:7872]	2437	0.47000283002853394	0.4006729	No	
+row_27	VDAC2	voltage dependent anion channel 2 [Source:HGNC Symbol;Acc:HGNC:12672]	2631	0.43621405959129333	0.38324934	No	
+row_28	RYR1	ryanodine receptor 1 [Source:HGNC Symbol;Acc:HGNC:10483]	2736	0.41899076104164124	0.37912092	No	
+row_29	HTR2B	5-hydroxytryptamine receptor 2B [Source:HGNC Symbol;Acc:HGNC:5294]	2814	0.40511253476142883	0.3787784	No	
+row_30	ADRB1	adrenoceptor beta 1 [Source:HGNC Symbol;Acc:HGNC:285]	3021	0.37135353684425354	0.35748583	No	
+row_31	CHRM3	cholinergic receptor muscarinic 3 [Source:HGNC Symbol;Acc:HGNC:1952]	3039	0.3678995668888092	0.36537415	No	
+row_32	GRM5	glutamate metabotropic receptor 5 [Source:HGNC Symbol;Acc:HGNC:4597]	3041	0.3673210144042969	0.37572458	No	
+row_33	CHP1	calcineurin like EF-hand protein 1 [Source:HGNC Symbol;Acc:HGNC:17433]	3068	0.3631160855293274	0.3820818	No	
+row_34	SLC8A1	solute carrier family 8 member A1 [Source:HGNC Symbol;Acc:HGNC:11068]	3116	0.35656440258026123	0.38499838	No	
+row_35	GNA15	G protein subunit alpha 15 [Source:HGNC Symbol;Acc:HGNC:4383]	3311	0.32946518063545227	0.36436686	No	
+row_36	ADCY9	adenylate cyclase 9 [Source:HGNC Symbol;Acc:HGNC:240]	3362	0.3228972256183624	0.36585578	No	
+row_37	ITPR2	inositol 1,4,5-trisphosphate receptor type 2 [Source:HGNC Symbol;Acc:HGNC:6181]	3449	0.30962955951690674	0.36138818	No	
+row_38	ADORA2A	adenosine A2a receptor [Source:HGNC Symbol;Acc:HGNC:263]	3490	0.30246666073799133	0.36384195	No	
+row_39	PRKACA	protein kinase cAMP-activated catalytic subunit alpha [Source:HGNC Symbol;Acc:HGNC:9380]	3532	0.29680952429771423	0.36597905	No	
+row_40	CHRM1	cholinergic receptor muscarinic 1 [Source:HGNC Symbol;Acc:HGNC:1950]	3620	0.28511402010917664	0.36065537	No	
+row_41	CHRM5	cholinergic receptor muscarinic 5 [Source:HGNC Symbol;Acc:HGNC:1954]	3728	0.2710314393043518	0.35183057	No	
+row_42	CACNA1B	calcium voltage-gated channel subunit alpha1 B [Source:HGNC Symbol;Acc:HGNC:1389]	3754	0.26735877990722656	0.35560405	No	
+row_43	CACNA1C	calcium voltage-gated channel subunit alpha1 C [Source:HGNC Symbol;Acc:HGNC:1390]	3776	0.26531267166137695	0.35993868	No	
+row_44	CACNA1A	calcium voltage-gated channel subunit alpha1 A [Source:HGNC Symbol;Acc:HGNC:1388]	4042	0.2313014417886734	0.32550046	No	
+row_45	RYR2	ryanodine receptor 2 [Source:HGNC Symbol;Acc:HGNC:10484]	4100	0.22358229756355286	0.32306454	No	
+row_46	CACNA1G	calcium voltage-gated channel subunit alpha1 G [Source:HGNC Symbol;Acc:HGNC:1394]	4253	0.20569421350955963	0.30539975	No	
+row_47	PRKCG	protein kinase C gamma [Source:HGNC Symbol;Acc:HGNC:9402]	4271	0.20301316678524017	0.30857232	No	
+row_48	PLCE1	phospholipase C epsilon 1 [Source:HGNC Symbol;Acc:HGNC:17175]	4687	0.15865255892276764	0.24881852	No	
+row_49	ERBB4	erb-b2 receptor tyrosine kinase 4 [Source:HGNC Symbol;Acc:HGNC:3432]	4911	0.1331891119480133	0.21808086	No	
+row_50	SLC25A5	solute carrier family 25 member 5 [Source:HGNC Symbol;Acc:HGNC:10991]	5079	0.11848528683185577	0.19559813	No	
+row_51	VDAC3	voltage dependent anion channel 3 [Source:HGNC Symbol;Acc:HGNC:12674]	5167	0.11039533466100693	0.18527749	No	
+row_52	EDNRB	endothelin receptor type B [Source:HGNC Symbol;Acc:HGNC:3180]	5235	0.10404068231582642	0.1778735	No	
+row_53	ADRA1B	adrenoceptor alpha 1B [Source:HGNC Symbol;Acc:HGNC:278]	5260	0.10104812681674957	0.17704543	No	
+row_54	PPP3CC	protein phosphatase 3 catalytic subunit gamma [Source:HGNC Symbol;Acc:HGNC:9316]	5620	0.07151591777801514	0.123474985	No	
+row_55	HRH1	histamine receptor H1 [Source:HGNC Symbol;Acc:HGNC:5182]	5635	0.06978756934404373	0.12330205	No	
+row_56	ADRA1D	adrenoceptor alpha 1D [Source:HGNC Symbol;Acc:HGNC:280]	5645	0.0684729591012001	0.1238661	No	
+row_57	ADCY8	adenylate cyclase 8 [Source:HGNC Symbol;Acc:HGNC:239]	5649	0.06820355355739594	0.12535197	No	
+row_58	EGFR	epidermal growth factor receptor [Source:HGNC Symbol;Acc:HGNC:3236]	5739	0.060178957879543304	0.113285325	No	
+row_59	CHRM2	cholinergic receptor muscarinic 2 [Source:HGNC Symbol;Acc:HGNC:1951]	5821	0.053944870829582214	0.10227973	No	
+row_60	PHKG1	phosphorylase kinase catalytic subunit gamma 1 [Source:HGNC Symbol;Acc:HGNC:8930]	6016	0.04105309769511223	0.073399626	No	
+row_61	RYR3	ryanodine receptor 3 [Source:HGNC Symbol;Acc:HGNC:10485]	6142	0.0317145437002182	0.05494183	No	
+row_62	GRM1	glutamate metabotropic receptor 1 [Source:HGNC Symbol;Acc:HGNC:4593]	6206	0.02774650603532791	0.045975503	No	
+row_63	PLCB2	phospholipase C beta 2 [Source:HGNC Symbol;Acc:HGNC:9055]	6219	0.02631973847746849	0.04486922	No	
+row_64	PDE1A	phosphodiesterase 1A [Source:HGNC Symbol;Acc:HGNC:8774]	6229	0.02548322267830372	0.044203773	No	
+row_65	OXTR	oxytocin receptor [Source:HGNC Symbol;Acc:HGNC:8529]	6230	0.02526133321225643	0.04492625	No	

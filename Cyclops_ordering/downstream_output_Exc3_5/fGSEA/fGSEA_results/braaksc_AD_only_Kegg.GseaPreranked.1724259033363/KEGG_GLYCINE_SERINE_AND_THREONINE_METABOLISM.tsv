@@ -1,0 +1,12 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	MAOA	monoamine oxidase A [Source:HGNC Symbol;Acc:HGNC:6833]	1282	0.7751969695091248	0.08965485	Yes	
+row_1	GATM	glycine amidinotransferase [Source:HGNC Symbol;Acc:HGNC:4175]	2024	0.5610055923461914	0.1832282	Yes	
+row_2	DLD	dihydrolipoamide dehydrogenase [Source:HGNC Symbol;Acc:HGNC:2898]	3749	0.2684076726436615	0.017632503	Yes	
+row_3	AMT	aminomethyltransferase [Source:HGNC Symbol;Acc:HGNC:473]	3820	0.2595076858997345	0.10281724	Yes	
+row_4	SHMT2	serine hydroxymethyltransferase 2 [Source:HGNC Symbol;Acc:HGNC:10852]	3958	0.24065616726875305	0.1707409	Yes	
+row_5	DMGDH	dimethylglycine dehydrogenase [Source:HGNC Symbol;Acc:HGNC:24475]	4430	0.18340519070625305	0.16619375	Yes	
+row_6	AOC2	amine oxidase copper containing 2 [Source:HGNC Symbol;Acc:HGNC:549]	4799	0.14754509925842285	0.1642113	Yes	
+row_7	CHDH	choline dehydrogenase [Source:HGNC Symbol;Acc:HGNC:24288]	4970	0.12741072475910187	0.18520011	Yes	
+row_8	DAO	D-amino acid oxidase [Source:HGNC Symbol;Acc:HGNC:2671]	5597	0.07334879040718079	0.11615668	No	
+row_9	PIPOX	pipecolic acid and sarcosine oxidase [Source:HGNC Symbol;Acc:HGNC:17804]	5933	0.04693808779120445	0.082049936	No	
+row_10	GCAT	glycine C-acetyltransferase [Source:HGNC Symbol;Acc:HGNC:4188]	6276	0.021546244621276855	0.037480813	No	

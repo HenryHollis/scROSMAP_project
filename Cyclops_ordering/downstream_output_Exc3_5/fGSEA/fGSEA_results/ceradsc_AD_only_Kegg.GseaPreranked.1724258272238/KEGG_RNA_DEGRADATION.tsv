@@ -1,0 +1,19 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	LSM2	LSM2 homolog, U6 small nuclear RNA and mRNA degradation associated [Source:HGNC Symbol;Acc:HGNC:13940]	50	1.6581482887268066	0.14856537	Yes	
+row_1	HSPD1	heat shock protein family D (Hsp60) member 1 [Source:HGNC Symbol;Acc:HGNC:5261]	152	1.2705482244491577	0.25276306	Yes	
+row_2	LSM7	LSM7 homolog, U6 small nuclear RNA and mRNA degradation associated [Source:HGNC Symbol;Acc:HGNC:20470]	207	1.1617252826690674	0.35393333	Yes	
+row_3	EXOSC5	exosome component 5 [Source:HGNC Symbol;Acc:HGNC:24662]	268	1.0674567222595215	0.44529766	Yes	
+row_4	EXOSC4	exosome component 4 [Source:HGNC Symbol;Acc:HGNC:18189]	309	1.0193111896514893	0.53520054	Yes	
+row_5	LSM4	LSM4 homolog, U6 small nuclear RNA and mRNA degradation associated [Source:HGNC Symbol;Acc:HGNC:17259]	412	0.9235103130340576	0.60654163	Yes	
+row_6	ENO1	enolase 1 [Source:HGNC Symbol;Acc:HGNC:3350]	498	0.8572207689285278	0.6742502	Yes	
+row_7	LSM3	LSM3 homolog, U6 small nuclear RNA and mRNA degradation associated [Source:HGNC Symbol;Acc:HGNC:17874]	967	0.6107231378555298	0.6598343	No	
+row_8	ENO2	enolase 2 [Source:HGNC Symbol;Acc:HGNC:3353]	1583	0.4427415728569031	0.60698396	No	
+row_9	LSM1	LSM1 homolog, mRNA degradation associated [Source:HGNC Symbol;Acc:HGNC:20472]	1950	0.3776669502258301	0.5862914	No	
+row_10	HSPA9	heat shock protein family A (Hsp70) member 9 [Source:HGNC Symbol;Acc:HGNC:5244]	2028	0.3640255928039551	0.60875434	No	
+row_11	EXOSC8	exosome component 8 [Source:HGNC Symbol;Acc:HGNC:17035]	3468	0.19190438091754913	0.40555575	No	
+row_12	LSM6	LSM6 homolog, U6 small nuclear RNA and mRNA degradation associated [Source:HGNC Symbol;Acc:HGNC:17017]	3664	0.1748349964618683	0.39204502	No	
+row_13	LSM5	LSM5 homolog, U6 small nuclear RNA and mRNA degradation associated [Source:HGNC Symbol;Acc:HGNC:17162]	3750	0.1681908220052719	0.39482343	No	
+row_14	ZCCHC7	zinc finger CCHC-type containing 7 [Source:HGNC Symbol;Acc:HGNC:26209]	3890	0.15774542093276978	0.38831368	No	
+row_15	XRN1	5'-3' exoribonuclease 1 [Source:HGNC Symbol;Acc:HGNC:30654]	5220	0.0649828314781189	0.19007008	No	
+row_16	EXOSC6	exosome component 6 [Source:HGNC Symbol;Acc:HGNC:19055]	5239	0.06398609280586243	0.1933318	No	
+row_17	CNOT7	CCR4-NOT transcription complex subunit 7 [Source:HGNC Symbol;Acc:HGNC:14101]	5740	0.03714646399021149	0.11994467	No	

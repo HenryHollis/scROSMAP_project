@@ -1,0 +1,10 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	MAT2B	methionine adenosyltransferase 2 non-catalytic beta subunit [Source:HGNC Symbol;Acc:HGNC:6905]	54	2.075606107711792	0.24402285	Yes	
+row_1	SEPHS2	selenophosphate synthetase 2 [Source:HGNC Symbol;Acc:HGNC:19686]	101	1.8625603914260864	0.46337587	Yes	
+row_2	LCMT2	leucine carboxyl methyltransferase 2 [Source:HGNC Symbol;Acc:HGNC:17558]	156	1.660133719444275	0.656893	Yes	
+row_3	MARS2	methionyl-tRNA synthetase 2, mitochondrial [Source:HGNC Symbol;Acc:HGNC:25133]	996	0.9064598679542542	0.63824517	No	
+row_4	PAPSS2	3'-phosphoadenosine 5'-phosphosulfate synthase 2 [Source:HGNC Symbol;Acc:HGNC:8604]	1981	0.5724912881851196	0.55673283	No	
+row_5	TRMT11	tRNA methyltransferase 11 homolog [Source:HGNC Symbol;Acc:HGNC:21080]	2303	0.49629107117652893	0.5677694	No	
+row_6	AHCY	adenosylhomocysteinase [Source:HGNC Symbol;Acc:HGNC:343]	2543	0.4506238102912903	0.5858468	No	
+row_7	AHCYL2	adenosylhomocysteinase like 2 [Source:HGNC Symbol;Acc:HGNC:22204]	5034	0.12264575809240341	0.21838486	No	
+row_8	PAPSS1	3'-phosphoadenosine 5'-phosphosulfate synthase 1 [Source:HGNC Symbol;Acc:HGNC:8603]	5531	0.07943075150251389	0.15187357	No	

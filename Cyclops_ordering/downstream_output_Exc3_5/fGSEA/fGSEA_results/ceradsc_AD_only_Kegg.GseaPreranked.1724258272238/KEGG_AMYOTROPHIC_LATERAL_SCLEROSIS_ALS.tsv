@@ -1,0 +1,22 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	CYCS	cytochrome c, somatic [Source:HGNC Symbol;Acc:HGNC:19986]	105	1.4042508602142334	0.13659076	Yes	
+row_1	CHP1	calcineurin like EF-hand protein 1 [Source:HGNC Symbol;Acc:HGNC:17433]	190	1.1846038103103638	0.25252062	Yes	
+row_2	NEFL	neurofilament light chain [Source:HGNC Symbol;Acc:HGNC:7739]	254	1.083703875541687	0.36070606	Yes	
+row_3	DERL1	derlin 1 [Source:HGNC Symbol;Acc:HGNC:28454]	377	0.9518560171127319	0.44547307	Yes	
+row_4	DAXX	death domain associated protein [Source:HGNC Symbol;Acc:HGNC:2681]	650	0.757206916809082	0.48599058	Yes	
+row_5	SOD1	superoxide dismutase 1 [Source:HGNC Symbol;Acc:HGNC:11179]	881	0.6372860074043274	0.5199255	Yes	
+row_6	NEFM	neurofilament medium chain [Source:HGNC Symbol;Acc:HGNC:7734]	1012	0.594563901424408	0.564598	Yes	
+row_7	RAC1	Rac family small GTPase 1 [Source:HGNC Symbol;Acc:HGNC:9801]	1144	0.5546725392341614	0.6047776	Yes	
+row_8	BAD	BCL2 associated agonist of cell death [Source:HGNC Symbol;Acc:HGNC:936]	2513	0.2903948128223419	0.42590314	No	
+row_9	GRIA1	glutamate ionotropic receptor AMPA type subunit 1 [Source:HGNC Symbol;Acc:HGNC:4571]	2675	0.2715955674648285	0.4306762	No	
+row_10	GRIN2D	glutamate ionotropic receptor NMDA type subunit 2D [Source:HGNC Symbol;Acc:HGNC:4588]	3016	0.2348167896270752	0.40391022	No	
+row_11	BCL2	BCL2 apoptosis regulator [Source:HGNC Symbol;Acc:HGNC:990]	3033	0.2329331785440445	0.42678553	No	
+row_12	NOS1	nitric oxide synthase 1 [Source:HGNC Symbol;Acc:HGNC:7872]	3078	0.22894103825092316	0.4449189	No	
+row_13	TOMM40	translocase of outer mitochondrial membrane 40 [Source:HGNC Symbol;Acc:HGNC:18001]	3125	0.2247130125761032	0.4622847	No	
+row_14	PRPH2	peripherin 2 [Source:HGNC Symbol;Acc:HGNC:9942]	3422	0.1959865689277649	0.43806428	No	
+row_15	TOMM40L	translocase of outer mitochondrial membrane 40 like [Source:HGNC Symbol;Acc:HGNC:25756]	4487	0.11281244456768036	0.28664294	No	
+row_16	BID	BH3 interacting domain death agonist [Source:HGNC Symbol;Acc:HGNC:1050]	4795	0.09226636588573456	0.24944825	No	
+row_17	NEFH	neurofilament heavy chain [Source:HGNC Symbol;Acc:HGNC:7737]	5490	0.05093471333384514	0.14821935	No	
+row_18	TNFRSF1A	TNF receptor superfamily member 1A [Source:HGNC Symbol;Acc:HGNC:11916]	5573	0.045909248292446136	0.14059766	No	
+row_19	PPP3CC	protein phosphatase 3 catalytic subunit gamma [Source:HGNC Symbol;Acc:HGNC:9316]	5800	0.034329723566770554	0.10956257	No	
+row_20	BAX	BCL2 associated X, apoptosis regulator [Source:HGNC Symbol;Acc:HGNC:959]	6332	0.00967913307249546	0.028923094	No	

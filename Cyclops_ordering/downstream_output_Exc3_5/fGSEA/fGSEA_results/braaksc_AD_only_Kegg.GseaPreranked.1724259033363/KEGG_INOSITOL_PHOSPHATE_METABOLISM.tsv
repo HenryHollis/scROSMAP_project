@@ -1,0 +1,24 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	IMPA2	inositol monophosphatase 2 [Source:HGNC Symbol;Acc:HGNC:6051]	3	3.550476551055908	0.17695116	Yes	
+row_1	ALDH6A1	aldehyde dehydrogenase 6 family member A1 [Source:HGNC Symbol;Acc:HGNC:7179]	60	2.0451996326446533	0.27052918	Yes	
+row_2	PIK3C2B	phosphatidylinositol-4-phosphate 3-kinase catalytic subunit type 2 beta [Source:HGNC Symbol;Acc:HGNC:8972]	70	1.9918270111083984	0.3686732	Yes	
+row_3	CDIPT	CDP-diacylglycerol--inositol 3-phosphatidyltransferase [Source:HGNC Symbol;Acc:HGNC:1769]	219	1.527724266052246	0.42223543	Yes	
+row_4	IMPA1	inositol monophosphatase 1 [Source:HGNC Symbol;Acc:HGNC:6050]	314	1.394002079963684	0.47742596	Yes	
+row_5	PLCD4	phospholipase C delta 4 [Source:HGNC Symbol;Acc:HGNC:9062]	567	1.1394298076629639	0.49558067	Yes	
+row_6	TPI1	triosephosphate isomerase 1 [Source:HGNC Symbol;Acc:HGNC:12009]	671	1.0746506452560425	0.5334286	Yes	
+row_7	INPP4B	inositol polyphosphate-4-phosphatase type II B [Source:HGNC Symbol;Acc:HGNC:6075]	942	0.92739337682724	0.538218	Yes	
+row_8	PLCB4	phospholipase C beta 4 [Source:HGNC Symbol;Acc:HGNC:9059]	1107	0.8451206684112549	0.5552091	Yes	
+row_9	ITPKA	inositol-trisphosphate 3-kinase A [Source:HGNC Symbol;Acc:HGNC:6178]	1461	0.7170830965042114	0.5367164	Yes	
+row_10	PIP4K2B	phosphatidylinositol-5-phosphate 4-kinase type 2 beta [Source:HGNC Symbol;Acc:HGNC:8998]	1489	0.7050979137420654	0.56779414	Yes	
+row_11	PIK3CD	phosphatidylinositol-4,5-bisphosphate 3-kinase catalytic subunit delta [Source:HGNC Symbol;Acc:HGNC:8977]	2072	0.5473169684410095	0.50557685	No	
+row_12	OCRL	OCRL inositol polyphosphate-5-phosphatase [Source:HGNC Symbol;Acc:HGNC:8108]	2094	0.5419833064079285	0.52942735	No	
+row_13	INPP5B	inositol polyphosphate-5-phosphatase B [Source:HGNC Symbol;Acc:HGNC:6077]	2317	0.493581622838974	0.5199266	No	
+row_14	INPP5K	inositol polyphosphate-5-phosphatase K [Source:HGNC Symbol;Acc:HGNC:33882]	2323	0.4926029145717621	0.5437719	No	
+row_15	PLCB1	phospholipase C beta 1 [Source:HGNC Symbol;Acc:HGNC:15917]	2333	0.49010252952575684	0.56687665	No	
+row_16	PIK3C2G	phosphatidylinositol-4-phosphate 3-kinase catalytic subunit type 2 gamma [Source:HGNC Symbol;Acc:HGNC:8973]	2672	0.43075457215309143	0.53638494	No	
+row_17	PIP4K2C	phosphatidylinositol-5-phosphate 4-kinase type 2 gamma [Source:HGNC Symbol;Acc:HGNC:23786]	2855	0.3976042866706848	0.5282441	No	
+row_18	PIP5K1B	phosphatidylinositol-4-phosphate 5-kinase type 1 beta [Source:HGNC Symbol;Acc:HGNC:8995]	3502	0.3009239137172699	0.4438657	No	
+row_19	ISYNA1	inositol-3-phosphate synthase 1 [Source:HGNC Symbol;Acc:HGNC:29821]	4263	0.204492449760437	0.33712485	No	
+row_20	PLCE1	phospholipase C epsilon 1 [Source:HGNC Symbol;Acc:HGNC:17175]	4687	0.15865255892276764	0.27995557	No	
+row_21	PLCB2	phospholipase C beta 2 [Source:HGNC Symbol;Acc:HGNC:9055]	6219	0.02631973847746849	0.045659777	No	
+row_22	PIK3CA	phosphatidylinositol-4,5-bisphosphate 3-kinase catalytic subunit alpha [Source:HGNC Symbol;Acc:HGNC:8975]	6405	0.01017323974519968	0.017697822	No	

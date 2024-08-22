@@ -1,0 +1,46 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	YWHAG	tyrosine 3-monooxygenase/tryptophan 5-monooxygenase activation protein gamma [Source:HGNC Symbol;Acc:HGNC:12852]	151	1.6832647323608398	0.030036798	Yes	
+row_1	YWHAH	tyrosine 3-monooxygenase/tryptophan 5-monooxygenase activation protein eta [Source:HGNC Symbol;Acc:HGNC:12853]	196	1.5739201307296753	0.073130295	Yes	
+row_2	PPP2CA	protein phosphatase 2 catalytic subunit alpha [Source:HGNC Symbol;Acc:HGNC:9299]	293	1.4178580045700073	0.10324751	Yes	
+row_3	YWHAB	tyrosine 3-monooxygenase/tryptophan 5-monooxygenase activation protein beta [Source:HGNC Symbol;Acc:HGNC:12849]	353	1.3463574647903442	0.13681181	Yes	
+row_4	CALM1	calmodulin 1 [Source:HGNC Symbol;Acc:HGNC:1442]	456	1.2415778636932373	0.16041507	Yes	
+row_5	ANAPC13	anaphase promoting complex subunit 13 [Source:HGNC Symbol;Acc:HGNC:24540]	470	1.222509741783142	0.19715698	Yes	
+row_6	CALM2	calmodulin 2 [Source:HGNC Symbol;Acc:HGNC:1445]	491	1.2036662101745605	0.2322207	Yes	
+row_7	MAD2L1	mitotic arrest deficient 2 like 1 [Source:HGNC Symbol;Acc:HGNC:6763]	512	1.1844701766967773	0.26667598	Yes	
+row_8	PPP2R5D	protein phosphatase 2 regulatory subunit B'delta [Source:HGNC Symbol;Acc:HGNC:9312]	563	1.1420646905899048	0.29515466	Yes	
+row_9	FBXO5	F-box protein 5 [Source:HGNC Symbol;Acc:HGNC:13584]	609	1.1117405891418457	0.32344425	Yes	
+row_10	MAPK1	mitogen-activated protein kinase 1 [Source:HGNC Symbol;Acc:HGNC:6871]	613	1.1100882291793823	0.35816693	Yes	
+row_11	PPP2CB	protein phosphatase 2 catalytic subunit beta [Source:HGNC Symbol;Acc:HGNC:9300]	623	1.1034636497497559	0.39175317	Yes	
+row_12	SKP1	S-phase kinase associated protein 1 [Source:HGNC Symbol;Acc:HGNC:10899]	624	1.1033750772476196	0.42672634	Yes	
+row_13	CALM3	calmodulin 3 [Source:HGNC Symbol;Acc:HGNC:1449]	681	1.0706905126571655	0.4520162	Yes	
+row_14	AR	androgen receptor [Source:HGNC Symbol;Acc:HGNC:644]	685	1.0692683458328247	0.48544505	Yes	
+row_15	PPP1CC	protein phosphatase 1 catalytic subunit gamma [Source:HGNC Symbol;Acc:HGNC:9283]	718	1.0486986637115479	0.5137438	Yes	
+row_16	YWHAE	tyrosine 3-monooxygenase/tryptophan 5-monooxygenase activation protein epsilon [Source:HGNC Symbol;Acc:HGNC:12851]	792	0.9978561401367188	0.53410006	Yes	
+row_17	PPP1CB	protein phosphatase 1 catalytic subunit beta [Source:HGNC Symbol;Acc:HGNC:9282]	819	0.9868938326835632	0.5613663	Yes	
+row_18	ANAPC10	anaphase promoting complex subunit 10 [Source:HGNC Symbol;Acc:HGNC:24077]	995	0.9067851305007935	0.56308544	Yes	
+row_19	YWHAQ	tyrosine 3-monooxygenase/tryptophan 5-monooxygenase activation protein theta [Source:HGNC Symbol;Acc:HGNC:12854]	1399	0.7351492047309875	0.52415735	Yes	
+row_20	ANAPC2	anaphase promoting complex subunit 2 [Source:HGNC Symbol;Acc:HGNC:19989]	1421	0.7294418811798096	0.5440354	Yes	
+row_21	YWHAZ	tyrosine 3-monooxygenase/tryptophan 5-monooxygenase activation protein zeta [Source:HGNC Symbol;Acc:HGNC:12855]	1534	0.6891528367996216	0.54858446	Yes	
+row_22	STAG3	STAG3 cohesin complex component [Source:HGNC Symbol;Acc:HGNC:11356]	1551	0.6843304634094238	0.56780475	Yes	
+row_23	IGF1R	insulin like growth factor 1 receptor [Source:HGNC Symbol;Acc:HGNC:5465]	2021	0.5622886419296265	0.51320606	No	
+row_24	CCNB1	cyclin B1 [Source:HGNC Symbol;Acc:HGNC:1579]	2154	0.5289910435676575	0.5095903	No	
+row_25	MAPK3	mitogen-activated protein kinase 3 [Source:HGNC Symbol;Acc:HGNC:6877]	2340	0.4884343147277832	0.49650496	No	
+row_26	PPP2R5B	protein phosphatase 2 regulatory subunit B'beta [Source:HGNC Symbol;Acc:HGNC:9310]	2510	0.4572063684463501	0.48490047	No	
+row_27	PTTG1	PTTG1 regulator of sister chromatid separation, securin [Source:HGNC Symbol;Acc:HGNC:9690]	2550	0.4498332440853119	0.49313638	No	
+row_28	CDC26	cell division cycle 26 [Source:HGNC Symbol;Acc:HGNC:17839]	2657	0.432153582572937	0.49046603	No	
+row_29	SLK	STE20 like kinase [Source:HGNC Symbol;Acc:HGNC:11088]	2995	0.37467318773269653	0.45030358	No	
+row_30	CHP1	calcineurin like EF-hand protein 1 [Source:HGNC Symbol;Acc:HGNC:17433]	3068	0.3631160855293274	0.45069513	No	
+row_31	MAD2L2	mitotic arrest deficient 2 like 2 [Source:HGNC Symbol;Acc:HGNC:6764]	3339	0.3257835805416107	0.41932893	No	
+row_32	ADCY9	adenylate cyclase 9 [Source:HGNC Symbol;Acc:HGNC:240]	3362	0.3228972256183624	0.4261665	No	
+row_33	RPS6KA2	ribosomal protein S6 kinase A2 [Source:HGNC Symbol;Acc:HGNC:10431]	3377	0.3200441002845764	0.43414897	No	
+row_34	ITPR2	inositol 1,4,5-trisphosphate receptor type 2 [Source:HGNC Symbol;Acc:HGNC:6181]	3449	0.30962955951690674	0.43299958	No	
+row_35	PRKACA	protein kinase cAMP-activated catalytic subunit alpha [Source:HGNC Symbol;Acc:HGNC:9380]	3532	0.29680952429771423	0.4297453	No	
+row_36	PPP2R1A	protein phosphatase 2 scaffold subunit Aalpha [Source:HGNC Symbol;Acc:HGNC:9302]	3755	0.2673373520374298	0.40393853	No	
+row_37	CPEB1	cytoplasmic polyadenylation element binding protein 1 [Source:HGNC Symbol;Acc:HGNC:21744]	4280	0.20234844088554382	0.32943812	No	
+row_38	CCNE1	cyclin E1 [Source:HGNC Symbol;Acc:HGNC:1589]	5015	0.12436265498399734	0.22003841	No	
+row_39	ANAPC11	anaphase promoting complex subunit 11 [Source:HGNC Symbol;Acc:HGNC:14452]	5233	0.10427673161029816	0.18983528	No	
+row_40	PPP3CC	protein phosphatase 3 catalytic subunit gamma [Source:HGNC Symbol;Acc:HGNC:9316]	5620	0.07151591777801514	0.1324974	No	
+row_41	ADCY8	adenylate cyclase 8 [Source:HGNC Symbol;Acc:HGNC:239]	5649	0.06820355355739594	0.13033555	No	
+row_42	MAP2K1	mitogen-activated protein kinase kinase 1 [Source:HGNC Symbol;Acc:HGNC:6840]	5670	0.06639263778924942	0.12935165	No	
+row_43	CCNE2	cyclin E2 [Source:HGNC Symbol;Acc:HGNC:1590]	6169	0.030195146799087524	0.05340941	No	
+row_44	SPDYA	speedy/RINGO cell cycle regulator family member A [Source:HGNC Symbol;Acc:HGNC:30613]	6294	0.020073452964425087	0.034898043	No	

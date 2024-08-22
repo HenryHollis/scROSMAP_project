@@ -1,0 +1,20 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	OR3A2	olfactory receptor family 3 subfamily A member 2 [Source:HGNC Symbol;Acc:HGNC:8283]	64	1.6035950183868408	0.16906482	Yes	
+row_1	OR2M2	olfactory receptor family 2 subfamily M member 2 [Source:HGNC Symbol;Acc:HGNC:8268]	347	0.9795229434967041	0.23497579	Yes	
+row_2	PDE1C	phosphodiesterase 1C [Source:HGNC Symbol;Acc:HGNC:8776]	780	0.6885474920272827	0.24535373	Yes	
+row_3	OR2M4	olfactory receptor family 2 subfamily M member 4 [Source:HGNC Symbol;Acc:HGNC:8270]	808	0.6723558306694031	0.31621373	Yes	
+row_4	OR2L2	olfactory receptor family 2 subfamily L member 2 [Source:HGNC Symbol;Acc:HGNC:8266]	1026	0.5909436345100403	0.34876907	Yes	
+row_5	CALM1	calmodulin 1 [Source:HGNC Symbol;Acc:HGNC:1442]	1078	0.5734207630157471	0.40490004	Yes	
+row_6	OR2L3	olfactory receptor family 2 subfamily L member 3 [Source:HGNC Symbol;Acc:HGNC:15009]	1508	0.4589485824108124	0.39012378	Yes	
+row_7	OR2T6	olfactory receptor family 2 subfamily T member 6 [Source:HGNC Symbol;Acc:HGNC:15018]	1695	0.42156535387039185	0.4085499	Yes	
+row_8	OR2M3	olfactory receptor family 2 subfamily M member 3 [Source:HGNC Symbol;Acc:HGNC:8269]	1697	0.4211123287677765	0.45537823	Yes	
+row_9	CALM3	calmodulin 3 [Source:HGNC Symbol;Acc:HGNC:1449]	1709	0.41900333762168884	0.5004333	Yes	
+row_10	PDC	phosducin [Source:HGNC Symbol;Acc:HGNC:8759]	1738	0.41385895013809204	0.54229987	Yes	
+row_11	OR6A2	olfactory receptor family 6 subfamily A member 2 [Source:HGNC Symbol;Acc:HGNC:15301]	2003	0.3689458966255188	0.5428591	Yes	
+row_12	PRKACA	protein kinase cAMP-activated catalytic subunit alpha [Source:HGNC Symbol;Acc:HGNC:9380]	2104	0.3502505421638489	0.5665555	Yes	
+row_13	OR9Q1	olfactory receptor family 9 subfamily Q member 1 [Source:HGNC Symbol;Acc:HGNC:14724]	2106	0.35015398263931274	0.60546726	Yes	
+row_14	PRKG2	protein kinase cGMP-dependent 2 [Source:HGNC Symbol;Acc:HGNC:9416]	3000	0.23659326136112213	0.49452087	No	
+row_15	CALM2	calmodulin 2 [Source:HGNC Symbol;Acc:HGNC:1445]	3169	0.2197202891111374	0.49319616	No	
+row_16	ARRB2	arrestin beta 2 [Source:HGNC Symbol;Acc:HGNC:712]	3970	0.15098105370998383	0.38700157	No	
+row_17	OR2AG2	olfactory receptor family 2 subfamily AG member 2 [Source:HGNC Symbol;Acc:HGNC:15143]	5713	0.03829307481646538	0.12335625	No	
+row_18	CNGB1	cyclic nucleotide gated channel subunit beta 1 [Source:HGNC Symbol;Acc:HGNC:2151]	6402	0.005427724216133356	0.018148212	No	

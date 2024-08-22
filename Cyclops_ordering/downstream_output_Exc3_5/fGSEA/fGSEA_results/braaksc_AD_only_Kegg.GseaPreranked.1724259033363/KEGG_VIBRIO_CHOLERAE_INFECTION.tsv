@@ -1,0 +1,30 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	ATP6V1G1	ATPase H+ transporting V1 subunit G1 [Source:HGNC Symbol;Acc:HGNC:864]	91	1.8963898420333862	0.0858916	Yes	
+row_1	ATP6V1D	ATPase H+ transporting V1 subunit D [Source:HGNC Symbol;Acc:HGNC:13527]	305	1.4032222032546997	0.12700894	Yes	
+row_2	ARF1	ADP ribosylation factor 1 [Source:HGNC Symbol;Acc:HGNC:652]	383	1.3177951574325562	0.18457453	Yes	
+row_3	ATP6V1B2	ATPase H+ transporting V1 subunit B2 [Source:HGNC Symbol;Acc:HGNC:854]	435	1.2574819326400757	0.24296752	Yes	
+row_4	ACTG1	actin gamma 1 [Source:HGNC Symbol;Acc:HGNC:144]	539	1.1658010482788086	0.28852054	Yes	
+row_5	ATP6V1G2	ATPase H+ transporting V1 subunit G2 [Source:HGNC Symbol;Acc:HGNC:862]	605	1.1137198209762573	0.33718312	Yes	
+row_6	GNAS	GNAS complex locus [Source:HGNC Symbol;Acc:HGNC:4392]	975	0.9145596027374268	0.32852635	Yes	
+row_7	ATP6V0C	ATPase H+ transporting V0 subunit c [Source:HGNC Symbol;Acc:HGNC:855]	1054	0.8740981221199036	0.36256227	Yes	
+row_8	CFTR	CF transmembrane conductance regulator [Source:HGNC Symbol;Acc:HGNC:1884]	1138	0.83329838514328	0.39367858	Yes	
+row_9	KCNQ1	potassium voltage-gated channel subfamily Q member 1 [Source:HGNC Symbol;Acc:HGNC:6294]	1384	0.7403246760368347	0.39494285	Yes	
+row_10	ATP6AP1	ATPase H+ transporting accessory protein 1 [Source:HGNC Symbol;Acc:HGNC:868]	1392	0.737798810005188	0.43273458	Yes	
+row_11	ATP6V1E1	ATPase H+ transporting V1 subunit E1 [Source:HGNC Symbol;Acc:HGNC:857]	1465	0.712942898273468	0.4592045	Yes	
+row_12	ATP6V0B	ATPase H+ transporting V0 subunit b [Source:HGNC Symbol;Acc:HGNC:861]	1595	0.6711309552192688	0.47469154	Yes	
+row_13	ACTB	actin beta [Source:HGNC Symbol;Acc:HGNC:132]	1607	0.6682955026626587	0.5082055	Yes	
+row_14	KDELR2	KDEL endoplasmic reticulum protein retention receptor 2 [Source:HGNC Symbol;Acc:HGNC:6305]	1688	0.6479011178016663	0.5300164	Yes	
+row_15	ATP6V1A	ATPase H+ transporting V1 subunit A [Source:HGNC Symbol;Acc:HGNC:851]	1775	0.6202431321144104	0.54944605	Yes	
+row_16	ATP6V0D1	ATPase H+ transporting V0 subunit d1 [Source:HGNC Symbol;Acc:HGNC:13724]	2429	0.4711345434188843	0.47368184	No	
+row_17	SEC61B	SEC61 translocon subunit beta [Source:HGNC Symbol;Acc:HGNC:16993]	2760	0.41465508937835693	0.44469562	No	
+row_18	ATP6V1F	ATPase H+ transporting V1 subunit F [Source:HGNC Symbol;Acc:HGNC:16832]	3106	0.3574390113353729	0.4103845	No	
+row_19	ADCY9	adenylate cyclase 9 [Source:HGNC Symbol;Acc:HGNC:240]	3362	0.3228972256183624	0.3881168	No	
+row_20	TJP1	tight junction protein 1 [Source:HGNC Symbol;Acc:HGNC:11827]	3477	0.3049473166465759	0.3866225	No	
+row_21	PRKACA	protein kinase cAMP-activated catalytic subunit alpha [Source:HGNC Symbol;Acc:HGNC:9380]	3532	0.29680952429771423	0.39394158	No	
+row_22	ATP6V1C1	ATPase H+ transporting V1 subunit C1 [Source:HGNC Symbol;Acc:HGNC:856]	3675	0.27690190076828003	0.38665673	No	
+row_23	PDIA4	protein disulfide isomerase family A member 4 [Source:HGNC Symbol;Acc:HGNC:30167]	3775	0.26531946659088135	0.38538522	No	
+row_24	ATP6V0E2	ATPase H+ transporting V0 subunit e2 [Source:HGNC Symbol;Acc:HGNC:21723]	4180	0.21364493668079376	0.33441037	No	
+row_25	PRKCG	protein kinase C gamma [Source:HGNC Symbol;Acc:HGNC:9402]	4271	0.20301316678524017	0.33124265	No	
+row_26	TJP2	tight junction protein 2 [Source:HGNC Symbol;Acc:HGNC:11828]	5035	0.12260305881500244	0.22017257	No	
+row_27	KDELR1	KDEL endoplasmic reticulum protein retention receptor 1 [Source:HGNC Symbol;Acc:HGNC:6304]	5186	0.10802925378084183	0.2027586	No	
+row_28	SEC61G	SEC61 translocon subunit gamma [Source:HGNC Symbol;Acc:HGNC:18277]	5896	0.048803556710481644	0.09611841	No	

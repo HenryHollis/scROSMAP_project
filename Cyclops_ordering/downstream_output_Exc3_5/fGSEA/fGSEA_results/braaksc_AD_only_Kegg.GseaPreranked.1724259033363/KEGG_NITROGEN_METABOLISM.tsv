@@ -1,0 +1,8 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	CA4	carbonic anhydrase 4 [Source:HGNC Symbol;Acc:HGNC:1375]	2439	0.46992307901382446	-0.0428291	Yes	
+row_1	CA3	carbonic anhydrase 3 [Source:HGNC Symbol;Acc:HGNC:1374]	3738	0.26945605874061584	-0.051954	Yes	
+row_2	AMT	aminomethyltransferase [Source:HGNC Symbol;Acc:HGNC:473]	3820	0.2595076858997345	0.11872953	Yes	
+row_3	CA13	carbonic anhydrase 13 [Source:HGNC Symbol;Acc:HGNC:14914]	3920	0.24592749774456024	0.27706707	Yes	
+row_4	CPS1	carbamoyl-phosphate synthase 1 [Source:HGNC Symbol;Acc:HGNC:2323]	5547	0.07766067236661911	0.08225113	No	
+row_5	CA1	carbonic anhydrase 1 [Source:HGNC Symbol;Acc:HGNC:1368]	5749	0.05952376872301102	0.0933967	No	
+row_6	CA8	carbonic anhydrase 8 [Source:HGNC Symbol;Acc:HGNC:1382]	6099	0.03516009449958801	0.06463006	No	

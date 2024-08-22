@@ -1,0 +1,6 @@
+NAME	SYMBOL	TITLE	RANK IN GENE LIST	RANK METRIC SCORE	RUNNING ES	CORE ENRICHMENT	
+row_0	PDSS2	decaprenyl diphosphate synthase subunit 2 [Source:HGNC Symbol;Acc:HGNC:23041]	2845	0.3993728756904602	0.15484005	Yes	
+row_1	IDI1	isopentenyl-diphosphate delta isomerase 1 [Source:HGNC Symbol;Acc:HGNC:5387]	4892	0.13503190875053406	0.040821377	No	
+row_2	HMGCR	3-hydroxy-3-methylglutaryl-CoA reductase [Source:HGNC Symbol;Acc:HGNC:5006]	5723	0.06175042688846588	0.0048928945	No	
+row_3	HMGCS1	3-hydroxy-3-methylglutaryl-CoA synthase 1 [Source:HGNC Symbol;Acc:HGNC:5007]	5811	0.05490346625447273	0.0728513	No	
+row_4	PMVK	phosphomevalonate kinase [Source:HGNC Symbol;Acc:HGNC:9141]	6243	0.024176370352506638	0.042510804	No	
