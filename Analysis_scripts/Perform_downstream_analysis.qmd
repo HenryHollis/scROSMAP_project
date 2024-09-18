@@ -194,7 +194,7 @@ run_fgsea(rnk_files, gene_remapping_dict, pathways)
 Run fgsea on sleep related pathways from https://doi.org/10.1152/physiolgenomics.00275.2006
 
 ```{r}
-sleep_wake_pathways = gmtPathways("./MsigDB_gmts_for_GSEA/sleep_wake_pathways_w_all_human_aliases_filtered_to_background_genes.gmt")
+sleep_wake_pathways = gmtPathways("./MsigDB_gmts_for_GSEA/sleep_wake_pathways_w_human_orthologs.gmt")
 
 if(!(dir.exists(paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/fGSEA_results_sleep_wake")))){
     dir.create(paste0(path_to_cyclops_ordering,"downstream_output/fGSEA/fGSEA_results_sleep_wake"))

@@ -236,6 +236,17 @@ calcDeltaCCD(refCor, as.data.frame(my_tmm), groupVec = my_rosmap_meta$cond_cogdx
 
 ```
 
+Make histograms of pmi by condition:
+
+```{r}
+# Create overlaid histograms
+ggplot(my_rosmap_meta, aes(x = pmi, fill = as.factor(cond_cogdx))) +
+  geom_histogram(position = "identity", alpha = 0.5, bins = 30) +
+  labs(title = "Overlaid Histograms", x = "PMI", y = "Frequency", fill = "Condition") +
+  theme_minimal()
+
+```
+
 The correlagrams of the Exc.3 and Exc.5 by themselves are bad. When you add them, the correlagram is great. Therefore the clusters could be in part based on the expression of a rhythmic gene. Below I will see that:
 
 ```{r}

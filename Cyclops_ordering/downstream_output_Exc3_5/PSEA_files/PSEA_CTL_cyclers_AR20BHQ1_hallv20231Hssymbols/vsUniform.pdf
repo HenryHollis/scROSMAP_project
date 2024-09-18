@@ -16538,3 +16538,31 @@ trailer
 startxref
 485928
 %%EOF
+1 0 obj
+<< /Info 8 0 R /Pages 2 0 R /Type /Catalog >>
+endobj
+3 0 obj
+<< /Contents 4 0 R /Type /Page /Resources 6 0 R /Rotate 90 /MediaBox [ 0 0
+13532.6 13532.6 ] /Parent 2 0 R >>
+endobj
+7 0 obj
+<< /Producer (macOS Version 14.6.1 \(Build 23G93\) Quartz PDFContext, AppendMode 1.1)
+/ModDate (D:20240912183120Z00'00') >>
+endobj
+8 0 obj
+7 0 R
+endobj
+xref
+0 2
+0000000000 65535 f 
+0000486134 00000 n 
+3 1
+0000486195 00000 n 
+7 2
+0000486320 00000 n 
+0000486459 00000 n 
+trailer
+<< /ID [<><04ECAE2002E4D343C70C689844B9D96E> ] /Root 1 0 R /Prev 485928 /Size 9 >> 
+startxref
+486480
+%%EOF
