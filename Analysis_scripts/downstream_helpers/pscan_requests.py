@@ -2,6 +2,7 @@ import pandas as pd
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import NoSuchElementException
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
@@ -31,14 +32,20 @@ file_contents = '\\n'.join(df_wo_NA['refseq_ids'].astype(str))
 word_count = len(df_wo_NA)
 print("Finished Pscan on {}".format(os.path.basename(args.file)))
 print("Number of genes:", word_count)
-options = webdriver.ChromeOptions()
+chrome_options = webdriver.ChromeOptions()
 
 if (int(args.headless)):
-    options.add_argument('--headless')  # Run Chrome in headless mode
+    chrome_options.add_argument("--headless")  # Run in headless mode
 
-#driver = webdriver.Chrome( options=chrome_options)
-# driver = webdriver.Chrome(service=service, options=options)
-driver = webdriver.Chrome( options=options)
+
+# Create an instance of ChromeOptions (to set browser preferences, if needed)
+chrome_options.add_argument("--ignore-certificate-errors")
+chrome_options.add_argument("--allow-insecure-localhost")
+chrome_options.add_argument("--ignore-ssl-errors=yes")
+
+# Use WebDriver Manager to handle driver updates
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
 driver.set_page_load_timeout(1000)
 # Set the URL where the form is located
 url = args.url

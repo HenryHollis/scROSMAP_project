@@ -58,12 +58,21 @@ plot_fgsea_vs_enrichr = function(enrichR_path, fgsea_path, title,  marker_color 
       p = ggplot(plot_df, aes(NES, -log10(`Adjusted p-value`), color = -log10(padj), label = str_to_title(pathway.x)))+
         geom_point(shape = 16, size = 5, alpha = .7)+
         ggrepel::geom_text_repel(max.overlaps = max.overlaps, color = "black", point.padding = point_padding, label.padding = label_padding, box.padding = box_padding )+
-        xlab("fGSEA NES")+
-        ylab("-Log(enrichR BH.q)")+
+        scale_x_reverse()+
+        xlim(0,-3.5)+
         ggtitle(str_wrap(title, 25))+
         theme_minimal()+
-        scale_color_gradientn(colors = color_palette, name = "-Log(fGSEA BH.q)")+
-        geom_vline(xintercept = 0, linetype = "dashed", color = "grey")
+        scale_color_gradientn(colors = color_palette, name = "fGSEA\n-Log(BH.q)")+
+        # geom_vline(xintercept = 0, linetype = "dashed", color = "grey")+
+        xlab("fGSEA NES")+
+        ylab(" EnrichR -Log(BH.q)")+
+        theme(
+    axis.text.x = element_text(size = 14),    # Increase x-axis text size
+    axis.text.y = element_text(size = 14),    # Increase y-axis text size
+    axis.title.x = element_text(size = 16),   # Increase x-axis title size
+    axis.title.y = element_text(size = 16),   # Increase y-axis title size
+    legend.title = element_text(size = 12)    # Increase legend title size
+  )
 
       print(p)
       return(plot_df)
@@ -175,6 +184,7 @@ list.files("../Cyclops_ordering/", pattern = "downstream_output*")
 
 ```{r}
 # plot_cycling_and_dr_cycling("downstream_output_Exc3_5")
+#I no longer call plot_cycling_and_dr_cycling() for this cell type because I want to look at the ampRatio33 files
 downstream_str = "downstream_output_Exc3_5"
 setwd(paste0("../Cyclops_ordering/",downstream_str ))
 enrichR_DRCycling_BHQ1AR33 = "enrichR_results/EnrichR_DRcyclersCyclingBHQ1AR33DRBHQ3_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio33/DRcyclersCyclingBHQ1AR33DRBHQ3_LIBRY-KEGG2021Human_BCKGRND-diffrhythmsCyclingBHQ1AmpRatio33.csv"
