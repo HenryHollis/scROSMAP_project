@@ -180,7 +180,13 @@ plot_cycling_and_dr_cycling= function(downstream_str){
 list.files("../Cyclops_ordering/", pattern = "downstream_output*")
 ```
 
-### Excitatory Neurons
+### Excitatory Neurons (all)
+
+```{r}
+plot_cycling_and_dr_cycling("downstream_output_Exc_All")
+```
+
+### Excitatory Neurons 3&5
 
 ```{r}
 # plot_cycling_and_dr_cycling("downstream_output_Exc3_5")
@@ -205,7 +211,6 @@ plot_cycling_and_dr_cycling("downstream_output_Inhib_All")
 
 ```{r}
 plot_cycling_and_dr_cycling("downstream_output_Ast_All")
-#I set max overlaps to 50 to get the pathways cycling in CTL to show other pathways beside ribo
 ```
 
 ### Microglia

@@ -30,7 +30,7 @@ print(paste("Using cond env:",conda_list()[[1]][2] ))
 Define Functions
 
 ```{r}
-make_venn = function(diff_mesor_file, path_to_DE, my_title, signif_cutoff = 0.1, save_plots = T){
+make_venn = function(diff_mesor_file, path_to_DE, my_title, signif_cutoff = 0.05, save_plots = T){
 Diff_mesor = read_csv(diff_mesor_file, show_col_types = F) 
 all_genes = dplyr::select(Diff_mesor, Gene_Symbols)
 Diff_mesor = Diff_mesor %>%  filter(BHQ < signif_cutoff)
@@ -68,9 +68,13 @@ return(DM_not_DE)
 Generate the VennDiagrams
 
 ```{r}
-EN_mesor_path =  "../Cyclops_ordering/downstream_output_Exc3_5/differential_mesor_all_genes.csv"
+EN_mesor_path_3_5 =  "../Cyclops_ordering/downstream_output_Exc3_5/differential_mesor_all_genes.csv"
 
-EN_DE_path = "../edgeR_diff_expression/Exc3_5/Exc3_5_filtByExpr_edgeR_DE_QLFTest.csv"
+EN_DE_path_3_5 = "../edgeR_diff_expression/Exc3_5/Exc3_5_filtByExpr_edgeR_DE_QLFTest.csv"
+
+EN_mesor_path =  "../Cyclops_ordering/downstream_output_Exc_All/differential_mesor_all_genes.csv"
+
+EN_DE_path = "../edgeR_diff_expression/All_Exc/All_Exc_filtByExpr_edgeR_DE_QLFTest.csv"
 
 IN_mesor_path = "../Cyclops_ordering/downstream_output_Inhib_All/differential_mesor_all_genes.csv"
 
@@ -84,7 +88,8 @@ MG_mesor_path = "../Cyclops_ordering/downstream_output_Mglia_All/differential_me
 
 MG_DE_path = "../edgeR_diff_expression/All_Mglia/All_Mic_filtByExpr_edgeR_DE_QLFTest.csv"
 
-EN_not_DE = make_venn(EN_mesor_path, EN_DE_path, "Exc. Neurons 3,5")
+EN_not_DE_3_5 = make_venn(EN_mesor_path_3_5, EN_DE_path_3_5, "Exc. Neurons 3,5")
+EN_not_DE = make_venn(EN_mesor_path, EN_DE_path, "Exc. Neurons")
 IN_not_DE = make_venn(IN_mesor_path, IN_DE_path, "Inh. Neurons")
 AS_not_DE = make_venn(AS_mesor_path, AS_DE_path, "Astrocytes")
 MG_not_DE = make_venn(MG_mesor_path, MG_DE_path, "Microglia")

@@ -778,7 +778,7 @@ run_cycling_and_dr_analysis = function(order_path, tmm_path, rosmap_clin_path, i
   tmm = read_csv(tmm_path, show_col_types = FALSE)      #read expression data, unordered
   colnames(tmm)[1] = "gene_names" #set first column name bc sometimes they are different
 
-  #grab these for comparison to what cyclops finds:
+  #get cyclops subject predictions
   cyc_pred_file = list.files(path = paste0(order_path, "/Fits/"), pattern = '*Fit_Output_*')
   cyc_pred = read_csv(paste(order_path, "Fits", cyc_pred_file[1], sep = '/'), show_col_types = FALSE)
 
