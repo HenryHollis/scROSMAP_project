@@ -1,0 +1,312 @@
+---
+title: "Create_gmt_for_sleepwake_pathway"
+format: html
+editor: visual
+---
+
+### Load Libraries
+
+```{r}
+library(grr)
+library(tidyverse)
+```
+
+### Read in Supplement file:
+
+```{r}
+supplement = read.delim("scROSMAP_project/Analysis_scripts/MsigDB_gmts_for_GSEA/Mackiewics_et_al_supp_table_1.txt", skip = 3, sep ="\t")
+
+```
+
+There is another supplemental file that has the mean expression in both conditions for all DE genes. This doesn't rely on any linear regression to find genes "increasing" or "decreasing" with sleep or sleep dep.
+
+```{r}
+supp2 = readxl::read_excel("scROSMAP_project/Analysis_scripts/MsigDB_gmts_for_GSEA/Supplemental_Table_S2_cerebral__cortex.xlsx", skip = 3)
+#check that all the genes in supplement 2 are in supplement 1, indeed yes
+all(supp2$`Affymetrix id` %in% supplement$Affymetrix.id)
+
+#get extrez gene Ids for all supplement 2 genes
+supp2 = merge(supp2, select(supplement, Affymetrix.id, Entrez.Gene), by.x = "Affymetrix id", by.y = "Affymetrix.id")
+
+DE_down = filter(supp2, `Difference in MEAN` > 0) %>% select(`Affymetrix id`, Entrez.Gene)
+DE_up = filter(supp2, `Difference in MEAN` < 0)  %>% select(`Affymetrix id`, Entrez.Gene)
+
+```
+
+### Create translation dict from Mouse Entrez -\> human gene symbols
+
+```{r}
+Mouse_NCBI_to_gene = read.delim("scROSMAP_project/Analysis_scripts/MsigDB_gmts_for_GSEA/Mouse_NCBI_Gene_ID_MSigDB.v2023.1.Mm.chip")
+HumanGene_to_mouseGene = read.delim("scROSMAP_project/Analysis_scripts/MsigDB_gmts_for_GSEA/Human_Gene_Symbol_with_Remapping_Mouse_Orthologs_MSigDB.v2023.1.Mm.chip")
+
+colnames(HumanGene_to_mouseGene)[1] = "Human_Gene_Symbols"
+
+translation_dict = merge(Mouse_NCBI_to_gene, HumanGene_to_mouseGene, by = "Gene.Symbol")
+```
+
+### Translate Mouse EntrezID to human gene symbols
+
+```{r}
+supplement = merge(supplement, select(translation_dict, Probe.Set.ID, Human_Gene_Symbols), by.x = "Entrez.Gene", by.y = "Probe.Set.ID")
+
+#suplement has many rows because many entrezID from mouse link to multiple human gene symbols.
+```
+
+### Form Dataframe from supplement
+
+```{r}
+df = unite(supplement, "pathway_name", sleep:wake, remove = F)
+df$pathway_name = str_replace(df$pathway_name ,"_", "_wake_") %>% str_replace(. , " ", "_") %>% paste0("sleep_", .)
+df = select(df, Affymetrix.id, pathway_name, category, Human_Gene_Symbols) %>% drop_na()
+
+#rename pathways whose categories are DE_down or DE_up
+df <- df %>%
+  mutate(pathway_name = case_when(
+    category == "DE_up" ~ "DE_ANOVA_SD_up",
+    category == "DE_down" ~ "DE_ANOVA_SD_down",
+    TRUE ~ pathway_name  # Keep the original value if no condition is met
+  ))
+```
+
+### Restrict dataframe to genes expressed in my human data:
+
+```{r}
+load("scROSMAP_project/rosmap424_pseudobulk_by_cluster.rda")
+possible_human_gene_names = rownames(counts)
+
+#Still a chance we can recover some genes with human chip remapping:
+Human_symbol_remapping = read.delim("scROSMAP_project/Analysis_scripts/MsigDB_gmts_for_GSEA/Human_Gene_Symbol_with_Remapping_MSigDB.v2023.1.Hs.chip")
+
+df_with_alias = merge(df, Human_symbol_remapping, by.x = "Human_Gene_Symbols", by.y = "Probe.Set.ID", all.y = F, all.x = T)
+  
+df_with_alias <- df_with_alias %>%
+  mutate(unified_name = case_when(
+    Human_Gene_Symbols == Gene.Symbol ~ Human_Gene_Symbols, # If name1 and name2 agree, take either
+    Human_Gene_Symbols != Gene.Symbol & Human_Gene_Symbols %in% possible_human_gene_names ~ Human_Gene_Symbols, # If name1 is in ROSMAP, take name1
+    Human_Gene_Symbols != Gene.Symbol & Gene.Symbol %in% possible_human_gene_names ~ Gene.Symbol, # If name2 is in ROSMAP, take name2
+    TRUE ~ NA_character_ # If neither is in true_names, set unified to NA
+  ))
+
+df = select(df_with_alias, Affymetrix.id, pathway_name, category, unified_name) %>% distinct() %>% drop_na()
+
+
+```
+
+### Make a new categories (from supp2) that is all ANOVA DE genes up/down with SD:
+
+```{r}
+#get affy names from de_up list
+de_up_affy_genes = select(DE_up, `Affymetrix id`)
+#match these affy names to affy names in supp table1, and then use the human gene symbols we already found:
+de_up_final_hgs = merge(de_up_affy_genes, df, by.x = "Affymetrix id", by.y = "Affymetrix.id") %>% select(unified_name) %>% unname %>% unlist
+
+#same for SD down regulated genes:
+de_down_affy_genes = select(DE_down, `Affymetrix id`)
+de_down_final_hgs = merge(de_down_affy_genes, df, by.x = "Affymetrix id", by.y = "Affymetrix.id") %>% select(unified_name) %>% unname %>% unlist
+
+#Format rows so I can bind them to established df:
+de_down = cbind("DE_ANOVA_DOWN_SD", "DE_down", unique(de_down_final_hgs))
+de_up = cbind("DE_ANOVA_UP_SD", "DE_up", unique(de_up_final_hgs))
+df = select(df, !Affymetrix.id)
+colnames(de_down) = colnames(de_up) = colnames(df)
+
+df = rbind(df, de_down, de_up)
+```
+
+### Make a new category that is just all sleep wake genes:
+
+```{r}
+all_de_genes= cbind("All_DE_sleep_wake_genes","10",unique(df$unified_name))
+colnames(all_de_genes) = colnames(df)
+
+df = rbind(df, all_de_genes)
+```
+
+### Make Specialty Categories:
+
+```{r}
+
+up_in_sleep_23 = cbind("Up_sleep_2OR3", "2OR3",filter(df, category == 2 | category == 3) %>% select(unified_name))
+colnames(up_in_sleep_23) = colnames(df)
+
+down_in_sleep_78 = cbind("Down_sleep_7OR8", "7OR8",filter(df, category == 7 | category == 8) %>% select(unified_name))
+
+up_in_SD_47 = cbind("Up_SD_4OR7","4OR7" ,filter(df, category == 4 | category == 7) %>% select(unified_name))
+
+down_in_SD_36 = cbind("Down_SD_3OR6","3OR6" , filter(df, category == 3 | category == 6) %>% select(unified_name))
+
+colnames(up_in_sleep_23) = colnames(down_in_sleep_78) = colnames(up_in_SD_47)= colnames(down_in_SD_36) = colnames(df)
+df = rbind(df, up_in_sleep_23, down_in_sleep_78, up_in_SD_47, down_in_SD_36) %>% distinct()
+```
+
+### Make a GMT File:
+
+```{r}
+gmt = df %>% 
+      group_by(category)%>%
+      mutate(row = row_number()) %>%
+      pivot_wider(names_from = row, values_from = unified_name)
+
+#Careful, when you write out this file, there will be "" tab "" tab "" etc. after each pathway, I removed those by hand in textEdit
+
+# write.table(gmt, "scROSMAP_project/Analysis_scripts/MsigDB_gmts_for_GSEA/sleep_wake_pathways_w_human_orthologs.gmt", sep = '\t', quote = F, row.names = F,  col.names = F, na = "")
+
+```
+
+These simplified/combined groups are subsets of de_down, right?
+
+```{r}
+all(up_in_sleep_23$unified_name %in% de_down[,3])
+all(down_in_SD_36$unified_name %in% de_down[,3])
+```
+
+### Make Venn Diagram Figure
+
+```{r}
+# What loses rhythms in Exc neurons?
+Exc_lose_AR20 = read_csv("../Cyclops_ordering/downstream_output_Exc_All/enrichR_files/DR_lostAmpAD_CyclingBHQ1AR20_DRBHQ3.csv", show_col_types = F) %>% select(Gene_Symbols)%>% unlist%>%unname
+
+Inh_lose_AR20 = read_csv("../Cyclops_ordering/downstream_output_Inhib_All/enrichR_files/DR_lostAmpAD_CyclingBHQ1AR20_DRBHQ3.csv", show_col_types = F)%>% select(Gene_Symbols)%>% unlist%>%unname
+
+
+Mglia_lose_AR20 = read_csv("../Cyclops_ordering/downstream_output_Mglia_All/enrichR_files/DR_lostAmpAD_CyclingBHQ1AR20_DRBHQ3.csv", show_col_types = F)%>% select(Gene_Symbols)%>% unlist%>%unname
+
+library(ggvenn)
+x = list(`Upregulated in Sleep` =up_in_sleep_23$unified_name, Exc = Exc_lose_AR20, Inh = Inh_lose_AR20, Mglia = Mglia_lose_AR20)
+ggvenn(
+  x, 
+  fill_color = c("#0073C2FF", "#EFC000FF", "#868686FF", "#CD534CFF"),
+  stroke_size = 0.5, set_name_size = 4
+  )
+```
+
+```{r}
+library(fgsea)
+file = "../Cyclops_ordering/downstream_output_Exc_All/fGSEA/rnk_files/DRgenesAmpRatio20_Log(AD-CTL)ranked.rnk"
+possible_human_gene_names = read_csv("../normed_counts/PseudobulkAllCell_FiltByExprDefault_TMM.csv") %>% slice(-(1:6))%>%dplyr::select(Gene_Symbols) %>% unname %>% unlist
+gene_dict = read.delim("../Analysis_scripts/MsigDB_gmts_for_GSEA/Human_Gene_Symbol_with_Remapping_MSigDB.v2023.1.Hs.chip", sep = '\t')
+
+pathways = gmtPathways("../Analysis_scripts/MsigDB_gmts_for_GSEA/sleep_wake_pathways_w_human_orthologs.gmt")
+
+score_type = "std"
+
+ranks <- read.table(file, header=F, colClasses = c("character", "numeric"))
+#here I handle remapping my gene symbols to the "chip" file from MsigDB
+ranks_merged = merge(ranks, gene_dict, by.x = "V1", by.y = "Probe.Set.ID", all.y = F, all.x = T)
+  # remapped_idx = which(!(is.na(ranks_merged$Gene.Symbol))) #idx of ranks_merged found in gene_dict
+  # ranks_merged$V1[remapped_idx] = ranks_merged$Gene.Symbol[remapped_idx] #rename first column if found
+ranks_merged = ranks_merged %>%
+mutate(unified_name = case_when(
+  V1 == Gene.Symbol ~ V1, # If name1 and name2 agree, take either
+  V1 != Gene.Symbol & V1 %in% possible_human_gene_names ~ V1, # If name1 is in ROSMAP, take name1
+  V1 != Gene.Symbol & Gene.Symbol %in% possible_human_gene_names ~ Gene.Symbol, # If name2 is in ROSMAP, take name2
+  TRUE ~ NA_character_ # If neither is in true_names, set unified to NA
+)) %>% arrange(V2)
+
+  if(!is_empty(which(duplicated(ranks_merged$V1)))){
+    ranks_merged = ranks_merged[-which(duplicated(ranks_merged$V1)),]   #remove duplicates if any
+  }
+  
+  ranks_vec = ranks_merged[,2]
+  names(ranks_vec) = ranks_merged[,1]
+  set.seed(42)
+  fgseaRes <- fgsea(pathways = pathways, 
+                    stats    = ranks_vec,
+                    minSize  = 5,
+                    #eps = 0.0,
+                    gseaParam = gsea_param,
+                    maxSize  = max_size,
+                    scoreType = score_type,
+                    nPermSimple = 10000)
+  
+```
+
+```{r}
+default_labeller <- function(n) {
+    fun <- function(str){
+        str <- gsub("_", " ", str)
+        yulab.utils::str_wrap(str, n)
+    }
+    
+    structure(fun, class = "labeller")
+}
+ridgeplot.gseaResult <- function(x, showCategory=30, fill="p.adjust",
+                                 core_enrichment = TRUE, label_format = 30,
+                                 orderBy = "NES", decreasing = FALSE) {
+    if (!is(x, "gseaResult"))
+        stop("currently only support gseaResult")
+
+    if (!fill %in% colnames(x@result)) {
+        stop("'fill' variable not available ...")
+    }
+
+    ## geom_density_ridges <- get_fun_from_pkg('ggridges', 'geom_density_ridges')
+    if (orderBy !=  'NES' && !orderBy %in% colnames(x@result)) {
+        message('wrong orderBy parameter; set to default `orderBy = "NES"`')
+        orderBy <- "NES"
+    }
+    if (inherits(showCategory, 'numeric')) {
+        selected <- seq_len(showCategory)
+    } else if (inherits(showCategory, "character")) {
+        ii <- match(showCategory, x@result$Description)
+        selected <- x@result[ii, "ID"]
+    } else {
+        warning("showCategory should be a number of pathways or a vector of selected pathways")
+    }
+
+    if (core_enrichment) {
+        gs2id <- geneInCategory(x)[selected]
+    } else {
+        gs2id <- x@geneSets[x$ID[selected]]
+    }
+
+    if (x@readable && length(x@gene2Symbol) > 0) {
+        id <- match(names(x@geneList), names(x@gene2Symbol))
+        names(x@geneList) <- x@gene2Symbol[id]
+    } 
+
+    gs2val <- lapply(gs2id, function(id) {
+        res <- x@geneList[id]
+        res <- res[!is.na(res)]
+    })
+
+    nn <- names(gs2val)
+    i <- match(nn, x$ID)
+    nn <- x$Description[i]
+
+    # j <- order(x$NES[i], decreasing=FALSE)
+    j <- order(x@result[[orderBy]][i], decreasing = decreasing)
+    len <- sapply(gs2val, length)
+    gs2val.df <- data.frame(category = rep(nn, times=len),
+                            color = rep(x[i, fill], times=len),
+                            value = unlist(gs2val))
+
+    colnames(gs2val.df)[2] <- fill
+    gs2val.df$category <- factor(gs2val.df$category, levels=nn[j])
+
+    label_func <- default_labeller(label_format)
+    if(is.function(label_format)) {
+        label_func <- label_format
+    }
+
+
+    ggplot(gs2val.df, aes_string(x="value", y="category", fill=fill)) +
+        ggridges::geom_density_ridges() +
+        # scale_fill_continuous(name = fill) +
+        set_enrichplot_color(type = "fill", name = fill) + 
+        scale_y_discrete(labels = label_func) +
+        ## scale_fill_gradientn(name = fill, colors=sig_palette, guide=guide_colorbar(reverse=TRUE)) +
+        ## geom_vline(xintercept=0, color='firebrick', linetype='dashed') +
+        xlab(NULL) + ylab(NULL) +  theme_dose()
+}
+```
+
+### RidgePlot
+
+```{r}
+library(DOSE)
+library(enrichplot)
+data(geneList)
+# x <- gseDO(geneList)
+ridgeplot.gseaResult(x)
+```

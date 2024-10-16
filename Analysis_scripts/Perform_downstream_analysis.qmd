@@ -81,7 +81,7 @@ run_cycling_and_dr_analysis(path_to_cyclops_ordering, path_to_tmm_file, path_to_
 ### Focused look at core clock genes
 
 ```{r}
-#Start will focused list of core clock genes
+#Start with focused list of core clock genes
 clock_genes = c("ARNTL", "NPAS2","CLOCK","CRY1","CRY2","NR1D1","NR1D2",  "PER1","PER2","PER3","DBP","TEF","ARNTL2","RORA","FBXL3","CSNK1D","CSNK1E")
 #which of those genes are cycling in CTL?
 clock_cycling_CTL = read_csv(paste0(path_to_cyclops_ordering,"downstream_output/cosinor_results_CTL.csv"), show_col_types = F) %>% filter(Gene_Symbols %in% clock_genes, BHQ < isCyclingBHQCutoff) %>% dplyr::select(Gene_Symbols) %>% unname %>% unlist
@@ -104,6 +104,52 @@ BHQCutoff_str = str_extract(as.character(isCyclingBHQCutoff), "(?<=\\.)\\d+")
 
 write.table(clock_diff_rhythms_results, paste0(path_to_cyclops_ordering, "/downstream_output/CoreClock_diff_rhythms_CyclingBHQ",BHQCutoff_str,".csv"), sep = ',', row.names = F, col.names = T)
 clock_diff_rhythms_results
+```
+
+### Focused Look at AD GWAS genes
+
+from https://doi.org/10.1038/s41588-022-01024-z
+
+```{r}
+library(writexl)
+#AD GWAS genes
+GWAS_genes = c("ABCA1", "ABCA7", "ABI3", "ACE", "ADAM17", "ADAMTS1", "ANK3", "ANKH", "APH1B", "APP", "BCKDK", "BIN1", "BLNK", "CASS4", "CD2AP",
+"CLNK", "CLU", "COX7C", "CR1", "CTSB", "CTSH", "DOC2A", "EED", "EPDR1", "EPHA1", "FERMT2", "FOXF1", "GRN", "HLA-DQA1", "HS3ST5",
+"ICA1", "IDUA", "IGH", "IL34", "INPP5D", "JAZF1", "KLF16", "LILRB2", "MAF", "MINDY2", "MME", "MS4A4A", "MYO15A", "NCK2", "PLCG2",
+"PLEKHA1", "PRDM7", "PRKD3", "PTK2B", "RASGEF1C", "RBCK1", "RHOH", "SCIMP", "SEC61G", "SHARPIN", "SIGLEC11", "SLC24A4", "SLC2A4RG",
+"SNX1", "SORL1", "SORT1", "SPDYE3", "SPI1", "SPPL2A", "TMEM106B", "TNIP1", "TPCN1", "TREM2", "TREML2", "TSPAN14", "TSPOAP1",
+"UMAD1", "UNC5CL", "USP6NL", "WDR12", "WDR81", "WNT3")
+
+#which of those genes are cycling in CTL?
+GWAS_cycling_CTL_df = read_csv(paste0(path_to_cyclops_ordering,"downstream_output/cosinor_results_CTL.csv"), show_col_types = F) %>% filter(Gene_Symbols %in% GWAS_genes, BHQ < isCyclingBHQCutoff)
+
+GWAS_cycling_CTL = GWAS_cycling_CTL_df %>% dplyr::select(Gene_Symbols) %>% unname %>% unlist
+
+#which of those genes are cycling in AD?
+GWAS_cycling_AD_df = read_csv(paste0(path_to_cyclops_ordering, "downstream_output/cosinor_results_AD.csv"), show_col_types = F) %>% filter(Gene_Symbols %in% GWAS_genes, BHQ < isCyclingBHQCutoff)
+
+GWAS_cycling_AD = GWAS_cycling_AD_df%>% dplyr::select(Gene_Symbols) %>% unname %>% unlist
+
+#Take union of those sets:
+GWAS_genes_cycling_either = union(GWAS_cycling_CTL, GWAS_cycling_AD)
+
+tmm = read_csv(path_to_tmm_file, show_col_types = FALSE)  #read expression data, unordered
+#Get CYCLOPS phases for subjects:
+cyc_pred_file = list.files(path = paste0(path_to_cyclops_ordering, "/Fits/"), pattern = '*Fit_Output_*')
+cyc_pred = read_csv(paste(path_to_cyclops_ordering, "Fits", cyc_pred_file[1], sep = '/'), show_col_types = FALSE)
+
+#perform diff_cycling analysis
+pb <- progress_bar$new(total = length(GWAS_genes_cycling_either))
+GWAS_diff_rhythms_results = diff_rhyth(cyc_pred, tmm, GWAS_genes_cycling_either, useBatch = useBatch, pb = pb, percentile = percentile)
+
+BHQCutoff_str = str_extract(as.character(isCyclingBHQCutoff), "(?<=\\.)\\d+")
+
+diff_mesor_GWAS = read_csv(paste0(path_to_cyclops_ordering, "/downstream_output/differential_mesor_all_genes.csv"), show_col_types = F) %>% filter(Gene_Symbols %in% GWAS_genes) %>% dplyr::select(!c(BHQ, Bonf))
+
+write_xlsx(list(GWAS_CTL_cycling = GWAS_cycling_CTL_df, GWAS_AD_cycling = GWAS_cycling_AD_df, GWAS_diff_rhyth = GWAS_diff_rhythms_results, GWAS_diff_mesor = diff_mesor_GWAS), path = paste0(path_to_cyclops_ordering, "/downstream_output/AD_GWAS_diff_rhythms_CyclingBHQ",BHQCutoff_str,".xlsx"))
+
+GWAS_diff_rhythms_results
+
 ```
 
 ### Plotting
@@ -189,6 +235,9 @@ sapply(AD_severity_lists, function(x){
 ### FGSEA
 
 ```{r}
+#For gene symbol remapping purposes, I want all the genes expressed in my counts, here I get genes from pseudobulk (all cell types):
+possible_human_gene_names = read_csv("../normed_counts/PseudobulkAllCell_FiltByExprDefault_TMM.csv") %>% slice(-(1:6))%>%dplyr::select(Gene_Symbols) %>% unname %>% unlist
+
 path = getwd()
 setwd(path_to_cyclops_ordering)
 if (!(dir.exists("downstream_output/fGSEA"))){
@@ -216,7 +265,7 @@ setwd(paste(path_to_cyclops_ordering,"downstream_output", "fGSEA", "rnk_files", 
 
 rnk_files = list.files(pattern = ".rnk")
 
-run_fgsea(rnk_files, gene_remapping_dict, pathways)
+run_fgsea(rnk_files, gene_remapping_dict, pathways, possible_human_gene_names, min_size = 5, max_size = 500)
 ```
 
 Run fgsea on sleep related pathways from https://doi.org/10.1152/physiolgenomics.00275.2006
@@ -230,7 +279,7 @@ if(!(dir.exists(paste0(path_to_cyclops_ordering, "downstream_output/fGSEA/fGSEA_
 }
 setwd(paste0(path_to_cyclops_ordering,"downstream_output/fGSEA/rnk_files"))
 
-run_fgsea(rnk_files, gene_remapping_dict, sleep_wake_pathways, dir = "fGSEA_results_sleep_wake", max_size = 10000)
+run_fgsea(rnk_files, gene_remapping_dict, sleep_wake_pathways,possible_human_gene_names, dir = "fGSEA_results_sleep_wake", max_size = 10000) #make max_size big because these pathways of interest are large
 ```
 
 ### Phase Set Enrichment Analysis (PSEA)

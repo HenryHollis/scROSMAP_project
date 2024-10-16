@@ -4,7 +4,7 @@ library(rstudioapi)
 library(data.table)
 library(stringr)
 library(purrr)
-run_fgsea = function(files, gene_dict, pathways, gsea_param = 1,max_size = 500, dir = "fGSEA_results"){
+run_fgsea = function(files, gene_dict, pathways,possible_human_gene_names, gsea_param = 1,min_size = 10,max_size = 500, dir = "fGSEA_results"){
   sapply(files, function(file){
   file_name = paste0("../", dir, "/", str_replace(file, ".rnk", "") , ".csv")
   print(file_name)
@@ -15,8 +15,14 @@ run_fgsea = function(files, gene_dict, pathways, gsea_param = 1,max_size = 500, 
   ranks <- read.table(file, header=F, colClasses = c("character", "numeric"))
   #here I handle remapping my gene symbols to the "chip" file from MsigDB
   ranks_merged = merge(ranks, gene_dict, by.x = "V1", by.y = "Probe.Set.ID", all.y = F, all.x = T)
-  remapped_idx = which(!(is.na(ranks_merged$Gene.Symbol))) #idx of ranks_merged found in gene_dict
-  ranks_merged$V1[remapped_idx] = ranks_merged$Gene.Symbol[remapped_idx] #rename first column if found
+  #I don't want to remap if original gene name is in my data:
+  ranks_merged = ranks_merged %>%
+    mutate(unified_name = case_when(
+      V1 == Gene.Symbol ~ V1, # If name1 and name2 agree, take either
+      V1 != Gene.Symbol & V1 %in% possible_human_gene_names ~ V1, # If name1 is in ROSMAP, take name1
+      V1 != Gene.Symbol & Gene.Symbol %in% possible_human_gene_names ~ Gene.Symbol, # If name2 is in ROSMAP, take name2
+      TRUE ~ NA_character_ # If neither is in true_names, set unified to NA
+    )) %>% arrange(V2)
   
   if(!is_empty(which(duplicated(ranks_merged$V1)))){
     ranks_merged = ranks_merged[-which(duplicated(ranks_merged$V1)),]   #remove duplicates if any
@@ -27,7 +33,7 @@ run_fgsea = function(files, gene_dict, pathways, gsea_param = 1,max_size = 500, 
   set.seed(42)
   fgseaRes <- fgsea(pathways = pathways, 
                     stats    = ranks_vec,
-                    minSize  = 5,
+                    minSize  = min_size,
                     #eps = 0.0,
                     gseaParam = gsea_param,
                     maxSize  = max_size,
