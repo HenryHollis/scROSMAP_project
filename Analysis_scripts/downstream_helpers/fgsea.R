@@ -4,7 +4,7 @@ library(rstudioapi)
 library(data.table)
 library(stringr)
 library(purrr)
-run_fgsea = function(files, gene_dict, pathways,possible_human_gene_names, gsea_param = 1,min_size = 10,max_size = 500, dir = "fGSEA_results"){
+run_fgsea = function(files, gene_dict = NULL, pathways, gsea_param = 1,min_size = 10, max_size = 500, dir = "fGSEA_results"){
   sapply(files, function(file){
   file_name = paste0("../", dir, "/", str_replace(file, ".rnk", "") , ".csv")
   print(file_name)
@@ -13,21 +13,18 @@ run_fgsea = function(files, gene_dict, pathways,possible_human_gene_names, gsea_
   plot_name = paste0("../", dir,"/plots/", str_replace(file, ".rnk", "") , ".png")
   
   ranks <- read.table(file, header=F, colClasses = c("character", "numeric"))
-  #here I handle remapping my gene symbols to the "chip" file from MsigDB
-  ranks_merged = merge(ranks, gene_dict, by.x = "V1", by.y = "Probe.Set.ID", all.y = F, all.x = T)
-  #I don't want to remap if original gene name is in my data:
-  ranks_merged = ranks_merged %>%
-    mutate(unified_name = case_when(
-      V1 == Gene.Symbol ~ V1, # If name1 and name2 agree, take either
-      V1 != Gene.Symbol & V1 %in% possible_human_gene_names ~ V1, # If name1 is in ROSMAP, take name1
-      V1 != Gene.Symbol & Gene.Symbol %in% possible_human_gene_names ~ Gene.Symbol, # If name2 is in ROSMAP, take name2
-      TRUE ~ NA_character_ # If neither is in true_names, set unified to NA
-    )) %>% arrange(V2)
-  
+  if(!is.null(gene_dict)){
+    #here I handle remapping my gene symbols to the "chip" file from MsigDB
+    ranks_merged = merge(ranks, gene_dict, by.x = "V1", by.y = "Probe.Set.ID", all.y = F, all.x = T)
+    remapped_idx = which(!(is.na(ranks_merged$Gene.Symbol))) #idx of ranks_merged found in gene_dict
+    ranks_merged$V1[remapped_idx] = ranks_merged$Gene.Symbol[remapped_idx] #rename first column if found
+  }else{
+    ranks_merged = ranks
+  }
   if(!is_empty(which(duplicated(ranks_merged$V1)))){
     ranks_merged = ranks_merged[-which(duplicated(ranks_merged$V1)),]   #remove duplicates if any
   }
-  
+  ranks_merged = ranks_merged %>% arrange(V2)
   ranks_vec = ranks_merged[,2]
   names(ranks_vec) = ranks_merged[,1]
   set.seed(42)
@@ -52,27 +49,7 @@ run_fgsea = function(files, gene_dict, pathways,possible_human_gene_names, gsea_
   
   ggsave(plot_name, p, bg = 'white')
   
-  
-  # #if the rnk was ranked by -log(p), only the positive enriched pathways are important:
-  # if (grepl("minusLogPRanked", file_name, ignore.case = T)){
-  #   p1 = fgsea_dotplot(fgseaRes,enrichment = "pos" , my_title = paste(tools::file_path_sans_ext(file), "pos enriched pathways"))
-  #   plot_name2 = paste0("../", dir,"/plots/", str_replace(file, ".rnk", "") , "_dotplot",".png")
-  #   ggsave(plot_name2, p1, bg = 'white')
-  # 
-  #   # if the rnk was ranked by log(ad_amp/ctl_amp), we want both pathways
-  # }else{
-  #   if (!purrr::is_empty(topPathwaysUp)){
-  #     p2 = fgsea_dotplot(fgseaRes,enrichment = "pos" ,my_title = paste(tools::file_path_sans_ext(file), "pos enriched pathways"))
-  #     plot_name2 = paste0("../", dir,"/plots/", str_replace(file, ".rnk", "") , "_posEnrichment_dotplot",".png")
-  #     ggsave(plot_name2, p2, bg = 'white')
-  #   }
-  #   if (!purrr::is_empty(topPathwaysDown)){
-  #     p3 = fgsea_dotplot(fgseaRes,enrichment = "neg" ,my_title = paste(tools::file_path_sans_ext(file), "neg enriched pathways"))
-  #     plot_name3 = paste0("../", dir,"/plots/", str_replace(file, ".rnk", "") , "_negEnrichment_dotplot",".png")
-  #     ggsave(plot_name3, p3, bg = 'white')
-  #   }
-  # }
-  # 
+
 })
 }
 
